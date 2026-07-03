@@ -26,7 +26,7 @@ export function CounselingCta({
           >
             <Image
               src="/images/counseling.png"
-              alt="FES counselor advising a student"
+              alt="NextStep counselor advising a student"
               fill
               className="object-cover"
             />
@@ -49,7 +49,7 @@ export function CounselingCta({
             </h2>
             <p className="mt-4 text-base text-muted-foreground">
               Share your qualification, graduation year, preferred course,
-              budget, and English test status. An FES counselor will help you
+              budget, and English test status. A NextStep counselor will help you
               identify realistic countries and next steps — at no cost.
             </p>
 
@@ -62,13 +62,13 @@ export function CounselingCta({
                 Cantt Lahore
               </div>
               <a
-                href="tel:+923458454769"
+                href="tel:+923142638901"
                 className="flex items-center gap-3 text-sm font-medium text-foreground hover:text-brand"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
                   <Phone className="h-4 w-4" />
                 </span>
-                +92 345 8454769
+                +92 314 2638901
               </a>
             </div>
 

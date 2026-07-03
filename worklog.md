@@ -44,3 +44,25 @@ Stage Summary:
 - Frontend: single-page app with sticky header, hero, 16 country guides with detail modals, compare factors, 6 services, counseling CTA, AI assistant section, newsletter, sticky footer
 - Backend: 6 API routes with Prisma + SQLite, zod validation, LLM-powered AI counselor
 - All core user flows browser-verified end-to-end
+
+---
+Task ID: 8
+Agent: Main (orchestrator)
+Task: Rebrand FES → NextStep International (name, phone, email, all references)
+
+Work Log:
+- Searched all source files for FES/fespak/+92 345 8454769/info@fespak.com references
+- Replaced across 10 files: header, footer, hero, counseling-cta, guidance-form-dialog, assistant-section, ai-assistant, country-detail-dialog, layout.tsx (metadata), api/ai-assistant (LLM system prompt), countries.ts, globals.css
+- Brand name: FES / FES Higher Education Consultants → NextStep International
+- Phone/WhatsApp: +92 345 8454769 → +92 314 2638901 (tel: links, wa.me links, display text)
+- Email: info@fespak.com → info@nextstepinternationals.com
+- AI chatbot identity: "FES Assistant" → "NextStep Assistant"
+- Internal identifiers renamed: sessionStorage key fes-chat-session → nextstep-chat-session, custom event open-fes-assistant → open-nextstep-assistant
+- Renamed folder: src/components/fes/ → src/components/nextstep/ and updated all 13 imports in page.tsx
+- LLM system prompt updated: counselor now identifies as NextStep International
+
+Stage Summary:
+- ZERO references to FES/fespak/old phone/old email remain (verified via case-insensitive grep)
+- Lint passes cleanly (0 errors)
+- Rendered HTML verified: title = "NextStep International | Study Abroad for Pakistani Students", footer/header show new name + phone +92 314 2638901 + email info@nextstepinternationals.com
+- WhatsApp link points to wa.me/923142638901

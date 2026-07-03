@@ -49,7 +49,7 @@
 
 :root {
   --radius: 0.75rem;
-  /* Brand navy (deep, trustworthy — used by FESPak family of sites) */
+  /* Brand navy (deep, trustworthy — professional education consultancy palette) */
   --brand: oklch(0.28 0.06 256);
   --brand-foreground: oklch(0.985 0 0);
   /* Gold/amber accent for aspiration & CTAs */

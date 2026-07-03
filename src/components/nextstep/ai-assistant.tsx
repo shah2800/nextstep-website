@@ -26,12 +26,12 @@ export function AiAssistant() {
 
   // Generate a session id once
   useEffect(() => {
-    const existing = sessionStorage.getItem("fes-chat-session");
+    const existing = sessionStorage.getItem("nextstep-chat-session");
     if (existing) {
       setSessionId(existing);
     } else {
       const id = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-      sessionStorage.setItem("fes-chat-session", id);
+      sessionStorage.setItem("nextstep-chat-session", id);
       setSessionId(id);
     }
   }, []);
@@ -39,8 +39,8 @@ export function AiAssistant() {
   // Allow external "open assistant" triggers (e.g. from the marketing section)
   useEffect(() => {
     const handler = () => setOpen(true);
-    window.addEventListener("open-fes-assistant", handler);
-    return () => window.removeEventListener("open-fes-assistant", handler);
+    window.addEventListener("open-nextstep-assistant", handler);
+    return () => window.removeEventListener("open-nextstep-assistant", handler);
   }, []);
 
   // Load history when opening for the first time
@@ -68,7 +68,7 @@ export function AiAssistant() {
               {
                 role: "assistant",
                 content:
-                  "Assalam-o-Alaikum! 👋 I'm the FES Assistant. I can help you shortlist study destinations, courses, and plan your application from Pakistan. What's your highest qualification and preferred course?",
+                  "Assalam-o-Alaikum! 👋 I'm the NextStep Assistant. I can help you shortlist study destinations, courses, and plan your application from Pakistan. What's your highest qualification and preferred course?",
               },
             ]);
           }
@@ -77,7 +77,7 @@ export function AiAssistant() {
             {
               role: "assistant",
               content:
-                "Hi! I'm the FES Assistant. Tell me your qualification, preferred course, and budget — I'll suggest suitable destinations.",
+                "Hi! I'm the NextStep Assistant. Tell me your qualification, preferred course, and budget — I'll suggest suitable destinations.",
             },
           ]);
         }
@@ -126,9 +126,9 @@ export function AiAssistant() {
   };
 
   const resetChat = () => {
-    sessionStorage.removeItem("fes-chat-session");
+    sessionStorage.removeItem("nextstep-chat-session");
     const id = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    sessionStorage.setItem("fes-chat-session", id);
+    sessionStorage.setItem("nextstep-chat-session", id);
     setSessionId(id);
     setMessages([
       {
@@ -197,7 +197,7 @@ export function AiAssistant() {
                 </span>
                 <div>
                   <div className="text-sm font-bold leading-tight">
-                    FES Assistant
+                    NextStep Assistant
                   </div>
                   <div className="flex items-center gap-1 text-[11px] text-white/80">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-400" />

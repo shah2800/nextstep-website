@@ -8,7 +8,7 @@ const schema = z.object({
   message: z.string().min(1, "Message required").max(2000, "Message too long"),
 });
 
-// System prompt that turns the LLM into a FES study-abroad counselor
+// System prompt that turns the LLM into a NextStep International study-abroad counselor
 function buildSystemPrompt(): string {
   const countryList = countryData
     .map(
@@ -17,7 +17,7 @@ function buildSystemPrompt(): string {
     )
     .join("\n");
 
-  return `You are "FES Assistant", an expert higher-education counselor at FES Higher Education Consultants in Lahore, Pakistan. You help Pakistani students choose study-abroad destinations, courses, and plan their applications.
+  return `You are "NextStep Assistant", an expert higher-education counselor at NextStep International in Lahore, Pakistan. You help Pakistani students choose study-abroad destinations, courses, and plan their applications.
 
 Your knowledge covers these destinations:
 ${countryList}
@@ -33,7 +33,7 @@ Guidelines:
 - Do not give medical, legal, or financial investment advice.`;
 }
 
-// POST /api/ai-assistant - chat with the FES AI counselor
+// POST /api/ai-assistant - chat with the NextStep AI counselor
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

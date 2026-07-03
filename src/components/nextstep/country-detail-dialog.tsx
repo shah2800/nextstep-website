@@ -202,7 +202,7 @@ export function CountryDetailDialog({
                       Ready to apply to {country.name}?
                     </p>
                     <p className="text-xs text-white/80">
-                      Get a free personalized roadmap from an FES counselor.
+                      Get a free personalized roadmap from a NextStep counselor.
                     </p>
                   </div>
                   <Button

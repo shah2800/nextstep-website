@@ -28,7 +28,7 @@ const explore = [
   "Study Destinations",
   "Our Branches",
   "Projects",
-  "FES Alumni",
+  "NextStep Alumni",
 ];
 
 const resources = [
@@ -62,10 +62,10 @@ export function Footer({
               </span>
               <span className="flex flex-col leading-none">
                 <span className="text-lg font-extrabold tracking-tight">
-                  FES
+                  NextStep
                 </span>
                 <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/70">
-                  Education Consultants
+                  International
                 </span>
               </span>
             </Link>
@@ -144,20 +144,20 @@ export function Footer({
               </li>
               <li>
                 <a
-                  href="tel:+923458454769"
+                  href="tel:+923142638901"
                   className="flex items-center gap-2 hover:text-gold"
                 >
                   <Phone className="h-4 w-4 shrink-0 text-gold" />
-                  +92 345 8454769
+                  +92 314 2638901
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@fespak.com"
+                  href="mailto:info@nextstepinternationals.com"
                   className="flex items-center gap-2 hover:text-gold"
                 >
                   <Mail className="h-4 w-4 shrink-0 text-gold" />
-                  info@fespak.com
+                  info@nextstepinternationals.com
                 </a>
               </li>
             </ul>
@@ -167,8 +167,8 @@ export function Footer({
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/70 sm:flex-row">
           <p>
-            Copyright © {new Date().getFullYear()} FES Higher Education
-            Consultants. All rights reserved.
+            Copyright © {new Date().getFullYear()} NextStep International.
+            All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-gold">
@@ -183,7 +183,7 @@ export function Footer({
 
       {/* WhatsApp floating (decorative, part of footer) */}
       <a
-        href="https://wa.me/923458454769"
+        href="https://wa.me/923142638901"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-5 left-5 z-40 hidden items-center gap-2 rounded-full bg-green-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-green-600 sm:flex"

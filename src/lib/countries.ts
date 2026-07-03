@@ -1,4 +1,4 @@
-// Country data for FES Higher Education Consultants
+// Country data for NextStep International
 // Full study destination guides for Pakistani students
 
 export type CountryData = {

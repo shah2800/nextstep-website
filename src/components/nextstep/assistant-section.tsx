@@ -11,7 +11,7 @@ export function AssistantSection({
 }) {
   const handleOpen = () => {
     if (onOpenAssistant) onOpenAssistant();
-    window.dispatchEvent(new CustomEvent("open-fes-assistant"));
+    window.dispatchEvent(new CustomEvent("open-nextstep-assistant"));
   };
   return (
     <section
@@ -34,7 +34,7 @@ export function AssistantSection({
             AI-Powered
           </span>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Meet your FES AI Assistant
+            Meet your NextStep AI Assistant
           </h2>
           <p className="mt-4 max-w-lg text-base text-white/85">
             Get instant, personalized destination recommendations based on your
@@ -78,7 +78,7 @@ export function AssistantSection({
             className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
           >
             <Bot className="mr-2 h-5 w-5" />
-            Chat with FES Assistant
+            Chat with NextStep Assistant
           </Button>
         </motion.div>
 
@@ -97,7 +97,7 @@ export function AssistantSection({
               </span>
               <div>
                 <div className="text-sm font-bold text-foreground">
-                  FES Assistant
+                  NextStep Assistant
                 </div>
                 <div className="text-[11px] text-muted-foreground">
                   AI counselor · online

@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FES Higher Education Consultants | Study Abroad for Pakistani Students",
+  title: "NextStep International | Study Abroad for Pakistani Students",
   description:
-    "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students. Get personalized guidance from FES counselors.",
+    "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students. Get personalized guidance from NextStep counselors.",
   keywords: [
     "study abroad",
     "Pakistani students",
@@ -28,22 +28,22 @@ export const metadata: Metadata = {
     "USA universities",
     "IELTS PTE",
     "scholarships",
-    "FES Pakistan",
+    "NextStep Pakistan",
   ],
-  authors: [{ name: "FES Higher Education Consultants" }],
+  authors: [{ name: "NextStep International" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "FES Higher Education Consultants | Study Abroad",
+    title: "NextStep International | Study Abroad",
     description:
       "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students.",
-    siteName: "FES Higher Education Consultants",
+    siteName: "NextStep International",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FES Higher Education Consultants | Study Abroad",
+    title: "NextStep International | Study Abroad",
     description:
       "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students.",
   },

@@ -61,7 +61,7 @@ export function GuidanceFormDialog({
       if (!res.ok) throw new Error(data.error ?? "Submission failed");
       setDone(true);
       toast.success("Guidance request received!", {
-        description: "An FES counselor will contact you within 24 hours.",
+        description: "A NextStep counselor will contact you within 24 hours.",
       });
     } catch (e) {
       toast.error("Could not submit", {
@@ -105,7 +105,7 @@ export function GuidanceFormDialog({
               Request received!
             </h3>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Thank you, {form.name || "student"}. An FES counselor will review
+              Thank you, {form.name || "student"}. A NextStep counselor will review
               your profile and reach out within 24 hours to schedule your free
               guidance session.
             </p>
@@ -120,7 +120,7 @@ export function GuidanceFormDialog({
                 Get My Options Reviewed
               </DialogTitle>
               <DialogDescription>
-                Share your profile and an FES counselor will identify realistic
+                Share your profile and a NextStep counselor will identify realistic
                 destinations and next steps — free of charge.
               </DialogDescription>
             </DialogHeader>

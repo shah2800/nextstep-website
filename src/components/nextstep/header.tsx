@@ -42,10 +42,10 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
           </span>
           <span className="flex flex-col leading-none">
             <span className="text-lg font-extrabold tracking-tight text-brand">
-              FES
+              NextStep
             </span>
             <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-              Education Consultants
+              International
             </span>
           </span>
         </Link>
@@ -66,11 +66,11 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
         {/* Right actions */}
         <div className="hidden items-center gap-2 md:flex">
           <a
-            href="tel:+923458454769"
+            href="tel:+923142638901"
             className="flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-brand"
           >
             <Phone className="h-4 w-4" />
-            +92 345 8454769
+            +92 314 2638901
           </a>
           <Button
             onClick={onBookSession}
@@ -105,10 +105,10 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
               </a>
             ))}
             <a
-              href="tel:+923458454769"
+              href="tel:+923142638901"
               className="flex items-center gap-1.5 rounded-md px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-secondary"
             >
-              <Phone className="h-4 w-4" /> +92 345 8454769
+              <Phone className="h-4 w-4" /> +92 314 2638901
             </a>
             <Button
               onClick={() => {
