@@ -1,0 +1,93 @@
+// Prisma schema for FES Higher Education Consultants
+// Full-stack study abroad consultancy platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  flagEmoji       String
+  tagline         String
+  shortDesc       String
+  longDesc        String
+  capital         String
+  currency        String
+  language        String
+  tuitionRange    String
+  livingCost      String
+  visaProcess     String
+  topUniversities String
+  popularCourses  String
+  intakeMonths    String
+  scholarships    String
+  workRights      String
+  gradient        String
+  accentColor     String
+  featured        Boolean  @default(false)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model GuidanceRequest {
+  id                String   @id @default(cuid())
+  name              String
+  email             String
+  phone             String
+  qualification     String
+  graduationYear    String
+  preferredCourse   String
+  budget            String
+  englishTest       String
+  preferredCountries String
+  message           String
+  status            String   @default("new")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([status])
+  @@index([email])
+}
+
+model BookingSession {
+  id            String   @id @default(cuid())
+  name          String
+  email         String
+  phone         String
+  preferredDate String
+  preferredTime String
+  mode          String
+  service       String
+  message       String
+  status        String   @default("pending")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
