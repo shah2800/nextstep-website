@@ -112,3 +112,30 @@ Stage Summary:
 - All added animations reverted; site back to normal static reveals only
 - Lint passes cleanly, HTTP 200
 - ICEF replacement text preserved (Direct University Partnerships, 15+ Years, Authorized Representatives)
+
+---
+Task ID: 11
+Agent: Main (orchestrator)
+Task: Build 3 unique AI-powered features (Document Analyzer, SOP Reviewer, Cost Calculator)
+
+Work Log:
+- Created cost-data.ts with monthly cost breakdowns (rent/food/transport/utilities/health/leisure) for 30+ cities across all 16 destinations + lifestyle multipliers (frugal/balanced/comfortable)
+- Built /api/analyze-document route: receives base64 image, uses VLM (createVision) to extract qualification/major/GPA/subjects/institution, returns structured profile + heuristic-matched destinations (UK/Germany/Canada/Hungary/Malaysia/Australia based on profile)
+- Built /api/review-sop route: receives SOP text + optional country/course, uses LLM to return JSON with overall score (0-100), 5 category scores (structure/clarity/motivation/fit/language), verdict, strengths, weaknesses, line-by-line suggestions (quote+issue+fix), quick tips, red flags
+- Built cost-calculator.tsx: city + lifestyle selectors, Recharts donut chart with category breakdown, monthly + annual totals, color-coded category list with icons
+- Built document-analyzer.tsx: drag-drop image upload, preview, AI analysis with loading states, extracted profile display (qualification/major/GPA/subjects), confidence badge, matched destinations list with reasons
+- Built sop-reviewer.tsx: country/course selectors + SOP textarea, AI review display with overall score hero card, 5 category score tiles, strengths/weaknesses lists, quoted line-by-line suggestions, red flags, quick tips
+- Built ai-tools.tsx: tabbed section (3 tabs) wrapping all 3 features with shared header "AI-powered tools to fast-track your application"
+- Added "AI Tools" nav link to header, wired AiTools section into page.tsx (between Services and CounselingCta)
+
+Verification:
+- Lint passes cleanly (0 errors)
+- Document Analyzer API: tested with sample transcript image → correctly extracted "Bachelor of Science", GPA "3.6/4.0", summary, matched 5 destinations ✓
+- SOP Reviewer API: tested with weak sample SOP → scored 25/100 "Weak", 4 line-by-line suggestions, 5 quick tips ✓
+- Cost Calculator: Recharts donut chart renders ✓
+- UI: all 3 tabs present, nav link present, file upload + SOP textarea + chart all render, no console errors ✓
+
+Stage Summary:
+- 3 unique AI-powered features built and verified end-to-end
+- NextStep International now has Document Analyzer (VLM), SOP Reviewer (LLM), and Cost Calculator (Recharts) — most tech-forward education consultancy features
+- All accessible via "AI Tools" tabbed section + header nav link

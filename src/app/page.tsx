@@ -7,6 +7,7 @@ import { Stats } from "@/components/nextstep/stats";
 import { Countries } from "@/components/nextstep/countries";
 import { CompareFactors } from "@/components/nextstep/compare-factors";
 import { Services } from "@/components/nextstep/services";
+import { AiTools } from "@/components/nextstep/ai-tools";
 import { CounselingCta } from "@/components/nextstep/counseling-cta";
 import { AssistantSection } from "@/components/nextstep/assistant-section";
 import { Newsletter } from "@/components/nextstep/newsletter";
@@ -32,6 +33,7 @@ export default function Home() {
         <Countries />
         <CompareFactors />
         <Services />
+        <AiTools />
         <CounselingCta
           onGetGuidance={() => setGuidanceOpen(true)}
           onBookSession={() => setBookingOpen(true)}
