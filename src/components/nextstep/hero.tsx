@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, Sparkles, Globe2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCountryParam } from "@/hooks/use-country-param";
+import { countries } from "@/lib/countries";
 
 export function Hero({
   onGetGuidance,
@@ -12,6 +14,11 @@ export function Hero({
   onGetGuidance: () => void;
   onBookSession: () => void;
 }) {
+  const countrySlug = useCountryParam();
+  const morphCountry = countrySlug
+    ? countries.find((c) => c.slug === countrySlug)
+    : null;
+
   return (
     <section className="relative overflow-hidden [contain:paint] hero-mesh text-white">
       <div className="absolute inset-0 dot-grid opacity-40" />
@@ -28,21 +35,35 @@ export function Hero({
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-gold" />
-            Trusted by 12,000+ Pakistani students
+            {morphCountry
+              ? `${morphCountry.flagEmoji} Specialized in ${morphCountry.name}`
+              : "Trusted by 12,000+ Pakistani students"}
           </span>
 
           <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-            Study destinations{" "}
-            <span className="bg-gradient-to-r from-gold to-amber-200 bg-clip-text text-transparent">
-              matched to your goals
-            </span>{" "}
-            and budget
+            {morphCountry ? (
+              <>
+                Study in{" "}
+                <span className="bg-gradient-to-r from-gold to-amber-200 bg-clip-text text-transparent">
+                  {morphCountry.name}
+                </span>{" "}
+                {morphCountry.flagEmoji}
+              </>
+            ) : (
+              <>
+                Study destinations{" "}
+                <span className="bg-gradient-to-r from-gold to-amber-200 bg-clip-text text-transparent">
+                  matched to your goals
+                </span>{" "}
+                and budget
+              </>
+            )}
           </h1>
 
           <p className="mt-5 max-w-xl text-base text-white/85 sm:text-lg">
-            Compare country guides covering universities, admissions, tuition,
-            living costs, scholarships, and visa considerations for students
-            applying from Pakistan — all in one place.
+            {morphCountry
+              ? `${morphCountry.shortDesc} Tuition from ${morphCountry.tuitionRange.split(" – ")[0]}. ${morphCountry.workRights.split(";")[0]}.`
+              : "Compare country guides covering universities, admissions, tuition, living costs, scholarships, and visa considerations for students applying from Pakistan — all in one place."}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">

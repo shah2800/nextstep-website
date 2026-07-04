@@ -282,3 +282,33 @@ Stage Summary:
   - Edit all 6 services (icon, title, description, reorder)
   - Edit all 3 compare factors (icon, title, description, points)
   - View full analytics (visitors, clicks, section time, 7-day chart, top elements/sections)
+
+---
+Task ID: 5
+Agent: Main (orchestrator)
+Task: Build 3 standout features — Instant Profile Screener, Zero-Drop-Off WhatsApp Agent, Morphing Landing Pages
+
+Work Log:
+- Built /api/profile-screener: algorithm that cross-references student's qualification + IELTS + budget + preferred course against all 16 countries. Computes 0-99 match score with weighted factors (budget 40%, IELTS 30%, qualification 20%, course 10%) + special bonuses (Germany tuition-free, Hungary scholarship, Malaysia affordable). Returns reasons + warnings per country.
+- Fixed currency parser to handle A$/C$/NZ$/S$/€/£/RM/AED/₺ with FX conversion to USD
+- Built profile-screener.tsx: IELTS slider, budget slider, qualification select, course input → instant match scores with color-coded bars (green/amber/orange/red), top match badge, reasons (green checks), warnings (amber alerts)
+- Built Zero-Drop-Off WhatsApp trigger: modified guidance form success screen to show "Continue on WhatsApp" button that opens wa.me with personalized pre-filled message containing the student's full profile (name, qualification, graduation year, course, budget, English test, preferred countries)
+- Built useCountryParam hook + MorphingBanner component: reads ?country= param, shows gradient banner with country flag/tagline/tuition/work rights
+- Morphed Hero: hero h1 + badge + subtitle dynamically rewrite to highlight the morphing country (e.g. "Study in Australia 🇦🇺")
+- Morphed Countries grid: matching country card gets gold ring + border highlight
+- Added Profile Screener as default tab in AI Tools (4 tabs now: Screener, Analyzer, SOP, Cost)
+- Wired MorphingBanner into page.tsx above the header
+
+Verification (all passed):
+- Lint: clean (0 errors)
+- Profile Screener API: $8k budget correctly matches Germany (€0 tuition, "covers") + Malaysia (RM 15k = $3.1k, "covers"), warns Canada "tight"; $30k budget correctly covers UK/Australia/US
+- Morphing page (?country=australia): h1 = "Study in Australia 🇦🇺", banner = "Specialized in Australia", Australia card has gold ring + border ✓
+- AI Tools: 4 tabs present, Profile Screener has 2 sliders + budget label ✓
+- WhatsApp trigger: wa.me link present on guidance form success screen ✓
+- No console errors
+
+Stage Summary:
+- 3 standout features built and verified end-to-end:
+  1. Instant Profile Screener — instant match scores, no waiting for counselor
+  2. Zero-Drop-Off WhatsApp — form submission opens WhatsApp with personalized profile pre-filled
+  3. Morphing Landing Pages — ?country= param rewrites hero + banner + highlights matching country card

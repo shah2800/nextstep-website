@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CountryDetailDialog } from "./country-detail-dialog";
+import { useCountryParam } from "@/hooks/use-country-param";
 import type { CountryData } from "@/lib/countries";
 
 type CountryRow = CountryData & { id: string };
 
 export function Countries() {
+  const morphSlug = useCountryParam();
   const [countries, setCountries] = useState<CountryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -134,7 +136,11 @@ export function Countries() {
                   onClick={() => setActive(c)}
                   data-track="country-card"
                   data-label={c.name}
-                  className="group relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                  className={`group relative overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl ${
+                    morphSlug && c.slug === morphSlug
+                      ? "border-gold ring-2 ring-gold/50 ring-offset-2"
+                      : "border-border"
+                  }`}
                 >
                   {/* Header banner */}
                   <div

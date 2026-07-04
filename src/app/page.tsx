@@ -16,6 +16,7 @@ import { GuidanceFormDialog } from "@/components/nextstep/guidance-form-dialog";
 import { BookSessionDialog } from "@/components/nextstep/book-session-dialog";
 import { AiAssistant } from "@/components/nextstep/ai-assistant";
 import { AdminDashboard } from "@/components/nextstep/admin-dashboard";
+import { MorphingBanner } from "@/components/nextstep/morphing-banner";
 import { useAnalytics } from "@/hooks/use-analytics";
 
 export default function Home() {
@@ -53,6 +54,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen w-full max-w-[100vw] flex-col overflow-x-clip bg-background">
+      <MorphingBanner />
       <Header onBookSession={() => setBookingOpen(true)} />
 
       <main className="flex-1">

@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { FileScan, PenLine, Calculator, Sparkles } from "lucide-react";
+import { FileScan, PenLine, Calculator, Sparkles, Target } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentAnalyzer } from "./document-analyzer";
 import { SopReviewer } from "./sop-reviewer";
 import { CostCalculator } from "./cost-calculator";
+import { ProfileScreener } from "./profile-screener";
 
 export function AiTools() {
-  const [tab, setTab] = useState("analyzer");
+  const [tab, setTab] = useState("screener");
 
   return (
     <section id="ai-tools" className="scroll-mt-20 bg-secondary/40 py-16 sm:py-20">
@@ -23,16 +24,20 @@ export function AiTools() {
             AI-powered tools to fast-track your application
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-            Upload your transcript for instant university matches, get your
-            Statement of Purpose reviewed by AI, and budget your study abroad
-            journey — all in one place.
+            Get instant match scores, upload your transcript for university
+            matches, review your SOP with AI, and budget your journey — all in
+            one place.
           </p>
         </div>
 
         {/* Tabs */}
         <div className="mx-auto mt-10 max-w-5xl">
           <Tabs value={tab} onValueChange={setTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+              <TabsTrigger value="screener" className="gap-1.5 text-xs sm:text-sm">
+                <Target className="h-4 w-4" />
+                <span className="hidden sm:inline">Profile </span>Screener
+              </TabsTrigger>
               <TabsTrigger value="analyzer" className="gap-1.5 text-xs sm:text-sm">
                 <FileScan className="h-4 w-4" />
                 <span className="hidden sm:inline">Document </span>Analyzer
@@ -47,6 +52,9 @@ export function AiTools() {
               </TabsTrigger>
             </TabsList>
 
+            <TabsContent value="screener" className="mt-6">
+              <ProfileScreener />
+            </TabsContent>
             <TabsContent value="analyzer" className="mt-6">
               <DocumentAnalyzer />
             </TabsContent>

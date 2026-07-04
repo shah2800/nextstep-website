@@ -20,8 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Send, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { defaultContent } from "@/lib/content";
 
 export function GuidanceFormDialog({
   open,
@@ -93,7 +94,7 @@ export function GuidanceFormDialog({
     <Dialog open={open} onOpenChange={(v) => !v && reset()}>
       <DialogContent className="max-h-[92vh] overflow-y-auto custom-scroll sm:max-w-2xl">
         {done ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="flex flex-col items-center justify-center py-8 text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -105,13 +106,47 @@ export function GuidanceFormDialog({
               Request received!
             </h3>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Thank you, {form.name || "student"}. A NextStep counselor will review
-              your profile and reach out within 24 hours to schedule your free
-              guidance session.
+              Thank you, {form.name || "student"}. Don&apos;t wait 24 hours —
+              continue the conversation on WhatsApp now and get instant answers
+              about your destination options.
             </p>
-            <Button onClick={reset} className="mt-6 bg-brand text-white hover:bg-brand/90">
+
+            {/* WhatsApp continue button — personalized message */}
+            <a
+              href={`https://wa.me/${defaultContent.footerWhatsapp}?text=${encodeURIComponent(
+                [
+                  `Hello NextStep! 👋`,
+                  ``,
+                  `I just submitted a guidance request. Here's my profile:`,
+                  ``,
+                  `• Name: ${form.name || "—"}`,
+                  `• Qualification: ${form.qualification}`,
+                  `• Graduation Year: ${form.graduationYear}`,
+                  `• Preferred Course: ${form.preferredCourse || "—"}`,
+                  `• Budget: ${form.budget}`,
+                  `• English Test: ${form.englishTest}`,
+                  form.preferredCountries ? `• Interested in: ${form.preferredCountries}` : "",
+                  ``,
+                  `Can you help me identify realistic destinations and next steps?`,
+                ].filter(Boolean).join("\n")
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-green-600 sm:w-auto"
+            >
+              <MessageCircle className="h-5 w-5" />
+              Continue on WhatsApp
+            </a>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Opens WhatsApp with your profile pre-filled — zero waiting.
+            </p>
+
+            <button
+              onClick={reset}
+              className="mt-4 text-xs text-muted-foreground underline hover:text-foreground"
+            >
               Close
-            </Button>
+            </button>
           </div>
         ) : (
           <>
