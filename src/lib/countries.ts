@@ -532,10 +532,58 @@ export const services = [
 ];
 
 export const stats = [
-  { label: "Students Placed", value: "12,000+", icon: "Users" },
-  { label: "Partner Universities", value: "850+", icon: "Building2" },
-  { label: "Study Destinations", value: "16", icon: "Globe2" },
-  { label: "Visa Success Rate", value: "96%", icon: "BadgeCheck" },
+  { label: "Students Placed", value: "12,000+", target: 12000, suffix: "+", icon: "Users" },
+  { label: "Partner Universities", value: "850+", target: 850, suffix: "+", icon: "Building2" },
+  { label: "Study Destinations", value: "16", target: 16, suffix: "", icon: "Globe2" },
+  { label: "Visa Success Rate", value: "96%", target: 96, suffix: "%", icon: "BadgeCheck" },
+];
+
+export const testimonials = [
+  {
+    name: "Ayesha Khan",
+    course: "MSc Data Science · University of Edinburgh",
+    country: "🇬🇧 United Kingdom",
+    quote:
+      "NextStep made my UK dream effortless. From shortlisting universities to my visa interview, every step was handled with care. I got into Edinburgh with a partial scholarship!",
+    initials: "AK",
+    color: "from-[#012169] to-[#1e3a8a]",
+  },
+  {
+    name: "Bilal Ahmed",
+    course: "Bachelor of Engineering · TU Munich",
+    country: "🇩🇪 Germany",
+    quote:
+      "The APS and blocked account process felt overwhelming until the team walked me through it. Tuition-free education in Germany is real — and I'm living it now.",
+    initials: "BA",
+    color: "from-[#1a1a1a] to-[#ff0000]",
+  },
+  {
+    name: "Hira Malik",
+    course: "Master of IT · University of Melbourne",
+    country: "🇦🇺 Australia",
+    quote:
+      "They matched my profile and budget perfectly. The Genuine Student statement guidance was spot-on and my visa was approved in 3 weeks. Forever grateful!",
+    initials: "HM",
+    color: "from-[#00008b] to-[#ff0000]",
+  },
+  {
+    name: "Usman Tariq",
+    course: "MBA · Wilfrid Laurier University",
+    country: "🇨🇦 Canada",
+    quote:
+      "From GIC setup to the study permit interview, NextStep was there at every step. The post-study work guidance helped me land a job in Toronto within months.",
+    initials: "UT",
+    color: "from-[#ff0000] to-[#d52b1e]",
+  },
+  {
+    name: "Fatima Noor",
+    course: "Medicine (MD) · University of Szeged",
+    country: "🇭🇺 Hungary",
+    quote:
+      "Won the Stipendium Hungaricum through their scholarship guidance. Full tuition covered, monthly stipend, and a degree recognized across the EU. Life-changing!",
+    initials: "FN",
+    color: "from-[#cd2a3e] to-[#436484]",
+  },
 ];
 
 export const compareFactors = [

@@ -68,11 +68,11 @@ export function Hero({
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/80">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-gold" />
-              ICEF Accredited (Agency ID 2750)
+              Direct University Partnerships · 850+ Institutions
             </span>
             <span className="inline-flex items-center gap-2">
               <Globe2 className="h-4 w-4 text-gold" />
-              16 destinations worldwide
+              15+ Years of Trusted Guidance
             </span>
           </div>
         </motion.div>
@@ -103,10 +103,15 @@ export function Hero({
             transition={{ delay: 0.5, duration: 0.5 }}
             className="absolute -left-3 bottom-6 rounded-2xl border border-white/20 bg-white/95 p-3 shadow-xl backdrop-blur sm:-left-6"
           >
-            <div className="text-2xl font-extrabold text-brand">96%</div>
-            <div className="text-[11px] font-medium text-muted-foreground">
-              Visa success rate
-            </div>
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="text-2xl font-extrabold text-brand">96%</div>
+              <div className="text-[11px] font-medium text-muted-foreground">
+                Visa success rate
+              </div>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -115,10 +120,15 @@ export function Hero({
             transition={{ delay: 0.65, duration: 0.5 }}
             className="absolute -right-2 top-6 rounded-2xl border border-white/20 bg-white/95 p-3 shadow-xl backdrop-blur sm:-right-4"
           >
-            <div className="text-2xl font-extrabold text-brand">850+</div>
-            <div className="text-[11px] font-medium text-muted-foreground">
-              Partner universities
-            </div>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="text-2xl font-extrabold text-brand">850+</div>
+              <div className="text-[11px] font-medium text-muted-foreground">
+                Partner universities
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>

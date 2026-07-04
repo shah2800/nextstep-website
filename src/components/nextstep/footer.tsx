@@ -78,7 +78,7 @@ export function Footer({
             {/* Accreditation */}
             <div className="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs text-white/85">
               <Award className="h-4 w-4 text-gold" />
-              ICEF Accredited · Agency ID 2750
+              Authorized Representatives · Direct University Tie-ups
             </div>
 
             {/* Socials */}
