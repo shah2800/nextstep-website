@@ -147,7 +147,11 @@ export function AiAssistant() {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, type: "spring", stiffness: 200, damping: 15 }}
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-2xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        className="fixed right-4 bottom-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-2xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        style={{
+          right: "max(1rem, env(safe-area-inset-right))",
+          bottom: "max(1rem, env(safe-area-inset-bottom))",
+        }}
         aria-label="Open AI Assistant"
       >
         <AnimatePresence mode="wait">
@@ -187,7 +191,7 @@ export function AiAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed bottom-24 right-4 z-50 flex h-[560px] max-h-[calc(100vh-7rem)] w-[calc(100vw-2rem)] max-w-md flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl sm:right-6"
+            className="fixed bottom-24 left-1/2 z-50 flex h-[75vh] max-h-[600px] w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl sm:left-auto sm:right-6 sm:translate-x-0"
           >
             {/* Header */}
             <div className="flex items-center justify-between bg-brand px-4 py-3 text-white">
