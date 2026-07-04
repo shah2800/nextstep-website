@@ -132,6 +132,8 @@ export function Countries() {
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
                   onClick={() => setActive(c)}
+                  data-track="country-card"
+                  data-label={c.name}
                   className="group relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
                   {/* Header banner */}

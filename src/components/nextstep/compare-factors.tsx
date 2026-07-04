@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   GraduationCap,
@@ -8,7 +9,7 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from "lucide-react";
-import { compareFactors } from "@/lib/countries";
+import { defaultContent } from "@/lib/content";
 
 const iconMap: Record<string, LucideIcon> = {
   GraduationCap,
@@ -16,7 +17,27 @@ const iconMap: Record<string, LucideIcon> = {
   FileCheck,
 };
 
+type Factor = {
+  icon: string;
+  title: string;
+  description: string;
+  points: string[];
+};
+
 export function CompareFactors() {
+  const [factors, setFactors] = useState<Factor[]>(
+    defaultContent.compareFactors
+  );
+
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.content?.compareFactors) setFactors(d.content.compareFactors);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section id="compare" className="scroll-mt-20 bg-secondary/40 py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -35,7 +56,7 @@ export function CompareFactors() {
         </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {compareFactors.map((f, i) => {
+          {factors.map((f, i) => {
             const Icon = iconMap[f.icon] ?? FileCheck;
             return (
               <motion.div

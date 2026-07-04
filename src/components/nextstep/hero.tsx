@@ -49,6 +49,8 @@ export function Hero({
             <Button
               onClick={onGetGuidance}
               size="lg"
+              data-track="cta"
+              data-label="Get My Options Reviewed"
               className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
             >
               Get My Options Reviewed
@@ -58,6 +60,8 @@ export function Hero({
               onClick={onBookSession}
               size="lg"
               variant="outline"
+              data-track="cta"
+              data-label="Book a Session"
               className="border-white/40 bg-white/5 text-white hover:bg-white/10 hover:text-white"
             >
               Book a Session

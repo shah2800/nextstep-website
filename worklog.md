@@ -139,3 +139,71 @@ Stage Summary:
 - 3 unique AI-powered features built and verified end-to-end
 - NextStep International now has Document Analyzer (VLM), SOP Reviewer (LLM), and Cost Calculator (Recharts) — most tech-forward education consultancy features
 - All accessible via "AI Tools" tabbed section + header nav link
+
+---
+Task ID: 6
+Agent: full-stack-developer
+Task: Build admin dashboard UI
+
+Work Log:
+- Read worklog + project context: NextStep International study-abroad site (Next.js 16, shadcn/ui, Prisma, navy `bg-brand` + gold `text-gold` theme). Confirmed admin API routes already exist (/api/admin/analytics, /countries, /content) and match the requested contracts.
+- Inspected existing UI primitives (tabs, table, dialog, select, checkbox, skeleton, sonner) and confirmed `bg-brand`, `text-gold`, `custom-scroll` helpers exist in globals.css. Verified sonner `<Toaster/>` is mounted in layout.tsx.
+- Wrote single client component at src/components/nextstep/admin-dashboard.tsx (~1100 lines) with signature `export function AdminDashboard({ onClose }: { onClose: () => void })`.
+  - Access gate: full-screen navy hero-mesh login card with password input, demo hint showing `nextstep-admin`, 300ms verify delay, error state on wrong password. Auth stored in component state only.
+  - Dashboard shell: sticky `bg-brand text-white` header with "NextStep Admin" + "Back to Site" button (calls onClose). Body is `max-w-7xl mx-auto px-4 py-6` with shadcn `Tabs`. TabsList uses `grid grid-cols-5` and scrolls horizontally on mobile (`overflow-x-auto` wrapper, min-w-[640px]).
+  - Tab 1 Analytics: fetches GET /api/admin/analytics. Renders 8 stat cards (Total Visitors, Visitors Today, Total Clicks, Clicks Today, Avg Session Duration via formatDuration, Guidance Requests, Bookings, Newsletter Subs) in a 2/4-col grid with rounded-2xl border p-5 and `text-3xl font-extrabold text-brand` numbers. Recharts `BarChart` of `dailyVisitors` (last 7 days) with navy bars, gold-on-hover gold custom scroll. Top Clicked Elements as horizontal gold progress bars with type badges + counts. Top Sections list with views/avg/total durations. Recent Activity list with relative-time + type badges, max-h-80 custom-scroll. Skeleton loaders + Refresh button.
+  - Tab 2 Countries: GET /api/admin/countries → scrollable table (max-h-[60vh] overflow-y-auto custom-scroll, sticky header). Columns: flag, name/slug, tagline, featured star, order, Edit/Delete actions. "Add Country" + Edit both open a max-w-3xl Dialog with ALL 19 fields (slug, name, flagEmoji, tagline, shortDesc, longDesc, capital, currency, language, tuitionRange, livingCost, visaProcess, topUniversities, popularCourses, intakeMonths, scholarships, workRights, gradient dropdown with 6 presets + live gradient swatches, accentColor with color swatch preview, featured checkbox, order number). Create→POST, Update→PUT (with id), Delete→DELETE?id=. Confirmation dialog before delete. Sonner toast on every success/error. Refresh list after each mutation.
+  - Tab 3 Content: GET /api/admin/content. 8 hero fields (heroBadge, heroTitle/heroSubtitle as textareas, heroPrimaryCta, heroSecondaryCta, heroTrust1, heroTrust2, heroImage with thumbnail preview). Each field card has its own Save button → PUT /api/admin/content with `{key, value}`. Sonner toast on save.
+  - Tab 4 Services: editable cards with icon Select (6 options: Compass/FileCheck/Plane/GraduationCap/Wallet/Home, each rendered with its Lucide icon in dropdown), title Input, description Textarea. Add/Remove/Move-up/Move-down per card. "Save Services" button → PUT with `{key: "services", value: [...]}`.
+  - Tab 5 Compare Factors: editable cards with icon Select, title Input, description Textarea, points Textarea (one point per line, joined/split on newline). Add/Remove/Reorder. "Save Compare Factors" button → PUT with `{key: "compareFactors", value: [...]}`.
+  - Helpers: `formatDuration(ms)` → "Xs" or "Xm Ys"; `formatRelativeTime(iso)` → "Ns/Nm/Nh/Nd ago" or locale date. `useSiteContent` hook shared by Content/Services/Compare tabs. `Field` + `SectionCard` + `EmptyState` + `Spinner` presentational helpers.
+  - Locks body scroll while mounted (restores on unmount). All loading states use Skeletons or spinners. Fully responsive (grids stack on mobile, tabs scroll, stat cards 2-col → 4-col).
+- Lint: `bun run lint` → 0 errors (1 pre-existing warning in unrelated `src/hooks/use-analytics.ts` which I was instructed not to touch). Removed an unused eslint-disable directive to keep my file warning-free.
+
+Stage Summary:
+- Production-quality admin dashboard component delivered as a single client component (no new routes/pages/other files touched).
+- Full-screen `fixed inset-0 z-[100]` overlay with sticky navy header, password gate (`nextstep-admin`), 5-tab interface wired to existing admin API routes.
+- Analytics tab: stat grid + Recharts 7-day visitors bar chart + top clicks (gold progress bars) + top sections + recent activity, all with skeleton loaders and refresh.
+- Countries tab: full CRUD with all 19 fields, gradient/accent pickers, featured checkbox, delete confirmation, scrollable table.
+- Content/Services/Compare tabs: live editors with per-field/per-section saves, sonner toasts, reorderable cards.
+- Visually polished: navy/gold theme tokens, rounded-2xl cards, uppercase micro-labels, hover states, sticky dialog scroll, custom scrollbars, responsive across mobile/desktop.
+- Verified clean lint; dev server logs show no compile errors.
+
+---
+Task ID: 7-8
+Agent: Main (orchestrator) + full-stack-developer subagent
+Task: Build complete admin dashboard (analytics + content management)
+
+Work Log:
+- Prisma schema: added Visit, ClickEvent, SectionView, SiteContent models + db:push
+- Built /api/track route: handles visit (upsert + pageViews increment), click, section (duration) events
+- Built useAnalytics client hook: records visits on load, clicks on [data-track] elements, section view durations via IntersectionObserver, flushes on beforeunload
+- Added data-track attributes to hero CTAs and country cards
+- Built content layer (src/lib/content.ts): defaultContent object + loadContent() that merges DB overrides
+- Built /api/content (public GET), /api/admin/content (GET/PUT/POST reset), /api/admin/countries (GET/POST/PUT/DELETE CRUD)
+- Built /api/admin/analytics: aggregated stats (visitors, clicks, section views, avg duration), top clicks, top sections, daily visitors (7-day), recent activity, lead counts — computed in JS to avoid groupBy edge cases
+- Updated public components (Stats, Services, CompareFactors) to fetch content from /api/content (CMS-driven with defaults fallback)
+- Subagent built admin-dashboard.tsx (~1100 lines): full-screen overlay, password gate (nextstep-admin), 5 tabs
+  - Analytics: 8 stat cards + Recharts bar chart (7-day visitors) + top clicks/sections + recent activity
+  - Countries: CRUD table with Add/Edit dialog (all 19 fields) + delete confirmation
+  - Content: 8 hero fields with individual save buttons
+  - Services: editable cards with icon select, add/remove/reorder, bulk save
+  - Compare Factors: editable cards with points textarea, bulk save
+- Wired admin access via ?admin=true in page.tsx (renders AdminDashboard overlay), added "Admin" link in footer
+- Added useAnalytics() hook to page.tsx for public-site tracking
+
+Verification (all passed):
+- Lint: clean (0 errors)
+- Track API: visit/click/section events all return {success:true}
+- Analytics API: returns visitors(1), clicks(1), sectionViews(1), topClicks, dailyVisitors(7)
+- Content API: returns defaults (heroTitle, 6 services, 3 compareFactors)
+- Admin content PUT: updated heroBadge successfully
+- Admin countries: 16 countries listed
+- Admin dashboard UI (Agent Browser): login gate works, password accepted, 5 tabs render, Analytics stats show, Countries table loads, no console errors
+
+Stage Summary:
+- Complete admin dashboard built and verified end-to-end
+- Analytics: tracks visitors, clicks, section view durations with 7-day chart + top elements/sections
+- Content management: edit hero text, stats, services, compare factors live from dashboard
+- Country CRUD: add/edit/delete countries with full 19-field form — changes reflect on public site immediately
+- Access: footer "Admin" link or ?admin=true → password "nextstep-admin"

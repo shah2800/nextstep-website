@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Compass,
@@ -10,7 +11,7 @@ import {
   Home,
   type LucideIcon,
 } from "lucide-react";
-import { services } from "@/lib/countries";
+import { defaultContent } from "@/lib/content";
 
 const iconMap: Record<string, LucideIcon> = {
   Compass,
@@ -21,7 +22,24 @@ const iconMap: Record<string, LucideIcon> = {
   Home,
 };
 
+type Service = {
+  icon: string;
+  title: string;
+  description: string;
+};
+
 export function Services() {
+  const [services, setServices] = useState<Service[]>(defaultContent.services);
+
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.content?.services) setServices(d.content.services);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section id="services" className="scroll-mt-20 py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

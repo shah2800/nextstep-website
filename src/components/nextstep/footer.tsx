@@ -177,6 +177,9 @@ export function Footer({
             <a href="#" className="hover:text-gold">
               Terms of Service
             </a>
+            <a href="?admin=true" className="hover:text-gold">
+              Admin
+            </a>
           </div>
         </div>
       </div>

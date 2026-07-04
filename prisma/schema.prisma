@@ -91,3 +91,47 @@ model ChatMessage {
 
   @@index([sessionId])
 }
+
+// ---- Analytics ----
+model Visit {
+  id         String   @id @default(cuid())
+  sessionId  String   @unique
+  firstSeen  DateTime @default(now())
+  lastSeen   DateTime @default(now())
+  pageViews  Int      @default(1)
+  referrer   String   @default("")
+  userAgent  String   @default("")
+  createdAt  DateTime @default(now())
+
+  @@index([lastSeen])
+}
+
+model ClickEvent {
+  id           String   @id @default(cuid())
+  sessionId    String
+  elementType  String
+  elementLabel String
+  section      String
+  createdAt    DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model SectionView {
+  id         String   @id @default(cuid())
+  sessionId  String
+  sectionId  String
+  enteredAt  DateTime @default(now())
+  durationMs Int      @default(0)
+
+  @@index([sessionId])
+  @@index([sectionId])
+}
+
+// ---- Editable site content (CMS) ----
+model SiteContent {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
