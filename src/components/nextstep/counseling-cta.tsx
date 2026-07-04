@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { defaultContent } from "@/lib/content";
 
 export function CounselingCta({
   onGetGuidance,
@@ -12,6 +14,15 @@ export function CounselingCta({
   onGetGuidance: () => void;
   onBookSession: () => void;
 }) {
+  const [c, setC] = useState(defaultContent);
+
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => d.content && setC(d.content))
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -25,7 +36,7 @@ export function CounselingCta({
             className="relative h-64 lg:h-full"
           >
             <Image
-              src="/images/counseling.png"
+              src={c.counselingImage}
               alt="NextStep counselor advising a student"
               fill
               className="object-cover"
@@ -42,15 +53,13 @@ export function CounselingCta({
             className="p-7 sm:p-10"
           >
             <span className="inline-block rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-foreground">
-              Free initial guidance
+              {c.counselingBadge}
             </span>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Unsure which destination fits your profile?
+              {c.counselingTitle}
             </h2>
             <p className="mt-4 text-base text-muted-foreground">
-              Share your qualification, graduation year, preferred course,
-              budget, and English test status. A NextStep counselor will help you
-              identify realistic countries and next steps — at no cost.
+              {c.counselingSubtitle}
             </p>
 
             <div className="mt-6 space-y-3">
@@ -58,17 +67,16 @@ export function CounselingCta({
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
                   <MapPin className="h-4 w-4" />
                 </span>
-                Office #31/2, Upper Ground, Mall of Lahore, 172 Tufail Road,
-                Cantt Lahore
+                {c.footerAddress}
               </div>
               <a
-                href="tel:+923142638901"
+                href={`tel:${c.footerPhone.replace(/\s/g, "")}`}
                 className="flex items-center gap-3 text-sm font-medium text-foreground hover:text-brand"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
                   <Phone className="h-4 w-4" />
                 </span>
-                +92 314 2638901
+                {c.footerPhone}
               </a>
             </div>
 
@@ -78,15 +86,11 @@ export function CounselingCta({
                 size="lg"
                 className="bg-brand text-white hover:bg-brand/90"
               >
-                Request Destination Guidance
+                {c.counselingCta1}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button
-                onClick={onBookSession}
-                size="lg"
-                variant="outline"
-              >
-                Book a Session
+              <Button onClick={onBookSession} size="lg" variant="outline">
+                {c.counselingCta2}
               </Button>
             </div>
           </motion.div>

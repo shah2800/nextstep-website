@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   GraduationCap,
@@ -12,6 +13,7 @@ import {
   Youtube,
   Award,
 } from "lucide-react";
+import { defaultContent } from "@/lib/content";
 
 const popular = [
   "United Kingdom",
@@ -47,6 +49,13 @@ export function Footer({
   onGetGuidance: () => void;
   onBookSession: () => void;
 }) {
+  const [c, setC] = useState(defaultContent);
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => d.content && setC(d.content))
+      .catch(() => {});
+  }, []);
   return (
     <footer
       id="contact"
@@ -137,27 +146,24 @@ export function Footer({
             <ul className="mt-3 space-y-2.5 text-sm text-white/80">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>
-                  Office #31/2, Upper Ground, Mall of Lahore, 172 Tufail Road,
-                  Cantt Lahore
-                </span>
+                <span>{c.footerAddress}</span>
               </li>
               <li>
                 <a
-                  href="tel:+923142638901"
+                  href={`tel:${c.footerPhone.replace(/\s/g, "")}`}
                   className="flex items-center gap-2 hover:text-gold"
                 >
                   <Phone className="h-4 w-4 shrink-0 text-gold" />
-                  +92 314 2638901
+                  {c.footerPhone}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@nextstepinternationals.com"
+                  href={`mailto:${c.footerEmail}`}
                   className="flex items-center gap-2 hover:text-gold"
                 >
                   <Mail className="h-4 w-4 shrink-0 text-gold" />
-                  info@nextstepinternationals.com
+                  {c.footerEmail}
                 </a>
               </li>
             </ul>
@@ -167,7 +173,7 @@ export function Footer({
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/70 sm:flex-row">
           <p>
-            Copyright © {new Date().getFullYear()} NextStep International.
+            Copyright © {new Date().getFullYear()} {c.footerBrand}.
             All rights reserved.
           </p>
           <div className="flex items-center gap-4">
@@ -186,7 +192,7 @@ export function Footer({
 
       {/* WhatsApp floating (decorative, part of footer) */}
       <a
-        href="https://wa.me/923142638901"
+        href={`https://wa.me/${c.footerWhatsapp}`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-5 left-5 z-40 hidden items-center gap-2 rounded-full bg-green-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-green-600 sm:flex"

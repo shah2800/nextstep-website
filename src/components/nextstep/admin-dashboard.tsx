@@ -13,18 +13,27 @@ import {
 import { toast } from "sonner";
 import {
   ArrowLeft,
+  BadgeCheck,
   BarChart3,
   Building2,
   CalendarClock,
+  CalendarDays,
   Compass,
+  Eye,
   FileCheck,
+  Globe2,
   GraduationCap,
   Home,
+  Inbox,
   LayoutDashboard,
   Loader2,
   Lock,
+  Mail,
+  MapPin,
+  MessageCircle,
   MousePointerClick,
   Pencil,
+  Phone,
   Plane,
   Plus,
   RefreshCw,
@@ -118,7 +127,14 @@ type CompareFactor = {
   points: string[];
 };
 
+type Stat = {
+  label: string;
+  value: string;
+  icon: string;
+};
+
 type SiteContent = {
+  // Hero
   heroBadge: string;
   heroTitle: string;
   heroSubtitle: string;
@@ -127,6 +143,29 @@ type SiteContent = {
   heroTrust1: string;
   heroTrust2: string;
   heroImage: string;
+  // Counseling CTA
+  counselingBadge: string;
+  counselingTitle: string;
+  counselingSubtitle: string;
+  counselingCta1: string;
+  counselingCta2: string;
+  counselingImage: string;
+  // AI Assistant
+  assistantBadge: string;
+  assistantTitle: string;
+  assistantSubtitle: string;
+  assistantCta: string;
+  // Newsletter
+  newsletterTitle: string;
+  newsletterSubtitle: string;
+  // Footer
+  footerAddress: string;
+  footerPhone: string;
+  footerEmail: string;
+  footerWhatsapp: string;
+  footerBrand: string;
+  // Lists
+  stats: Stat[];
   services: Service[];
   compareFactors: CompareFactor[];
 };
@@ -150,6 +189,57 @@ type AnalyticsData = {
   dailyVisitors: { date: string; count: number }[];
   recentClicks: { type: string; label: string; section: string; time: string }[];
 };
+
+type GuidanceLead = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  qualification: string;
+  graduationYear: string;
+  preferredCourse: string;
+  budget: string;
+  englishTest: string;
+  preferredCountries: string;
+  message: string;
+  status: "new" | "contacted" | "closed";
+  createdAt: string;
+};
+
+type BookingLead = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  preferredDate: string;
+  preferredTime: string;
+  mode: string;
+  service: string;
+  message: string;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  createdAt: string;
+};
+
+type NewsletterLead = {
+  id: string;
+  email: string;
+  createdAt: string;
+};
+
+type LeadsData = {
+  guidance: GuidanceLead[];
+  bookings: BookingLead[];
+  newsletter: NewsletterLead[];
+  counts: {
+    guidance: number;
+    bookings: number;
+    newsletter: number;
+    newGuidance: number;
+    pendingBookings: number;
+  };
+};
+
+type LeadModel = "guidance" | "bookings" | "newsletter";
 
 /* ----------------------------------------------------------------------------
  * Helpers
@@ -177,6 +267,22 @@ function formatRelativeTime(iso: string) {
   return new Date(iso).toLocaleDateString();
 }
 
+function formatLeadDate(iso: string) {
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return iso;
+  }
+}
+
 const SERVICE_ICONS = [
   { value: "Compass", label: "Compass", Icon: Compass },
   { value: "FileCheck", label: "FileCheck", Icon: FileCheck },
@@ -193,6 +299,33 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   GraduationCap,
   Wallet,
   Home,
+};
+
+const STAT_ICONS = [
+  { value: "Users", label: "Users", Icon: Users },
+  { value: "Building2", label: "Building2", Icon: Building2 },
+  { value: "Globe2", label: "Globe2", Icon: Globe2 },
+  { value: "BadgeCheck", label: "BadgeCheck", Icon: BadgeCheck },
+];
+
+const STAT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Users,
+  Building2,
+  Globe2,
+  BadgeCheck,
+};
+
+const GUIDANCE_STATUS_STYLES: Record<GuidanceLead["status"], string> = {
+  new: "bg-blue-100 text-blue-700 border-blue-200",
+  contacted: "bg-amber-100 text-amber-800 border-amber-200",
+  closed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+};
+
+const BOOKING_STATUS_STYLES: Record<BookingLead["status"], string> = {
+  pending: "bg-slate-100 text-slate-700 border-slate-200",
+  confirmed: "bg-amber-100 text-amber-800 border-amber-200",
+  completed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  cancelled: "bg-rose-100 text-rose-700 border-rose-200",
 };
 
 const ADMIN_PASSWORD = "nextstep-admin";
@@ -229,6 +362,13 @@ const emptyCountry: Country = {
   featured: false,
   order: 0,
 };
+
+const defaultStats: Stat[] = [
+  { label: "Students Placed", value: "12,000+", icon: "Users" },
+  { label: "Partner Universities", value: "850+", icon: "Building2" },
+  { label: "Study Destinations", value: "16", icon: "Globe2" },
+  { label: "Visa Success Rate", value: "96%", icon: "BadgeCheck" },
+];
 
 /* ----------------------------------------------------------------------------
  * Main component
@@ -366,7 +506,7 @@ function LoginScreen({
  * -------------------------------------------------------------------------- */
 
 function Dashboard({ onClose }: { onClose: () => void }) {
-  const [tab, setTab] = useState("analytics");
+  const [tab, setTab] = useState("leads");
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto bg-background">
@@ -402,7 +542,12 @@ function Dashboard({ onClose }: { onClose: () => void }) {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <div className="overflow-x-auto pb-1">
-            <TabsList className="grid w-full min-w-[640px] grid-cols-5 sm:min-w-0">
+            <TabsList className="grid w-full min-w-[760px] grid-cols-6 sm:min-w-0">
+              <TabsTrigger value="leads" className="gap-1.5">
+                <Inbox className="h-4 w-4" />
+                <span className="hidden sm:inline">Leads</span>
+                <span className="sm:hidden">Leads</span>
+              </TabsTrigger>
               <TabsTrigger value="analytics" className="gap-1.5">
                 <LayoutDashboard className="h-4 w-4" />
                 <span className="hidden sm:inline">Analytics</span>
@@ -431,6 +576,9 @@ function Dashboard({ onClose }: { onClose: () => void }) {
             </TabsList>
           </div>
 
+          <TabsContent value="leads" className="mt-6">
+            <LeadsTab />
+          </TabsContent>
           <TabsContent value="analytics" className="mt-6">
             <AnalyticsTab />
           </TabsContent>
@@ -486,7 +634,675 @@ function SectionCard({
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 1: Analytics
+ * Tab 1: Leads
+ * -------------------------------------------------------------------------- */
+
+function LeadsTab() {
+  const [data, setData] = useState<LeadsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [sub, setSub] = useState<"guidance" | "bookings" | "newsletter">("guidance");
+  const [viewGuidance, setViewGuidance] = useState<GuidanceLead | null>(null);
+  const [viewBooking, setViewBooking] = useState<BookingLead | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<
+    | { id: string; model: LeadModel; label: string }
+    | null
+  >(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const fetchLeads = useCallback(async (silent = false) => {
+    if (silent) setRefreshing(true);
+    else setLoading(true);
+    try {
+      const res = await fetch("/api/admin/leads", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load leads");
+      const json = (await res.json()) as LeadsData;
+      setData(json);
+    } catch {
+      toast.error("Could not load leads. Please try again.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLeads();
+  }, [fetchLeads]);
+
+  const updateStatus = async (
+    model: "guidance" | "bookings",
+    id: string,
+    status: string,
+  ) => {
+    setUpdatingId(id);
+    try {
+      const res = await fetch("/api/admin/leads", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, id, status }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Update failed");
+      }
+      toast.success(`Status updated to "${status}".`);
+      await fetchLeads(true);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not update status.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const deleteLead = async (model: LeadModel, id: string, label: string) => {
+    try {
+      const res = await fetch(
+        `/api/admin/leads?id=${encodeURIComponent(id)}&model=${model}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Delete failed");
+      }
+      toast.success(`${label} deleted.`);
+      setConfirmDelete(null);
+      await fetchLeads(true);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not delete lead.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-2xl" />
+          ))}
+        </div>
+        <Skeleton className="h-12 rounded-2xl" />
+        <Skeleton className="h-[400px] rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const counts = data.counts;
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-extrabold text-brand">Leads &amp; Subscribers</h2>
+          <p className="text-sm text-muted-foreground">
+            Review guidance requests, counseling bookings, and newsletter subscribers.
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => fetchLeads(true)} disabled={refreshing}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <SummaryCard
+          icon={FileCheck}
+          label="Guidance Requests"
+          value={counts.guidance}
+          hint={`${counts.newGuidance} new`}
+          accent="text-blue-600"
+        />
+        <SummaryCard
+          icon={CalendarClock}
+          label="Bookings"
+          value={counts.bookings}
+          hint={`${counts.pendingBookings} pending`}
+          accent="text-amber-600"
+        />
+        <SummaryCard
+          icon={Mail}
+          label="Newsletter Subs"
+          value={counts.newsletter}
+          hint="Email subscribers"
+          accent="text-emerald-600"
+        />
+        <SummaryCard
+          icon={Inbox}
+          label="Total Leads"
+          value={counts.guidance + counts.bookings + counts.newsletter}
+          hint="All inbound contacts"
+          accent="text-brand"
+        />
+      </div>
+
+      {/* Sub-tabs */}
+      <Tabs value={sub} onValueChange={(v) => setSub(v as typeof sub)}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="guidance" className="gap-1.5">
+            <FileCheck className="h-4 w-4" />
+            Guidance
+            <Badge variant="secondary" className="ml-1">
+              {counts.guidance}
+              {counts.newGuidance > 0 && (
+                <span className="ml-1 text-blue-600">+{counts.newGuidance} new</span>
+              )}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="bookings" className="gap-1.5">
+            <CalendarDays className="h-4 w-4" />
+            Bookings
+            <Badge variant="secondary" className="ml-1">
+              {counts.bookings}
+              {counts.pendingBookings > 0 && (
+                <span className="ml-1 text-amber-700">+{counts.pendingBookings}</span>
+              )}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="newsletter" className="gap-1.5">
+            <Mail className="h-4 w-4" />
+            Newsletter
+            <Badge variant="secondary" className="ml-1">
+              {counts.newsletter}
+            </Badge>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Guidance requests */}
+        <TabsContent value="guidance" className="mt-4">
+          <div className="rounded-2xl border border-border bg-card shadow-sm">
+            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+              {data.guidance.length === 0 ? (
+                <EmptyState text="No guidance requests yet." />
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="sticky top-0 z-10 bg-card">
+                      <TableRow>
+                        <TableHead className="min-w-[160px]">Name</TableHead>
+                        <TableHead className="min-w-[200px]">Email</TableHead>
+                        <TableHead className="min-w-[140px]">Phone</TableHead>
+                        <TableHead className="min-w-[160px]">Qualification</TableHead>
+                        <TableHead className="min-w-[160px]">Course</TableHead>
+                        <TableHead className="min-w-[120px]">Budget</TableHead>
+                        <TableHead className="min-w-[140px]">English Test</TableHead>
+                        <TableHead className="min-w-[150px]">Status</TableHead>
+                        <TableHead className="min-w-[140px]">Created</TableHead>
+                        <TableHead className="w-24 text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data.guidance.map((g) => (
+                        <TableRow key={g.id} className="cursor-pointer hover:bg-secondary/40">
+                          <TableCell
+                            className="font-semibold text-brand"
+                            onClick={() => setViewGuidance(g)}
+                          >
+                            {g.name || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <a
+                              href={`mailto:${g.email}`}
+                              className="text-foreground hover:text-brand hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {g.email || "—"}
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <a
+                              href={`tel:${g.phone}`}
+                              className="text-foreground hover:text-brand hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {g.phone || "—"}
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+                            {g.qualification || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+                            {g.preferredCourse || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+                            {g.budget || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+                            {g.englishTest || "—"}
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <Select
+                              value={g.status}
+                              onValueChange={(v) => updateStatus("guidance", g.id, v)}
+                              disabled={updatingId === g.id}
+                            >
+                              <SelectTrigger
+                                className={`h-8 w-32 border bg-background text-xs font-semibold ${GUIDANCE_STATUS_STYLES[g.status]}`}
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="new">New</SelectItem>
+                                <SelectItem value="contacted">Contacted</SelectItem>
+                                <SelectItem value="closed">Closed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground" onClick={() => setViewGuidance(g)}>
+                            {formatLeadDate(g.createdAt)}
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setViewGuidance(g)}
+                                aria-label={`View ${g.name}`}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() =>
+                                  setConfirmDelete({
+                                    id: g.id,
+                                    model: "guidance",
+                                    label: g.name || g.email,
+                                  })
+                                }
+                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                aria-label={`Delete ${g.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Bookings */}
+        <TabsContent value="bookings" className="mt-4">
+          <div className="rounded-2xl border border-border bg-card shadow-sm">
+            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+              {data.bookings.length === 0 ? (
+                <EmptyState text="No bookings yet." />
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="sticky top-0 z-10 bg-card">
+                      <TableRow>
+                        <TableHead className="min-w-[160px]">Name</TableHead>
+                        <TableHead className="min-w-[200px]">Email</TableHead>
+                        <TableHead className="min-w-[140px]">Phone</TableHead>
+                        <TableHead className="min-w-[140px]">Date</TableHead>
+                        <TableHead className="min-w-[110px]">Time</TableHead>
+                        <TableHead className="min-w-[120px]">Mode</TableHead>
+                        <TableHead className="min-w-[180px]">Service</TableHead>
+                        <TableHead className="min-w-[150px]">Status</TableHead>
+                        <TableHead className="min-w-[140px]">Created</TableHead>
+                        <TableHead className="w-24 text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data.bookings.map((b) => (
+                        <TableRow key={b.id} className="cursor-pointer hover:bg-secondary/40">
+                          <TableCell
+                            className="font-semibold text-brand"
+                            onClick={() => setViewBooking(b)}
+                          >
+                            {b.name || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <a
+                              href={`mailto:${b.email}`}
+                              className="text-foreground hover:text-brand hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {b.email || "—"}
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <a
+                              href={`tel:${b.phone}`}
+                              className="text-foreground hover:text-brand hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {b.phone || "—"}
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+                            {b.preferredDate || "—"}
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+                            {b.preferredTime || "—"}
+                          </TableCell>
+                          <TableCell onClick={() => setViewBooking(b)}>
+                            <Badge variant="outline" className="text-[10px] uppercase">
+                              {b.mode || "—"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+                            {b.service || "—"}
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <Select
+                              value={b.status}
+                              onValueChange={(v) => updateStatus("bookings", b.id, v)}
+                              disabled={updatingId === b.id}
+                            >
+                              <SelectTrigger
+                                className={`h-8 w-32 border bg-background text-xs font-semibold ${BOOKING_STATUS_STYLES[b.status]}`}
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="confirmed">Confirmed</SelectItem>
+                                <SelectItem value="completed">Completed</SelectItem>
+                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground" onClick={() => setViewBooking(b)}>
+                            {formatLeadDate(b.createdAt)}
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setViewBooking(b)}
+                                aria-label={`View ${b.name}`}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() =>
+                                  setConfirmDelete({
+                                    id: b.id,
+                                    model: "bookings",
+                                    label: b.name || b.email,
+                                  })
+                                }
+                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                aria-label={`Delete ${b.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Newsletter */}
+        <TabsContent value="newsletter" className="mt-4">
+          <div className="rounded-2xl border border-border bg-card shadow-sm">
+            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+              {data.newsletter.length === 0 ? (
+                <EmptyState text="No newsletter subscribers yet." />
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="sticky top-0 z-10 bg-card">
+                      <TableRow>
+                        <TableHead className="min-w-[300px]">Email</TableHead>
+                        <TableHead className="min-w-[180px]">Subscribed</TableHead>
+                        <TableHead className="w-20 text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data.newsletter.map((n) => (
+                        <TableRow key={n.id}>
+                          <TableCell>
+                            <a
+                              href={`mailto:${n.email}`}
+                              className="font-medium text-foreground hover:text-brand hover:underline"
+                            >
+                              {n.email}
+                            </a>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {formatLeadDate(n.createdAt)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                setConfirmDelete({
+                                  id: n.id,
+                                  model: "newsletter",
+                                  label: n.email,
+                                })
+                              }
+                              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              aria-label={`Unsubscribe ${n.email}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Guidance detail dialog */}
+      <Dialog
+        open={!!viewGuidance}
+        onOpenChange={(o) => !o && setViewGuidance(null)}
+      >
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto custom-scroll">
+          <DialogHeader>
+            <DialogTitle className="text-brand">
+              Guidance Request · {viewGuidance?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Submitted {viewGuidance ? formatLeadDate(viewGuidance.createdAt) : ""}
+            </DialogDescription>
+          </DialogHeader>
+          {viewGuidance && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DetailField label="Email" value={viewGuidance.email} />
+              <DetailField label="Phone" value={viewGuidance.phone} />
+              <DetailField label="Qualification" value={viewGuidance.qualification} />
+              <DetailField label="Graduation Year" value={viewGuidance.graduationYear} />
+              <DetailField label="Preferred Course" value={viewGuidance.preferredCourse} />
+              <DetailField label="Budget" value={viewGuidance.budget} />
+              <DetailField label="English Test" value={viewGuidance.englishTest} />
+              <DetailField label="Preferred Countries" value={viewGuidance.preferredCountries} />
+              <div className="sm:col-span-2">
+                <DetailField label="Message" value={viewGuidance.message} multiline />
+              </div>
+              <div className="sm:col-span-2">
+                <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                  Status
+                </Label>
+                <div className="mt-1">
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold capitalize ${GUIDANCE_STATUS_STYLES[viewGuidance.status]}`}
+                  >
+                    {viewGuidance.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewGuidance(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Booking detail dialog */}
+      <Dialog
+        open={!!viewBooking}
+        onOpenChange={(o) => !o && setViewBooking(null)}
+      >
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto custom-scroll">
+          <DialogHeader>
+            <DialogTitle className="text-brand">
+              Booking · {viewBooking?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Submitted {viewBooking ? formatLeadDate(viewBooking.createdAt) : ""}
+            </DialogDescription>
+          </DialogHeader>
+          {viewBooking && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DetailField label="Email" value={viewBooking.email} />
+              <DetailField label="Phone" value={viewBooking.phone} />
+              <DetailField label="Preferred Date" value={viewBooking.preferredDate} />
+              <DetailField label="Preferred Time" value={viewBooking.preferredTime} />
+              <DetailField label="Mode" value={viewBooking.mode} />
+              <DetailField label="Service" value={viewBooking.service} />
+              <div className="sm:col-span-2">
+                <DetailField label="Message" value={viewBooking.message} multiline />
+              </div>
+              <div className="sm:col-span-2">
+                <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                  Status
+                </Label>
+                <div className="mt-1">
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold capitalize ${BOOKING_STATUS_STYLES[viewBooking.status]}`}
+                  >
+                    {viewBooking.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewBooking(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation */}
+      <Dialog
+        open={!!confirmDelete}
+        onOpenChange={(o) => !o && setConfirmDelete(null)}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-brand">Delete lead?</DialogTitle>
+            <DialogDescription>
+              This will permanently remove{" "}
+              <span className="font-semibold text-foreground">
+                {confirmDelete?.label}
+              </span>{" "}
+              ({confirmDelete?.model}). This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() =>
+                confirmDelete &&
+                deleteLead(confirmDelete.model, confirmDelete.id, confirmDelete.label)
+              }
+            >
+              <Trash2 className="mr-1.5 h-4 w-4" />
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function SummaryCard({
+  icon: Icon,
+  label,
+  value,
+  hint,
+  accent,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: number;
+  hint: string;
+  accent: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/5">
+          <Icon className={`h-4.5 w-4.5 ${accent}`} />
+        </span>
+      </div>
+      <div className="text-3xl font-extrabold tracking-tight text-brand">
+        {value.toLocaleString()}
+      </div>
+      <div className="mt-1 text-sm font-medium text-foreground">{label}</div>
+      <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div>
+    </div>
+  );
+}
+
+function DetailField({
+  label,
+  value,
+  multiline,
+}: {
+  label: string;
+  value: string;
+  multiline?: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+        {label}
+      </Label>
+      {multiline ? (
+        <div className="whitespace-pre-wrap rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm text-foreground">
+          {value || "—"}
+        </div>
+      ) : (
+        <div className="truncate rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm font-medium text-foreground">
+          {value || "—"}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+ * Tab 2: Analytics
  * -------------------------------------------------------------------------- */
 
 function AnalyticsTab() {
@@ -788,7 +1604,7 @@ function EmptyState({ text }: { text: string }) {
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 2: Countries (CRUD)
+ * Tab 3: Countries (CRUD)
  * -------------------------------------------------------------------------- */
 
 function CountriesTab() {
@@ -1327,51 +2143,105 @@ async function saveContentKey(
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 3: Content (Hero + text)
+ * Tab 4: Content (Stats + Hero + Counseling + Assistant + Newsletter + Footer)
  * -------------------------------------------------------------------------- */
+
+type ContentField = {
+  key: string;
+  label: string;
+  multiline?: boolean;
+  hint?: string;
+};
+
+const HERO_FIELDS: ContentField[] = [
+  { key: "heroBadge", label: "Hero Badge", hint: "Small pill above the title" },
+  { key: "heroTitle", label: "Hero Title", multiline: true },
+  { key: "heroSubtitle", label: "Hero Subtitle", multiline: true },
+  { key: "heroPrimaryCta", label: "Primary CTA Button" },
+  { key: "heroSecondaryCta", label: "Secondary CTA Button" },
+  { key: "heroTrust1", label: "Trust Badge #1" },
+  { key: "heroTrust2", label: "Trust Badge #2" },
+  { key: "heroImage", label: "Hero Image URL", hint: "Path or absolute URL" },
+];
+
+const COUNSELING_FIELDS: ContentField[] = [
+  { key: "counselingBadge", label: "Badge", hint: "Small pill above the title" },
+  { key: "counselingTitle", label: "Title", multiline: true },
+  { key: "counselingSubtitle", label: "Subtitle", multiline: true },
+  { key: "counselingCta1", label: "Primary CTA Button" },
+  { key: "counselingCta2", label: "Secondary CTA Button" },
+  { key: "counselingImage", label: "Image URL", hint: "Path or absolute URL" },
+];
+
+const ASSISTANT_FIELDS: ContentField[] = [
+  { key: "assistantBadge", label: "Badge", hint: "Small pill above the title" },
+  { key: "assistantTitle", label: "Title" },
+  { key: "assistantSubtitle", label: "Subtitle", multiline: true },
+  { key: "assistantCta", label: "CTA Button" },
+];
+
+const NEWSLETTER_FIELDS: ContentField[] = [
+  { key: "newsletterTitle", label: "Title" },
+  { key: "newsletterSubtitle", label: "Subtitle", multiline: true },
+];
+
+const FOOTER_FIELDS: ContentField[] = [
+  { key: "footerBrand", label: "Brand Name" },
+  { key: "footerAddress", label: "Address", multiline: true },
+  { key: "footerPhone", label: "Phone" },
+  { key: "footerEmail", label: "Email" },
+  { key: "footerWhatsapp", label: "WhatsApp", hint: "Digits only, e.g. 923142638901" },
+];
+
+const FIELD_LABELS: Record<string, string> = [
+  ...HERO_FIELDS,
+  ...COUNSELING_FIELDS,
+  ...ASSISTANT_FIELDS,
+  ...NEWSLETTER_FIELDS,
+  ...FOOTER_FIELDS,
+].reduce<Record<string, string>>((acc, f) => {
+  acc[f.key] = f.label;
+  return acc;
+}, {});
 
 function ContentTab() {
   const { content, loading } = useSiteContent();
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
 
+  // Stats editor state
+  const [statsDraft, setStatsDraft] = useState<Stat[]>(defaultStats);
+  const [savingStats, setSavingStats] = useState(false);
+
   useEffect(() => {
     if (content) {
-      setDrafts({
-        heroBadge: content.heroBadge,
-        heroTitle: content.heroTitle,
-        heroSubtitle: content.heroSubtitle,
-        heroPrimaryCta: content.heroPrimaryCta,
-        heroSecondaryCta: content.heroSecondaryCta,
-        heroTrust1: content.heroTrust1,
-        heroTrust2: content.heroTrust2,
-        heroImage: content.heroImage,
-      });
+      const allFields = [
+        ...HERO_FIELDS,
+        ...COUNSELING_FIELDS,
+        ...ASSISTANT_FIELDS,
+        ...NEWSLETTER_FIELDS,
+        ...FOOTER_FIELDS,
+      ];
+      const next: Record<string, string> = {};
+      for (const f of allFields) {
+        const v = (content as unknown as Record<string, string>)[f.key];
+        next[f.key] = typeof v === "string" ? v : "";
+      }
+      setDrafts(next);
+      setStatsDraft(
+        Array.isArray(content.stats) && content.stats.length > 0
+          ? content.stats.map((s) => ({ ...s }))
+          : defaultStats.map((s) => ({ ...s })),
+      );
     }
   }, [content]);
-
-  const heroFields: {
-    key: keyof typeof HERO_LABELS;
-    label: string;
-    multiline?: boolean;
-    hint?: string;
-  }[] = [
-    { key: "heroBadge", label: "Hero Badge", hint: "Small pill above the title" },
-    { key: "heroTitle", label: "Hero Title", multiline: true },
-    { key: "heroSubtitle", label: "Hero Subtitle", multiline: true },
-    { key: "heroPrimaryCta", label: "Primary CTA Button" },
-    { key: "heroSecondaryCta", label: "Secondary CTA Button" },
-    { key: "heroTrust1", label: "Trust Badge #1" },
-    { key: "heroTrust2", label: "Trust Badge #2" },
-    { key: "heroImage", label: "Hero Image URL", hint: "Path or absolute URL" },
-  ];
 
   const save = async (key: string) => {
     const value = drafts[key] ?? "";
     setSavingKey(key);
     try {
       await saveContentKey(key, value);
-      toast.success(`${HERO_LABELS[key as keyof typeof HERO_LABELS]} saved.`);
+      toast.success(`${FIELD_LABELS[key] ?? key} saved.`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Save failed.");
     } finally {
@@ -1379,12 +2249,27 @@ function ContentTab() {
     }
   };
 
+  const saveStats = async () => {
+    setSavingStats(true);
+    try {
+      await saveContentKey("stats", statsDraft);
+      toast.success("Stats saved.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Save failed.");
+    } finally {
+      setSavingStats(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="h-32 rounded-2xl" />
-        ))}
+      <div className="space-y-6">
+        <Skeleton className="h-48 rounded-2xl" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-2xl" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -1392,91 +2277,280 @@ function ContentTab() {
   if (!content) return null;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-extrabold text-brand">Hero &amp; Marketing Content</h2>
+        <h2 className="text-xl font-extrabold text-brand">Marketing Content</h2>
         <p className="text-sm text-muted-foreground">
-          Edit the homepage hero copy and trust badges. Each field saves independently.
+          Edit every text block on the homepage — stats, hero, counseling, AI assistant,
+          newsletter, and footer. Each field saves independently.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {heroFields.map((f) => (
-          <Card
-            key={f.key}
-            className={`rounded-2xl border-border p-5 shadow-sm ${
-              f.multiline ? "sm:col-span-2" : ""
-            }`}
-          >
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
-                {f.label}
-              </Label>
-              {f.key === "heroImage" && content.heroImage && (
-                <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded border border-border">
-                  <img
-                    src={content.heroImage}
-                    alt="hero preview"
-                    className="h-full w-full object-cover"
-                  />
-                </span>
-              )}
-            </div>
-            {f.multiline ? (
-              <Textarea
-                value={drafts[f.key] ?? ""}
-                onChange={(e) =>
-                  setDrafts((d) => ({ ...d, [f.key]: e.target.value }))
-                }
-                rows={f.key === "heroTitle" ? 2 : 3}
-                className="resize-y"
-              />
-            ) : (
-              <Input
-                value={drafts[f.key] ?? ""}
-                onChange={(e) =>
-                  setDrafts((d) => ({ ...d, [f.key]: e.target.value }))
-                }
-              />
-            )}
-            {f.hint && (
-              <p className="mt-1 text-xs text-muted-foreground">{f.hint}</p>
-            )}
-            <div className="mt-3 flex justify-end">
-              <Button
-                size="sm"
-                onClick={() => save(f.key)}
-                disabled={savingKey === f.key}
-                className="bg-brand text-white hover:bg-brand/90"
+      {/* Stats editor */}
+      <SectionCard title="Stats Strip" icon={BarChart3}>
+        <p className="mb-3 text-xs text-muted-foreground">
+          The four counters shown below the hero. Use a short, punchy value (e.g. 12,000+ or 96%).
+        </p>
+        <div className="space-y-3">
+          {statsDraft.map((s, i) => {
+            const Ico = STAT_ICON_MAP[s.icon] ?? Users;
+            return (
+              <div
+                key={i}
+                className="grid items-end gap-3 rounded-lg border border-border bg-secondary/30 p-3 sm:grid-cols-[1fr_1fr_180px]"
               >
-                {savingKey === f.key ? (
-                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-1.5 h-4 w-4" />
-                )}
-                Save
-              </Button>
-            </div>
-          </Card>
-        ))}
-      </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                    Label
+                  </Label>
+                  <Input
+                    value={s.label}
+                    onChange={(e) =>
+                      setStatsDraft((arr) =>
+                        arr.map((row, idx) => (idx === i ? { ...row, label: e.target.value } : row)),
+                      )
+                    }
+                    placeholder="Students Placed"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                    Value
+                  </Label>
+                  <Input
+                    value={s.value}
+                    onChange={(e) =>
+                      setStatsDraft((arr) =>
+                        arr.map((row, idx) => (idx === i ? { ...row, value: e.target.value } : row)),
+                      )
+                    }
+                    placeholder="12,000+"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                    Icon
+                  </Label>
+                  <Select
+                    value={s.icon}
+                    onValueChange={(v) =>
+                      setStatsDraft((arr) =>
+                        arr.map((row, idx) => (idx === i ? { ...row, icon: v } : row)),
+                      )
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <span className="flex items-center gap-2">
+                        <Ico className="h-4 w-4" />
+                        <SelectValue />
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STAT_ICONS.map(({ value, label, Icon: I }) => (
+                        <SelectItem key={value} value={value}>
+                          <span className="flex items-center gap-2">
+                            <I className="h-4 w-4" />
+                            {label}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            onClick={saveStats}
+            disabled={savingStats}
+            className="bg-brand text-white hover:bg-brand/90"
+          >
+            {savingStats ? (
+              <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-1.5 h-4 w-4" />
+            )}
+            Save Stats
+          </Button>
+        </div>
+      </SectionCard>
+
+      {/* Hero */}
+      <SectionCard title="Hero Section" icon={Sparkles}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {HERO_FIELDS.map((f) => (
+            <FieldCard
+              key={f.key}
+              field={f}
+              value={drafts[f.key] ?? ""}
+              onChange={(v) => setDrafts((d) => ({ ...d, [f.key]: v }))}
+              onSave={() => save(f.key)}
+              saving={savingKey === f.key}
+              previewImage={f.key === "heroImage" ? drafts[f.key] : undefined}
+            />
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* Counseling CTA */}
+      <SectionCard title="Counseling CTA Section" icon={MessageCircle}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {COUNSELING_FIELDS.map((f) => (
+            <FieldCard
+              key={f.key}
+              field={f}
+              value={drafts[f.key] ?? ""}
+              onChange={(v) => setDrafts((d) => ({ ...d, [f.key]: v }))}
+              onSave={() => save(f.key)}
+              saving={savingKey === f.key}
+              previewImage={f.key === "counselingImage" ? drafts[f.key] : undefined}
+            />
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* AI Assistant */}
+      <SectionCard title="AI Assistant Section" icon={Sparkles}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {ASSISTANT_FIELDS.map((f) => (
+            <FieldCard
+              key={f.key}
+              field={f}
+              value={drafts[f.key] ?? ""}
+              onChange={(v) => setDrafts((d) => ({ ...d, [f.key]: v }))}
+              onSave={() => save(f.key)}
+              saving={savingKey === f.key}
+            />
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* Newsletter */}
+      <SectionCard title="Newsletter Section" icon={Mail}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {NEWSLETTER_FIELDS.map((f) => (
+            <FieldCard
+              key={f.key}
+              field={f}
+              value={drafts[f.key] ?? ""}
+              onChange={(v) => setDrafts((d) => ({ ...d, [f.key]: v }))}
+              onSave={() => save(f.key)}
+              saving={savingKey === f.key}
+            />
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* Footer / Contact */}
+      <SectionCard title="Footer / Contact" icon={MapPin}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {FOOTER_FIELDS.map((f) => (
+            <FieldCard
+              key={f.key}
+              field={f}
+              value={drafts[f.key] ?? ""}
+              onChange={(v) => setDrafts((d) => ({ ...d, [f.key]: v }))}
+              onSave={() => save(f.key)}
+              saving={savingKey === f.key}
+              iconPrefix={
+                f.key === "footerPhone"
+                  ? Phone
+                  : f.key === "footerEmail"
+                    ? Mail
+                    : f.key === "footerWhatsapp"
+                      ? MessageCircle
+                      : f.key === "footerAddress"
+                        ? MapPin
+                        : undefined
+              }
+            />
+          ))}
+        </div>
+      </SectionCard>
     </div>
   );
 }
 
-const HERO_LABELS = {
-  heroBadge: "Hero Badge",
-  heroTitle: "Hero Title",
-  heroSubtitle: "Hero Subtitle",
-  heroPrimaryCta: "Primary CTA",
-  heroSecondaryCta: "Secondary CTA",
-  heroTrust1: "Trust Badge #1",
-  heroTrust2: "Trust Badge #2",
-  heroImage: "Hero Image",
-};
+function FieldCard({
+  field,
+  value,
+  onChange,
+  onSave,
+  saving,
+  previewImage,
+  iconPrefix: IconPrefix,
+}: {
+  field: ContentField;
+  value: string;
+  onChange: (v: string) => void;
+  onSave: () => void;
+  saving: boolean;
+  previewImage?: string;
+  iconPrefix?: React.ComponentType<{ className?: string }>;
+}) {
+  return (
+    <Card
+      className={`rounded-2xl border-border p-5 shadow-sm ${
+        field.multiline ? "sm:col-span-2" : ""
+      }`}
+    >
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+          {field.label}
+        </Label>
+        {previewImage && (
+          <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded border border-border">
+            <img
+              src={previewImage}
+              alt="preview"
+              className="h-full w-full object-cover"
+            />
+          </span>
+        )}
+      </div>
+      {field.multiline ? (
+        <Textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={field.key === "heroSubtitle" || field.key === "counselingSubtitle" || field.key === "assistantSubtitle" || field.key === "newsletterSubtitle" ? 3 : 2}
+          className="resize-y"
+        />
+      ) : (
+        <div className="relative">
+          {IconPrefix && (
+            <IconPrefix className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          )}
+          <Input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={IconPrefix ? "pl-9" : ""}
+          />
+        </div>
+      )}
+      {field.hint && <p className="mt-1 text-xs text-muted-foreground">{field.hint}</p>}
+      <div className="mt-3 flex justify-end">
+        <Button
+          size="sm"
+          onClick={onSave}
+          disabled={saving}
+          className="bg-brand text-white hover:bg-brand/90"
+        >
+          {saving ? (
+            <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="mr-1.5 h-4 w-4" />
+          )}
+          Save
+        </Button>
+      </div>
+    </Card>
+  );
+}
 
 /* ----------------------------------------------------------------------------
- * Tab 4: Services editor
+ * Tab 5: Services editor
  * -------------------------------------------------------------------------- */
 
 function ServicesTab() {
@@ -1664,7 +2738,7 @@ function ServicesTab() {
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 5: Compare Factors editor
+ * Tab 6: Compare Factors editor
  * -------------------------------------------------------------------------- */
 
 function CompareFactorsTab() {

@@ -1,15 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { defaultContent } from "@/lib/content";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [c, setC] = useState(defaultContent);
+
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => d.content && setC(d.content))
+      .catch(() => {});
+  }, []);
 
   const subscribe = async () => {
     if (loading || !email) return;
@@ -48,11 +57,10 @@ export function Newsletter() {
             </span>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-foreground sm:text-2xl">
-                Get study-abroad updates in your inbox
+                {c.newsletterTitle}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                New scholarships, intake deadlines, and visa changes — once a
-                week, no spam.
+                {c.newsletterSubtitle}
               </p>
             </div>
             <div className="flex w-full max-w-md items-center gap-2 md:w-auto">

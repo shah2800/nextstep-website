@@ -1,14 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Bot, Sparkles, Zap, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { defaultContent } from "@/lib/content";
 
 export function AssistantSection({
   onOpenAssistant,
 }: {
   onOpenAssistant?: () => void;
 }) {
+  const [c, setC] = useState(defaultContent);
+  useEffect(() => {
+    fetch("/api/content", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => d.content && setC(d.content))
+      .catch(() => {});
+  }, []);
   const handleOpen = () => {
     if (onOpenAssistant) onOpenAssistant();
     window.dispatchEvent(new CustomEvent("open-nextstep-assistant"));
@@ -31,15 +40,13 @@ export function AssistantSection({
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-gold" />
-            AI-Powered
+            {c.assistantBadge}
           </span>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Meet your NextStep AI Assistant
+            {c.assistantTitle}
           </h2>
           <p className="mt-4 max-w-lg text-base text-white/85">
-            Get instant, personalized destination recommendations based on your
-            academic background, budget, and goals — available 24/7 in your
-            pocket. Ask about courses, costs, scholarships, and visa steps.
+            {c.assistantSubtitle}
           </p>
 
           <ul className="mt-6 space-y-3">
@@ -78,7 +85,7 @@ export function AssistantSection({
             className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
           >
             <Bot className="mr-2 h-5 w-5" />
-            Chat with NextStep Assistant
+            {c.assistantCta}
           </Button>
         </motion.div>
 

@@ -14,6 +14,35 @@ export const defaultContent = {
   heroTrust2: "15+ Years of Trusted Guidance",
   heroImage: "/images/hero-students.png",
 
+  // Counseling CTA
+  counselingBadge: "Free initial guidance",
+  counselingTitle: "Unsure which destination fits your profile?",
+  counselingSubtitle:
+    "Share your qualification, graduation year, preferred course, budget, and English test status. A NextStep counselor will help you identify realistic countries and next steps — at no cost.",
+  counselingCta1: "Request Destination Guidance",
+  counselingCta2: "Book a Session",
+  counselingImage: "/images/counseling.png",
+
+  // AI Assistant section
+  assistantBadge: "AI-Powered",
+  assistantTitle: "Meet your NextStep AI Assistant",
+  assistantSubtitle:
+    "Get instant, personalized destination recommendations based on your academic background, budget, and goals — available 24/7 in your pocket. Ask about courses, costs, scholarships, and visa steps.",
+  assistantCta: "Chat with NextStep Assistant",
+
+  // Newsletter section
+  newsletterTitle: "Get study-abroad updates in your inbox",
+  newsletterSubtitle:
+    "New scholarships, intake deadlines, and visa changes — once a week, no spam.",
+
+  // Footer / contact info
+  footerAddress:
+    "Office #31/2, Upper Ground, Mall of Lahore, 172 Tufail Road, Cantt Lahore",
+  footerPhone: "+92 314 2638901",
+  footerEmail: "info@nextstepinternationals.com",
+  footerWhatsapp: "923142638901",
+  footerBrand: "NextStep International",
+
   // Stats
   stats: [
     { label: "Students Placed", value: "12,000+", icon: "Users" },

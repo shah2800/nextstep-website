@@ -207,3 +207,78 @@ Stage Summary:
 - Content management: edit hero text, stats, services, compare factors live from dashboard
 - Country CRUD: add/edit/delete countries with full 19-field form — changes reflect on public site immediately
 - Access: footer "Admin" link or ?admin=true → password "nextstep-admin"
+
+---
+Task ID: 3
+Agent: full-stack-developer
+Task: Expand admin dashboard with Leads tab + full content editors
+
+Work Log:
+- Read worklog + existing admin-dashboard.tsx (1879 lines, 5 tabs: Analytics/Countries/Content/Services/Compare) + verified `/api/admin/leads` route already exists with the exact contract specified (GET returns {guidance, bookings, newsletter, counts}, PUT body {model,id,status}, DELETE ?id=&model=). Also verified `/api/admin/content` accepts any key string via PUT and the default content object (src/lib/content.ts) already has counseling/assistant/newsletter/footer/stats fields wired up.
+- Rewrote `src/components/nextstep/admin-dashboard.tsx` (~1880 → 2954 lines). Kept the existing password gate, navy/gold theme, sticky header, all helper functions (formatDuration, formatRelativeTime), all existing tabs (Analytics/Countries/Services/Compare) byte-identical. Added:
+  - NEW TAB "Leads" as tab #1 (Dashboard shell now `grid-cols-6`, min-w-[760px], with Inbox icon). Default tab on dashboard open is now "leads".
+  - Added new lucide-react imports: BadgeCheck, CalendarDays, Eye, Globe2, Inbox, Mail, MapPin, MessageCircle, Phone (for stat icons + content section icons + leads UI).
+  - New types: GuidanceLead, BookingLead, NewsletterLead, LeadsData, LeadModel, Stat. New helper `formatLeadDate(iso)` → "Jul 3, 2:30 PM" via `toLocaleString("en-US", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit", hour12:true})`.
+  - New constants: `STAT_ICONS` (Users/Building2/Globe2/BadgeCheck) + `STAT_ICON_MAP`, `GUIDANCE_STATUS_STYLES` (new=blue, contacted=amber, closed=emerald), `BOOKING_STATUS_STYLES` (pending=slate, confirmed=amber, completed=emerald, cancelled=rose), `defaultStats` for first-load fallback.
+  - `LeadsTab` component: fetches GET /api/admin/leads (cache:"no-store"). Renders 4 summary cards (Guidance Requests + new count, Bookings + pending count, Newsletter Subs, Total Leads) + nested Tabs with 3 sub-tabs (Guidance/Bookings/Newsletter), each tab trigger showing count Badge. Refresh button. Loading skeletons (3 cards + table).
+    - Guidance table (10 cols, scrollable max-h-[55vh] overflow-y-auto custom-scroll, sticky header, horizontal scroll on mobile): Name, Email (mailto: link), Phone (tel: link), Qualification, Course, Budget, English Test, Status (inline Select dropdown new→contacted→closed with color-coded trigger), Created (formatted date), Actions (Eye view + Trash2 delete). Clicking row opens detail Dialog.
+    - Bookings table (10 cols): Name, Email, Phone, Date, Time, Mode (badge), Service, Status (Select pending→confirmed→completed→cancelled), Created, Actions (view + delete).
+    - Newsletter table (3 cols): Email, Subscribed date, Delete button.
+    - Status update via PUT /api/admin/leads with `{model, id, status}`. After update, shows sonner toast and silently refreshes data.
+    - Delete via DELETE /api/admin/leads?id=&model= with confirmation Dialog showing the lead label. Sonner toast on success/failure.
+    - Detail dialogs: GuidanceDetailDialog shows all 9 fields (email, phone, qualification, graduationYear, preferredCourse, budget, englishTest, preferredCountries, message) in a 2-col grid + status badge. BookingDetailDialog shows all 7 fields + status badge. Both scrollable max-h-[90vh].
+    - `SummaryCard` and `DetailField` presentational helpers added.
+  - EXPANDED ContentTab: now has 6 SectionCards grouped with dividers — Stats Strip (top), Hero Section, Counseling CTA Section, AI Assistant Section, Newsletter Section, Footer / Contact.
+    - Stats Editor: 4 stat rows in `grid-cols-[1fr_1fr_180px]` with Label input + Value input + Icon Select (Users/Building2/Globe2/BadgeCheck, each rendered with its Lucide icon in dropdown). Single "Save Stats" button → PUT {key:"stats", value:[...]}.
+    - Counseling CTA section: 6 fields (counselingBadge, counselingTitle textarea, counselingSubtitle textarea, counselingCta1, counselingCta2, counselingImage with thumbnail preview).
+    - AI Assistant section: 4 fields (assistantBadge, assistantTitle, assistantSubtitle textarea, assistantCta).
+    - Newsletter section: 2 fields (newsletterTitle, newsletterSubtitle textarea).
+    - Footer / Contact section: 5 fields (footerBrand, footerAddress textarea, footerPhone with Phone icon prefix, footerEmail with Mail icon prefix, footerWhatsapp with MessageCircle icon prefix + hint "digits only").
+    - Extracted `FieldCard` reusable component (label + input/textarea + per-field Save button → PUT {key, value} → sonner toast). Replaces the inline hero card render. Each individual field saves independently with the same pattern as before.
+    - Added `ContentField` type + 5 field-config arrays (HERO_FIELDS, COUNSELING_FIELDS, ASSISTANT_FIELDS, NEWSLETTER_FIELDS, FOOTER_FIELDS) + FIELD_LABELS map for toast messages.
+- Lint: `bun run lint` → 0 errors (clean). Removed an unused Clock import to keep things tidy.
+- File grew from 1879 → 2954 lines (+1075 lines). All existing functionality preserved (password gate "nextstep-admin", 5 original tabs unchanged in behavior, just reordered).
+
+Stage Summary:
+- Admin dashboard now has 6 tabs in order: Leads (NEW), Analytics, Countries, Content (EXPANDED), Services, Compare Factors.
+- Leads tab is full lead-management UI: 4 summary cards + 3 sub-tabs (Guidance/Bookings/Newsletter) with count badges, scrollable tables with inline status dropdowns (color-coded new/contacted/closed and pending/confirmed/completed/cancelled), view-details dialogs showing ALL fields, delete with confirmation, refresh button, sonner toasts, loading skeletons, formatted dates.
+- Content tab now controls EVERY editable text block on the site: Stats Strip (4 rows with icon picker), Hero Section (8 fields), Counseling CTA (6 fields), AI Assistant (4 fields), Newsletter (2 fields), Footer / Contact (5 fields). Each field saves independently via PUT /api/admin/content {key, value} with sonner toast feedback.
+- Dashboard controls 100% of the editable website: hero copy, stats strip, all 6 services (reorderable), all 3 compare factors (reorderable with bullet points), all 16 country guides (full CRUD with 19 fields), counseling/assistant/newsletter/footer text, AND now full lead lifecycle management.
+- Lint passes cleanly. No backend changes needed (existing /api/admin/leads and /api/admin/content routes already supported the full contract).
+
+---
+Task ID: 4
+Agent: Main (orchestrator)
+Task: Complete the admin dashboard — add Leads management + full content editors for every section
+
+Work Log:
+- Extended content.ts with 16 new content keys: counseling (badge/title/subtitle/cta1/cta2/image), assistant (badge/title/subtitle/cta), newsletter (title/subtitle), footer (address/phone/email/whatsapp/brand)
+- Built /api/admin/leads API: GET (guidance+bookings+newsletter+counts), PUT (update status), DELETE (remove lead)
+- Updated 4 public components to be CMS-driven (fetch from /api/content): counseling-cta, assistant-section, newsletter, footer
+- Subagent expanded admin-dashboard.tsx (1879→2954 lines):
+  - NEW Leads tab (tab #1): 4 summary cards, 3 sub-tabs (Guidance/Bookings/Newsletter), full tables with status dropdowns (new→contacted→closed, pending→confirmed→completed→cancelled), detail dialogs, delete with confirmation, refresh, loading skeletons
+  - EXPANDED Content tab: 6 grouped sections — Stats editor (4 rows with icon select), Hero (8 fields), Counseling CTA (6 fields), AI Assistant (4 fields), Newsletter (2 fields), Footer/Contact (5 fields)
+  - Tab order: Leads, Analytics, Countries, Content, Services, Compare Factors
+
+Verification (all passed):
+- Lint: clean (0 errors)
+- Leads API: returns guidance(1), bookings(0), newsletter(1) + counts
+- Content API: all 16 new keys present
+- Admin content PUT: updated counselingTitle + footerPhone successfully
+- Public site reflects admin edits in real-time (verified via /api/content)
+- Admin dashboard UI: 6 tabs render, Leads tab shows guidance/bookings/newsletter with sub-tabs + count badges, Content tab shows all 6 sections with editable fields (Stats, Hero, Counseling, Assistant, Newsletter, Footer)
+- No console errors
+
+Stage Summary:
+- Admin dashboard now controls EVERYTHING on the website:
+  - View & manage all student leads (guidance requests, bookings, newsletter subs) with status workflows
+  - Edit all 4 stat cards (label, value, icon)
+  - Edit all hero text + image
+  - Edit all counseling CTA text + image
+  - Edit AI assistant section text
+  - Edit newsletter section text
+  - Edit footer contact info (address, phone, email, WhatsApp, brand name)
+  - Full CRUD on 16 countries (add/edit/delete with 19 fields)
+  - Edit all 6 services (icon, title, description, reorder)
+  - Edit all 3 compare factors (icon, title, description, points)
+  - View full analytics (visitors, clicks, section time, 7-day chart, top elements/sections)
