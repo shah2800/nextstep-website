@@ -103,15 +103,10 @@ export function Hero({
             transition={{ delay: 0.5, duration: 0.5 }}
             className="absolute -left-3 bottom-6 rounded-2xl border border-white/20 bg-white/95 p-3 shadow-xl backdrop-blur sm:-left-6"
           >
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="text-2xl font-extrabold text-brand">96%</div>
-              <div className="text-[11px] font-medium text-muted-foreground">
-                Visa success rate
-              </div>
-            </motion.div>
+            <div className="text-2xl font-extrabold text-brand">96%</div>
+            <div className="text-[11px] font-medium text-muted-foreground">
+              Visa success rate
+            </div>
           </motion.div>
 
           <motion.div
@@ -120,15 +115,10 @@ export function Hero({
             transition={{ delay: 0.65, duration: 0.5 }}
             className="absolute -right-2 top-6 rounded-2xl border border-white/20 bg-white/95 p-3 shadow-xl backdrop-blur sm:-right-4"
           >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="text-2xl font-extrabold text-brand">850+</div>
-              <div className="text-[11px] font-medium text-muted-foreground">
-                Partner universities
-              </div>
-            </motion.div>
+            <div className="text-2xl font-extrabold text-brand">850+</div>
+            <div className="text-[11px] font-medium text-muted-foreground">
+              Partner universities
+            </div>
           </motion.div>
         </motion.div>
       </div>

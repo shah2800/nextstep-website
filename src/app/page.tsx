@@ -9,13 +9,11 @@ import { CompareFactors } from "@/components/nextstep/compare-factors";
 import { Services } from "@/components/nextstep/services";
 import { CounselingCta } from "@/components/nextstep/counseling-cta";
 import { AssistantSection } from "@/components/nextstep/assistant-section";
-import { Testimonials } from "@/components/nextstep/testimonials";
 import { Newsletter } from "@/components/nextstep/newsletter";
 import { Footer } from "@/components/nextstep/footer";
 import { GuidanceFormDialog } from "@/components/nextstep/guidance-form-dialog";
 import { BookSessionDialog } from "@/components/nextstep/book-session-dialog";
 import { AiAssistant } from "@/components/nextstep/ai-assistant";
-import { ScrollProgress } from "@/components/nextstep/scroll-progress";
 
 export default function Home() {
   const [guidanceOpen, setGuidanceOpen] = useState(false);
@@ -23,7 +21,6 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen w-full max-w-[100vw] flex-col overflow-x-clip bg-background">
-      <ScrollProgress />
       <Header onBookSession={() => setBookingOpen(true)} />
 
       <main className="flex-1">
@@ -35,7 +32,6 @@ export default function Home() {
         <Countries />
         <CompareFactors />
         <Services />
-        <Testimonials />
         <CounselingCta
           onGetGuidance={() => setGuidanceOpen(true)}
           onBookSession={() => setBookingOpen(true)}

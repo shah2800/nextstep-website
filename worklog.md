@@ -90,3 +90,25 @@ Stage Summary:
 - 6 animation systems added: count-up stats, scroll progress bar, testimonial carousel, floating hero cards, animated gradient mesh, enhanced card hover micro-interactions
 - All browser-verified: testimonials render with dots/controls, scroll bar present, stat counters animate, no console errors
 - Lint passes cleanly
+
+---
+Task ID: 10
+Agent: Main (orchestrator)
+Task: Remove all animations (revert to normal)
+
+Work Log:
+- Removed ScrollProgress from page.tsx (import + usage)
+- Removed Testimonials section from page.tsx (import + usage)
+- Reverted Stats component to static values (removed useCountUp hook usage)
+- Reverted hero floating stat cards to static (removed continuous bob animation)
+- Reverted hero gradient mesh to static (removed mesh-shift keyframe animation)
+- Reverted country cards to simple reveal (removed scale-in, flag bounce/rotate, banner zoom)
+- Deleted unused files: testimonials.tsx, scroll-progress.tsx, use-count-up.ts
+- Removed testimonials data block from countries.ts
+- Reverted stats data to remove target/suffix fields
+- Kept: ICEF→NextStep rebrand (trust badges), mobile overflow fix (overflow-x: clip + contain:paint)
+
+Stage Summary:
+- All added animations reverted; site back to normal static reveals only
+- Lint passes cleanly, HTTP 200
+- ICEF replacement text preserved (Direct University Partnerships, 15+ Years, Authorized Representatives)

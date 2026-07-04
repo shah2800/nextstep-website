@@ -127,26 +127,21 @@ export function Countries() {
                 <motion.button
                   key={c.id}
                   layout
-                  initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
-                  transition={{ duration: 0.45, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
                   onClick={() => setActive(c)}
-                  className="group relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-shadow hover:shadow-xl"
+                  className="group relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
                   {/* Header banner */}
                   <div
-                    className={`relative h-32 overflow-hidden bg-gradient-to-br ${c.gradient}`}
+                    className={`relative h-32 bg-gradient-to-br ${c.gradient}`}
                   >
-                    <div className="absolute inset-0 dot-grid opacity-25 transition-transform duration-500 group-hover:scale-110" />
-                    <motion.div
-                      whileHover={{ scale: 1.2, rotate: 8 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                      className="absolute left-4 top-4 text-4xl drop-shadow-md"
-                    >
+                    <div className="absolute inset-0 dot-grid opacity-25" />
+                    <div className="absolute left-4 top-4 text-4xl drop-shadow-md">
                       {c.flagEmoji}
-                    </motion.div>
+                    </div>
                     {c.featured && (
                       <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
                         <Star className="h-3 w-3 fill-gold text-gold" />

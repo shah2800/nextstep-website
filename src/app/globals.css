@@ -188,7 +188,7 @@
   background: var(--gold);
 }
 
-/* Hero gradient mesh — slowly shifts hue for a living, premium feel */
+/* Hero gradient mesh */
 .hero-mesh {
   background-color: var(--brand);
   background-image:
@@ -196,12 +196,6 @@
     radial-gradient(at 85% 12%, oklch(0.5 0.12 200 / 0.55) 0px, transparent 50%),
     radial-gradient(at 78% 88%, oklch(0.82 0.15 75 / 0.35) 0px, transparent 55%),
     radial-gradient(at 18% 92%, oklch(0.35 0.08 270 / 0.7) 0px, transparent 50%);
-  background-size: 200% 200%;
-  animation: mesh-shift 18s ease-in-out infinite;
-}
-@keyframes mesh-shift {
-  0%, 100% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
 }
 
 /* Subtle pattern overlay */
