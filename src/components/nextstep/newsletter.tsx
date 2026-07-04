@@ -39,7 +39,7 @@ export function Newsletter() {
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-sm sm:p-10">
+        <div className="relative overflow-hidden [contain:paint] rounded-3xl border border-border bg-card p-7 shadow-sm sm:p-10">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/10" />
           <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-brand/10" />
           <div className="relative flex flex-col items-center gap-6 text-center md:flex-row md:text-left">

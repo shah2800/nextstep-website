@@ -20,7 +20,7 @@ export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen w-full max-w-[100vw] flex-col overflow-x-clip bg-background">
       <Header onBookSession={() => setBookingOpen(true)} />
 
       <main className="flex-1">

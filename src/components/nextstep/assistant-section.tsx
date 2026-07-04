@@ -16,7 +16,7 @@ export function AssistantSection({
   return (
     <section
       id="assistant"
-      className="scroll-mt-20 overflow-hidden bg-brand py-16 text-white sm:py-20"
+      className="relative scroll-mt-20 overflow-hidden [contain:paint] bg-brand py-16 text-white sm:py-20"
     >
       <div className="absolute inset-0 dot-grid opacity-20" />
       <div className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />

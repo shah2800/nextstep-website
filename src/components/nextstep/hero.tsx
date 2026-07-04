@@ -13,7 +13,7 @@ export function Hero({
   onBookSession: () => void;
 }) {
   return (
-    <section className="relative overflow-hidden hero-mesh text-white">
+    <section className="relative overflow-hidden [contain:paint] hero-mesh text-white">
       <div className="absolute inset-0 dot-grid opacity-40" />
       {/* Floating decorative shapes */}
       <div className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
