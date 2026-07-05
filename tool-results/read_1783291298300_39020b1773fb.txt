@@ -1,0 +1,315 @@
+     1→# Worklog - FES Study Abroad Consultancy Website
+     2→
+     3→Project: Full-stack Next.js website based on FESPak.com theme
+     4→"Study Abroad Destinations for Pakistani Students | FES Higher Education Consultants"
+     5→
+     6→---
+     7→Task ID: 1
+     8→Agent: Main (orchestrator)
+     9→Task: Setup theme, layout, prisma schema, db push
+    10→
+    11→Work Log:
+    12→- Analyzed FESPak.com theme: education consultancy for Pakistani students, 15 study destinations, guidance forms, AI assistant
+    13→- Planning navy + amber palette (trust + aspiration) matching FESPak professional look
+    14→- Will update globals.css, layout.tsx, prisma/schema.prisma
+    15→
+    16→Stage Summary:
+    17→- In progress
+    18→
+    19→---
+    20→Task ID: 2-7
+    21→Agent: Main (orchestrator)
+    22→Task: Build frontend components, API routes, assemble page, verify with Agent Browser
+    23→
+    24→Work Log:
+    25→- Built 11 frontend components in src/components/fes/: header, hero, stats, countries, country-detail-dialog, compare-factors, services, counseling-cta, assistant-section, newsletter, footer, guidance-form-dialog, book-session-dialog, ai-assistant
+    26→- Built 6 API routes: /api/countries (auto-seeds DB), /api/guidance (POST+GET, zod validation, DB write), /api/book-session, /api/newsletter, /api/ai-assistant (LLM via z-ai-web-dev-sdk + DB conversation history), /api/seed
+    27→- Assembled src/app/page.tsx wiring all sections + modals + floating AI assistant
+    28→- Theme: navy (brand) + gold accent palette in globals.css matching FESPak professional look
+    29→- Generated 2 images via image-generation skill: hero-students.png, counseling.png
+    30→- Prisma schema: Country, GuidanceRequest, BookingSession, Newsletter, ChatMessage models; db pushed
+    31→
+    32→Verification (all passed):
+    33→- Lint: clean (eslint, 0 errors)
+    34→- Page renders: title "FES Higher Education Consultants | Study Abroad for Pakistani Students", all 16 countries with flags/taglines/tuition, all sections (hero, stats, countries, compare, services, CTA, assistant, newsletter, footer)
+    35→- Country detail dialog: opens with Overview, Top Universities, Popular Courses, Visa Process, Scholarships, Work Rights
+    36→- AI assistant backend (curl): POST /api/ai-assistant returned personalized LLM recommendation for FSc/IELTS 6.5/$15k budget profile
+    37→- AI assistant UI (agent-browser): full chat flow verified — greeting shown, "MBA options under 25k budget" sent, LLM replied in 2.7s with Germany recommendation, conversation persisted to DB (ChatMessage INSERTs confirmed in dev.log)
+    38→- Guidance form: POST /api/guidance saved to DB (returned id)
+    39→- Newsletter: POST /api/newsletter subscribed successfully
+    40→- Countries API: returns all 16 destinations
+    41→
+    42→Stage Summary:
+    43→- Full-stack FES study-abroad consultancy website complete and verified
+    44→- Frontend: single-page app with sticky header, hero, 16 country guides with detail modals, compare factors, 6 services, counseling CTA, AI assistant section, newsletter, sticky footer
+    45→- Backend: 6 API routes with Prisma + SQLite, zod validation, LLM-powered AI counselor
+    46→- All core user flows browser-verified end-to-end
+    47→
+    48→---
+    49→Task ID: 8
+    50→Agent: Main (orchestrator)
+    51→Task: Rebrand FES → NextStep International (name, phone, email, all references)
+    52→
+    53→Work Log:
+    54→- Searched all source files for FES/fespak/+92 345 8454769/info@fespak.com references
+    55→- Replaced across 10 files: header, footer, hero, counseling-cta, guidance-form-dialog, assistant-section, ai-assistant, country-detail-dialog, layout.tsx (metadata), api/ai-assistant (LLM system prompt), countries.ts, globals.css
+    56→- Brand name: FES / FES Higher Education Consultants → NextStep International
+    57→- Phone/WhatsApp: +92 345 8454769 → +92 314 2638901 (tel: links, wa.me links, display text)
+    58→- Email: info@fespak.com → info@nextstepinternationals.com
+    59→- AI chatbot identity: "FES Assistant" → "NextStep Assistant"
+    60→- Internal identifiers renamed: sessionStorage key fes-chat-session → nextstep-chat-session, custom event open-fes-assistant → open-nextstep-assistant
+    61→- Renamed folder: src/components/fes/ → src/components/nextstep/ and updated all 13 imports in page.tsx
+    62→- LLM system prompt updated: counselor now identifies as NextStep International
+    63→
+    64→Stage Summary:
+    65→- ZERO references to FES/fespak/old phone/old email remain (verified via case-insensitive grep)
+    66→- Lint passes cleanly (0 errors)
+    67→- Rendered HTML verified: title = "NextStep International | Study Abroad for Pakistani Students", footer/header show new name + phone +92 314 2638901 + email info@nextstepinternationals.com
+    68→- WhatsApp link points to wa.me/923142638901
+    69→
+    70→---
+    71→Task ID: 9
+    72→Agent: Main (orchestrator)
+    73→Task: Replace ICEF Accredited text + add animations (researched education consultant sites)
+    74→
+    75→Work Log:
+    76→- Researched modern education consultant site animation patterns (IDP, ApplyBoard, scroll-driven hero, counter animations, testimonial carousels)
+    77→- Replaced "ICEF Accredited (Agency ID 2750)" in hero with "Direct University Partnerships · 850+ Institutions" and "16 destinations worldwide" with "15+ Years of Trusted Guidance"
+    78→- Replaced footer ICEF badge with "Authorized Representatives · Direct University Tie-ups"
+    79→- Created useCountUp hook (src/hooks/use-count-up.ts) — IntersectionObserver triggers easeOutExpo count-up animation
+    80→- Created ScrollProgress component — gold gradient bar at top that fills as user scrolls (useScroll + useSpring)
+    81→- Rewrote Stats component — numbers now count up from 0 when scrolled into view, with hover lift + icon rotate
+    82→- Added testimonials data (5 student stories: UK, Germany, Australia, Canada, Hungary) to countries.ts
+    83→- Created Testimonials component — auto-rotating carousel every 5s, pause-on-hover, prev/next + dot navigation, AnimatePresence slide transitions
+    84→- Enhanced hero: floating stat cards now continuously bob up/down (4s/4.5s loops), animated gradient mesh background (18s hue shift)
+    85→- Enhanced country cards: staggered scale-in reveal, flag bounces+rotates on hover, gradient banner zooms on hover
+    86→- Wired ScrollProgress + Testimonials into page.tsx
+    87→
+    88→Stage Summary:
+    89→- ICEF references fully removed (verified in rendered HTML)
+    90→- 6 animation systems added: count-up stats, scroll progress bar, testimonial carousel, floating hero cards, animated gradient mesh, enhanced card hover micro-interactions
+    91→- All browser-verified: testimonials render with dots/controls, scroll bar present, stat counters animate, no console errors
+    92→- Lint passes cleanly
+    93→
+    94→---
+    95→Task ID: 10
+    96→Agent: Main (orchestrator)
+    97→Task: Remove all animations (revert to normal)
+    98→
+    99→Work Log:
+   100→- Removed ScrollProgress from page.tsx (import + usage)
+   101→- Removed Testimonials section from page.tsx (import + usage)
+   102→- Reverted Stats component to static values (removed useCountUp hook usage)
+   103→- Reverted hero floating stat cards to static (removed continuous bob animation)
+   104→- Reverted hero gradient mesh to static (removed mesh-shift keyframe animation)
+   105→- Reverted country cards to simple reveal (removed scale-in, flag bounce/rotate, banner zoom)
+   106→- Deleted unused files: testimonials.tsx, scroll-progress.tsx, use-count-up.ts
+   107→- Removed testimonials data block from countries.ts
+   108→- Reverted stats data to remove target/suffix fields
+   109→- Kept: ICEF→NextStep rebrand (trust badges), mobile overflow fix (overflow-x: clip + contain:paint)
+   110→
+   111→Stage Summary:
+   112→- All added animations reverted; site back to normal static reveals only
+   113→- Lint passes cleanly, HTTP 200
+   114→- ICEF replacement text preserved (Direct University Partnerships, 15+ Years, Authorized Representatives)
+   115→
+   116→---
+   117→Task ID: 11
+   118→Agent: Main (orchestrator)
+   119→Task: Build 3 unique AI-powered features (Document Analyzer, SOP Reviewer, Cost Calculator)
+   120→
+   121→Work Log:
+   122→- Created cost-data.ts with monthly cost breakdowns (rent/food/transport/utilities/health/leisure) for 30+ cities across all 16 destinations + lifestyle multipliers (frugal/balanced/comfortable)
+   123→- Built /api/analyze-document route: receives base64 image, uses VLM (createVision) to extract qualification/major/GPA/subjects/institution, returns structured profile + heuristic-matched destinations (UK/Germany/Canada/Hungary/Malaysia/Australia based on profile)
+   124→- Built /api/review-sop route: receives SOP text + optional country/course, uses LLM to return JSON with overall score (0-100), 5 category scores (structure/clarity/motivation/fit/language), verdict, strengths, weaknesses, line-by-line suggestions (quote+issue+fix), quick tips, red flags
+   125→- Built cost-calculator.tsx: city + lifestyle selectors, Recharts donut chart with category breakdown, monthly + annual totals, color-coded category list with icons
+   126→- Built document-analyzer.tsx: drag-drop image upload, preview, AI analysis with loading states, extracted profile display (qualification/major/GPA/subjects), confidence badge, matched destinations list with reasons
+   127→- Built sop-reviewer.tsx: country/course selectors + SOP textarea, AI review display with overall score hero card, 5 category score tiles, strengths/weaknesses lists, quoted line-by-line suggestions, red flags, quick tips
+   128→- Built ai-tools.tsx: tabbed section (3 tabs) wrapping all 3 features with shared header "AI-powered tools to fast-track your application"
+   129→- Added "AI Tools" nav link to header, wired AiTools section into page.tsx (between Services and CounselingCta)
+   130→
+   131→Verification:
+   132→- Lint passes cleanly (0 errors)
+   133→- Document Analyzer API: tested with sample transcript image → correctly extracted "Bachelor of Science", GPA "3.6/4.0", summary, matched 5 destinations ✓
+   134→- SOP Reviewer API: tested with weak sample SOP → scored 25/100 "Weak", 4 line-by-line suggestions, 5 quick tips ✓
+   135→- Cost Calculator: Recharts donut chart renders ✓
+   136→- UI: all 3 tabs present, nav link present, file upload + SOP textarea + chart all render, no console errors ✓
+   137→
+   138→Stage Summary:
+   139→- 3 unique AI-powered features built and verified end-to-end
+   140→- NextStep International now has Document Analyzer (VLM), SOP Reviewer (LLM), and Cost Calculator (Recharts) — most tech-forward education consultancy features
+   141→- All accessible via "AI Tools" tabbed section + header nav link
+   142→
+   143→---
+   144→Task ID: 6
+   145→Agent: full-stack-developer
+   146→Task: Build admin dashboard UI
+   147→
+   148→Work Log:
+   149→- Read worklog + project context: NextStep International study-abroad site (Next.js 16, shadcn/ui, Prisma, navy `bg-brand` + gold `text-gold` theme). Confirmed admin API routes already exist (/api/admin/analytics, /countries, /content) and match the requested contracts.
+   150→- Inspected existing UI primitives (tabs, table, dialog, select, checkbox, skeleton, sonner) and confirmed `bg-brand`, `text-gold`, `custom-scroll` helpers exist in globals.css. Verified sonner `<Toaster/>` is mounted in layout.tsx.
+   151→- Wrote single client component at src/components/nextstep/admin-dashboard.tsx (~1100 lines) with signature `export function AdminDashboard({ onClose }: { onClose: () => void })`.
+   152→  - Access gate: full-screen navy hero-mesh login card with password input, demo hint showing `nextstep-admin`, 300ms verify delay, error state on wrong password. Auth stored in component state only.
+   153→  - Dashboard shell: sticky `bg-brand text-white` header with "NextStep Admin" + "Back to Site" button (calls onClose). Body is `max-w-7xl mx-auto px-4 py-6` with shadcn `Tabs`. TabsList uses `grid grid-cols-5` and scrolls horizontally on mobile (`overflow-x-auto` wrapper, min-w-[640px]).
+   154→  - Tab 1 Analytics: fetches GET /api/admin/analytics. Renders 8 stat cards (Total Visitors, Visitors Today, Total Clicks, Clicks Today, Avg Session Duration via formatDuration, Guidance Requests, Bookings, Newsletter Subs) in a 2/4-col grid with rounded-2xl border p-5 and `text-3xl font-extrabold text-brand` numbers. Recharts `BarChart` of `dailyVisitors` (last 7 days) with navy bars, gold-on-hover gold custom scroll. Top Clicked Elements as horizontal gold progress bars with type badges + counts. Top Sections list with views/avg/total durations. Recent Activity list with relative-time + type badges, max-h-80 custom-scroll. Skeleton loaders + Refresh button.
+   155→  - Tab 2 Countries: GET /api/admin/countries → scrollable table (max-h-[60vh] overflow-y-auto custom-scroll, sticky header). Columns: flag, name/slug, tagline, featured star, order, Edit/Delete actions. "Add Country" + Edit both open a max-w-3xl Dialog with ALL 19 fields (slug, name, flagEmoji, tagline, shortDesc, longDesc, capital, currency, language, tuitionRange, livingCost, visaProcess, topUniversities, popularCourses, intakeMonths, scholarships, workRights, gradient dropdown with 6 presets + live gradient swatches, accentColor with color swatch preview, featured checkbox, order number). Create→POST, Update→PUT (with id), Delete→DELETE?id=. Confirmation dialog before delete. Sonner toast on every success/error. Refresh list after each mutation.
+   156→  - Tab 3 Content: GET /api/admin/content. 8 hero fields (heroBadge, heroTitle/heroSubtitle as textareas, heroPrimaryCta, heroSecondaryCta, heroTrust1, heroTrust2, heroImage with thumbnail preview). Each field card has its own Save button → PUT /api/admin/content with `{key, value}`. Sonner toast on save.
+   157→  - Tab 4 Services: editable cards with icon Select (6 options: Compass/FileCheck/Plane/GraduationCap/Wallet/Home, each rendered with its Lucide icon in dropdown), title Input, description Textarea. Add/Remove/Move-up/Move-down per card. "Save Services" button → PUT with `{key: "services", value: [...]}`.
+   158→  - Tab 5 Compare Factors: editable cards with icon Select, title Input, description Textarea, points Textarea (one point per line, joined/split on newline). Add/Remove/Reorder. "Save Compare Factors" button → PUT with `{key: "compareFactors", value: [...]}`.
+   159→  - Helpers: `formatDuration(ms)` → "Xs" or "Xm Ys"; `formatRelativeTime(iso)` → "Ns/Nm/Nh/Nd ago" or locale date. `useSiteContent` hook shared by Content/Services/Compare tabs. `Field` + `SectionCard` + `EmptyState` + `Spinner` presentational helpers.
+   160→  - Locks body scroll while mounted (restores on unmount). All loading states use Skeletons or spinners. Fully responsive (grids stack on mobile, tabs scroll, stat cards 2-col → 4-col).
+   161→- Lint: `bun run lint` → 0 errors (1 pre-existing warning in unrelated `src/hooks/use-analytics.ts` which I was instructed not to touch). Removed an unused eslint-disable directive to keep my file warning-free.
+   162→
+   163→Stage Summary:
+   164→- Production-quality admin dashboard component delivered as a single client component (no new routes/pages/other files touched).
+   165→- Full-screen `fixed inset-0 z-[100]` overlay with sticky navy header, password gate (`nextstep-admin`), 5-tab interface wired to existing admin API routes.
+   166→- Analytics tab: stat grid + Recharts 7-day visitors bar chart + top clicks (gold progress bars) + top sections + recent activity, all with skeleton loaders and refresh.
+   167→- Countries tab: full CRUD with all 19 fields, gradient/accent pickers, featured checkbox, delete confirmation, scrollable table.
+   168→- Content/Services/Compare tabs: live editors with per-field/per-section saves, sonner toasts, reorderable cards.
+   169→- Visually polished: navy/gold theme tokens, rounded-2xl cards, uppercase micro-labels, hover states, sticky dialog scroll, custom scrollbars, responsive across mobile/desktop.
+   170→- Verified clean lint; dev server logs show no compile errors.
+   171→
+   172→---
+   173→Task ID: 7-8
+   174→Agent: Main (orchestrator) + full-stack-developer subagent
+   175→Task: Build complete admin dashboard (analytics + content management)
+   176→
+   177→Work Log:
+   178→- Prisma schema: added Visit, ClickEvent, SectionView, SiteContent models + db:push
+   179→- Built /api/track route: handles visit (upsert + pageViews increment), click, section (duration) events
+   180→- Built useAnalytics client hook: records visits on load, clicks on [data-track] elements, section view durations via IntersectionObserver, flushes on beforeunload
+   181→- Added data-track attributes to hero CTAs and country cards
+   182→- Built content layer (src/lib/content.ts): defaultContent object + loadContent() that merges DB overrides
+   183→- Built /api/content (public GET), /api/admin/content (GET/PUT/POST reset), /api/admin/countries (GET/POST/PUT/DELETE CRUD)
+   184→- Built /api/admin/analytics: aggregated stats (visitors, clicks, section views, avg duration), top clicks, top sections, daily visitors (7-day), recent activity, lead counts — computed in JS to avoid groupBy edge cases
+   185→- Updated public components (Stats, Services, CompareFactors) to fetch content from /api/content (CMS-driven with defaults fallback)
+   186→- Subagent built admin-dashboard.tsx (~1100 lines): full-screen overlay, password gate (nextstep-admin), 5 tabs
+   187→  - Analytics: 8 stat cards + Recharts bar chart (7-day visitors) + top clicks/sections + recent activity
+   188→  - Countries: CRUD table with Add/Edit dialog (all 19 fields) + delete confirmation
+   189→  - Content: 8 hero fields with individual save buttons
+   190→  - Services: editable cards with icon select, add/remove/reorder, bulk save
+   191→  - Compare Factors: editable cards with points textarea, bulk save
+   192→- Wired admin access via ?admin=true in page.tsx (renders AdminDashboard overlay), added "Admin" link in footer
+   193→- Added useAnalytics() hook to page.tsx for public-site tracking
+   194→
+   195→Verification (all passed):
+   196→- Lint: clean (0 errors)
+   197→- Track API: visit/click/section events all return {success:true}
+   198→- Analytics API: returns visitors(1), clicks(1), sectionViews(1), topClicks, dailyVisitors(7)
+   199→- Content API: returns defaults (heroTitle, 6 services, 3 compareFactors)
+   200→- Admin content PUT: updated heroBadge successfully
+   201→- Admin countries: 16 countries listed
+   202→- Admin dashboard UI (Agent Browser): login gate works, password accepted, 5 tabs render, Analytics stats show, Countries table loads, no console errors
+   203→
+   204→Stage Summary:
+   205→- Complete admin dashboard built and verified end-to-end
+   206→- Analytics: tracks visitors, clicks, section view durations with 7-day chart + top elements/sections
+   207→- Content management: edit hero text, stats, services, compare factors live from dashboard
+   208→- Country CRUD: add/edit/delete countries with full 19-field form — changes reflect on public site immediately
+   209→- Access: footer "Admin" link or ?admin=true → password "nextstep-admin"
+   210→
+   211→---
+   212→Task ID: 3
+   213→Agent: full-stack-developer
+   214→Task: Expand admin dashboard with Leads tab + full content editors
+   215→
+   216→Work Log:
+   217→- Read worklog + existing admin-dashboard.tsx (1879 lines, 5 tabs: Analytics/Countries/Content/Services/Compare) + verified `/api/admin/leads` route already exists with the exact contract specified (GET returns {guidance, bookings, newsletter, counts}, PUT body {model,id,status}, DELETE ?id=&model=). Also verified `/api/admin/content` accepts any key string via PUT and the default content object (src/lib/content.ts) already has counseling/assistant/newsletter/footer/stats fields wired up.
+   218→- Rewrote `src/components/nextstep/admin-dashboard.tsx` (~1880 → 2954 lines). Kept the existing password gate, navy/gold theme, sticky header, all helper functions (formatDuration, formatRelativeTime), all existing tabs (Analytics/Countries/Services/Compare) byte-identical. Added:
+   219→  - NEW TAB "Leads" as tab #1 (Dashboard shell now `grid-cols-6`, min-w-[760px], with Inbox icon). Default tab on dashboard open is now "leads".
+   220→  - Added new lucide-react imports: BadgeCheck, CalendarDays, Eye, Globe2, Inbox, Mail, MapPin, MessageCircle, Phone (for stat icons + content section icons + leads UI).
+   221→  - New types: GuidanceLead, BookingLead, NewsletterLead, LeadsData, LeadModel, Stat. New helper `formatLeadDate(iso)` → "Jul 3, 2:30 PM" via `toLocaleString("en-US", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit", hour12:true})`.
+   222→  - New constants: `STAT_ICONS` (Users/Building2/Globe2/BadgeCheck) + `STAT_ICON_MAP`, `GUIDANCE_STATUS_STYLES` (new=blue, contacted=amber, closed=emerald), `BOOKING_STATUS_STYLES` (pending=slate, confirmed=amber, completed=emerald, cancelled=rose), `defaultStats` for first-load fallback.
+   223→  - `LeadsTab` component: fetches GET /api/admin/leads (cache:"no-store"). Renders 4 summary cards (Guidance Requests + new count, Bookings + pending count, Newsletter Subs, Total Leads) + nested Tabs with 3 sub-tabs (Guidance/Bookings/Newsletter), each tab trigger showing count Badge. Refresh button. Loading skeletons (3 cards + table).
+   224→    - Guidance table (10 cols, scrollable max-h-[55vh] overflow-y-auto custom-scroll, sticky header, horizontal scroll on mobile): Name, Email (mailto: link), Phone (tel: link), Qualification, Course, Budget, English Test, Status (inline Select dropdown new→contacted→closed with color-coded trigger), Created (formatted date), Actions (Eye view + Trash2 delete). Clicking row opens detail Dialog.
+   225→    - Bookings table (10 cols): Name, Email, Phone, Date, Time, Mode (badge), Service, Status (Select pending→confirmed→completed→cancelled), Created, Actions (view + delete).
+   226→    - Newsletter table (3 cols): Email, Subscribed date, Delete button.
+   227→    - Status update via PUT /api/admin/leads with `{model, id, status}`. After update, shows sonner toast and silently refreshes data.
+   228→    - Delete via DELETE /api/admin/leads?id=&model= with confirmation Dialog showing the lead label. Sonner toast on success/failure.
+   229→    - Detail dialogs: GuidanceDetailDialog shows all 9 fields (email, phone, qualification, graduationYear, preferredCourse, budget, englishTest, preferredCountries, message) in a 2-col grid + status badge. BookingDetailDialog shows all 7 fields + status badge. Both scrollable max-h-[90vh].
+   230→    - `SummaryCard` and `DetailField` presentational helpers added.
+   231→  - EXPANDED ContentTab: now has 6 SectionCards grouped with dividers — Stats Strip (top), Hero Section, Counseling CTA Section, AI Assistant Section, Newsletter Section, Footer / Contact.
+   232→    - Stats Editor: 4 stat rows in `grid-cols-[1fr_1fr_180px]` with Label input + Value input + Icon Select (Users/Building2/Globe2/BadgeCheck, each rendered with its Lucide icon in dropdown). Single "Save Stats" button → PUT {key:"stats", value:[...]}.
+   233→    - Counseling CTA section: 6 fields (counselingBadge, counselingTitle textarea, counselingSubtitle textarea, counselingCta1, counselingCta2, counselingImage with thumbnail preview).
+   234→    - AI Assistant section: 4 fields (assistantBadge, assistantTitle, assistantSubtitle textarea, assistantCta).
+   235→    - Newsletter section: 2 fields (newsletterTitle, newsletterSubtitle textarea).
+   236→    - Footer / Contact section: 5 fields (footerBrand, footerAddress textarea, footerPhone with Phone icon prefix, footerEmail with Mail icon prefix, footerWhatsapp with MessageCircle icon prefix + hint "digits only").
+   237→    - Extracted `FieldCard` reusable component (label + input/textarea + per-field Save button → PUT {key, value} → sonner toast). Replaces the inline hero card render. Each individual field saves independently with the same pattern as before.
+   238→    - Added `ContentField` type + 5 field-config arrays (HERO_FIELDS, COUNSELING_FIELDS, ASSISTANT_FIELDS, NEWSLETTER_FIELDS, FOOTER_FIELDS) + FIELD_LABELS map for toast messages.
+   239→- Lint: `bun run lint` → 0 errors (clean). Removed an unused Clock import to keep things tidy.
+   240→- File grew from 1879 → 2954 lines (+1075 lines). All existing functionality preserved (password gate "nextstep-admin", 5 original tabs unchanged in behavior, just reordered).
+   241→
+   242→Stage Summary:
+   243→- Admin dashboard now has 6 tabs in order: Leads (NEW), Analytics, Countries, Content (EXPANDED), Services, Compare Factors.
+   244→- Leads tab is full lead-management UI: 4 summary cards + 3 sub-tabs (Guidance/Bookings/Newsletter) with count badges, scrollable tables with inline status dropdowns (color-coded new/contacted/closed and pending/confirmed/completed/cancelled), view-details dialogs showing ALL fields, delete with confirmation, refresh button, sonner toasts, loading skeletons, formatted dates.
+   245→- Content tab now controls EVERY editable text block on the site: Stats Strip (4 rows with icon picker), Hero Section (8 fields), Counseling CTA (6 fields), AI Assistant (4 fields), Newsletter (2 fields), Footer / Contact (5 fields). Each field saves independently via PUT /api/admin/content {key, value} with sonner toast feedback.
+   246→- Dashboard controls 100% of the editable website: hero copy, stats strip, all 6 services (reorderable), all 3 compare factors (reorderable with bullet points), all 16 country guides (full CRUD with 19 fields), counseling/assistant/newsletter/footer text, AND now full lead lifecycle management.
+   247→- Lint passes cleanly. No backend changes needed (existing /api/admin/leads and /api/admin/content routes already supported the full contract).
+   248→
+   249→---
+   250→Task ID: 4
+   251→Agent: Main (orchestrator)
+   252→Task: Complete the admin dashboard — add Leads management + full content editors for every section
+   253→
+   254→Work Log:
+   255→- Extended content.ts with 16 new content keys: counseling (badge/title/subtitle/cta1/cta2/image), assistant (badge/title/subtitle/cta), newsletter (title/subtitle), footer (address/phone/email/whatsapp/brand)
+   256→- Built /api/admin/leads API: GET (guidance+bookings+newsletter+counts), PUT (update status), DELETE (remove lead)
+   257→- Updated 4 public components to be CMS-driven (fetch from /api/content): counseling-cta, assistant-section, newsletter, footer
+   258→- Subagent expanded admin-dashboard.tsx (1879→2954 lines):
+   259→  - NEW Leads tab (tab #1): 4 summary cards, 3 sub-tabs (Guidance/Bookings/Newsletter), full tables with status dropdowns (new→contacted→closed, pending→confirmed→completed→cancelled), detail dialogs, delete with confirmation, refresh, loading skeletons
+   260→  - EXPANDED Content tab: 6 grouped sections — Stats editor (4 rows with icon select), Hero (8 fields), Counseling CTA (6 fields), AI Assistant (4 fields), Newsletter (2 fields), Footer/Contact (5 fields)
+   261→  - Tab order: Leads, Analytics, Countries, Content, Services, Compare Factors
+   262→
+   263→Verification (all passed):
+   264→- Lint: clean (0 errors)
+   265→- Leads API: returns guidance(1), bookings(0), newsletter(1) + counts
+   266→- Content API: all 16 new keys present
+   267→- Admin content PUT: updated counselingTitle + footerPhone successfully
+   268→- Public site reflects admin edits in real-time (verified via /api/content)
+   269→- Admin dashboard UI: 6 tabs render, Leads tab shows guidance/bookings/newsletter with sub-tabs + count badges, Content tab shows all 6 sections with editable fields (Stats, Hero, Counseling, Assistant, Newsletter, Footer)
+   270→- No console errors
+   271→
+   272→Stage Summary:
+   273→- Admin dashboard now controls EVERYTHING on the website:
+   274→  - View & manage all student leads (guidance requests, bookings, newsletter subs) with status workflows
+   275→  - Edit all 4 stat cards (label, value, icon)
+   276→  - Edit all hero text + image
+   277→  - Edit all counseling CTA text + image
+   278→  - Edit AI assistant section text
+   279→  - Edit newsletter section text
+   280→  - Edit footer contact info (address, phone, email, WhatsApp, brand name)
+   281→  - Full CRUD on 16 countries (add/edit/delete with 19 fields)
+   282→  - Edit all 6 services (icon, title, description, reorder)
+   283→  - Edit all 3 compare factors (icon, title, description, points)
+   284→  - View full analytics (visitors, clicks, section time, 7-day chart, top elements/sections)
+   285→
+   286→---
+   287→Task ID: 5
+   288→Agent: Main (orchestrator)
+   289→Task: Build 3 standout features — Instant Profile Screener, Zero-Drop-Off WhatsApp Agent, Morphing Landing Pages
+   290→
+   291→Work Log:
+   292→- Built /api/profile-screener: algorithm that cross-references student's qualification + IELTS + budget + preferred course against all 16 countries. Computes 0-99 match score with weighted factors (budget 40%, IELTS 30%, qualification 20%, course 10%) + special bonuses (Germany tuition-free, Hungary scholarship, Malaysia affordable). Returns reasons + warnings per country.
+   293→- Fixed currency parser to handle A$/C$/NZ$/S$/€/£/RM/AED/₺ with FX conversion to USD
+   294→- Built profile-screener.tsx: IELTS slider, budget slider, qualification select, course input → instant match scores with color-coded bars (green/amber/orange/red), top match badge, reasons (green checks), warnings (amber alerts)
+   295→- Built Zero-Drop-Off WhatsApp trigger: modified guidance form success screen to show "Continue on WhatsApp" button that opens wa.me with personalized pre-filled message containing the student's full profile (name, qualification, graduation year, course, budget, English test, preferred countries)
+   296→- Built useCountryParam hook + MorphingBanner component: reads ?country= param, shows gradient banner with country flag/tagline/tuition/work rights
+   297→- Morphed Hero: hero h1 + badge + subtitle dynamically rewrite to highlight the morphing country (e.g. "Study in Australia 🇦🇺")
+   298→- Morphed Countries grid: matching country card gets gold ring + border highlight
+   299→- Added Profile Screener as default tab in AI Tools (4 tabs now: Screener, Analyzer, SOP, Cost)
+   300→- Wired MorphingBanner into page.tsx above the header
+   301→
+   302→Verification (all passed):
+   303→- Lint: clean (0 errors)
+   304→- Profile Screener API: $8k budget correctly matches Germany (€0 tuition, "covers") + Malaysia (RM 15k = $3.1k, "covers"), warns Canada "tight"; $30k budget correctly covers UK/Australia/US
+   305→- Morphing page (?country=australia): h1 = "Study in Australia 🇦🇺", banner = "Specialized in Australia", Australia card has gold ring + border ✓
+   306→- AI Tools: 4 tabs present, Profile Screener has 2 sliders + budget label ✓
+   307→- WhatsApp trigger: wa.me link present on guidance form success screen ✓
+   308→- No console errors
+   309→
+   310→Stage Summary:
+   311→- 3 standout features built and verified end-to-end:
+   312→  1. Instant Profile Screener — instant match scores, no waiting for counselor
+   313→  2. Zero-Drop-Off WhatsApp — form submission opens WhatsApp with personalized profile pre-filled
+   314→  3. Morphing Landing Pages — ?country= param rewrites hero + banner + highlights matching country card
+   315→

@@ -16,40 +16,55 @@ import { GuidanceFormDialog } from "@/components/nextstep/guidance-form-dialog";
 import { BookSessionDialog } from "@/components/nextstep/book-session-dialog";
 import { AiAssistant } from "@/components/nextstep/ai-assistant";
 import { AdminDashboard } from "@/components/nextstep/admin-dashboard";
+import { ApplyPage } from "@/components/nextstep/apply-page";
+import { TrackPage } from "@/components/nextstep/track-page";
 import { MorphingBanner } from "@/components/nextstep/morphing-banner";
 import { useAnalytics } from "@/hooks/use-analytics";
+
+type View = "home" | "apply" | "track" | "admin";
 
 export default function Home() {
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [adminMode, setAdminMode] = useState(false);
+  const [view, setView] = useState<View>("home");
 
   // Track analytics on the public site
   useAnalytics();
 
-  // Check for ?admin=true on mount and on URL changes
+  // Read URL params to determine which view to show
   useEffect(() => {
-    const checkAdmin = () => {
+    const checkView = () => {
       const params = new URLSearchParams(window.location.search);
-      setAdminMode(params.get("admin") === "true");
+      if (params.get("admin") === "true") setView("admin");
+      else if (params.get("apply") === "true") setView("apply");
+      else if (params.get("track") === "true") setView("track");
+      else setView("home");
     };
-    checkAdmin();
-    window.addEventListener("popstate", checkAdmin);
-    window.addEventListener("pushstate", checkAdmin);
+    checkView();
+    window.addEventListener("popstate", checkView);
+    window.addEventListener("pushstate", checkView);
     return () => {
-      window.removeEventListener("popstate", checkAdmin);
-      window.removeEventListener("pushstate", checkAdmin);
+      window.removeEventListener("popstate", checkView);
+      window.removeEventListener("pushstate", checkView);
     };
   }, []);
 
-  // Admin mode: render the dashboard overlay
-  if (adminMode) {
-    return <AdminDashboard onClose={() => {
-      setAdminMode(false);
-      const url = new URL(window.location.href);
-      url.searchParams.delete("admin");
-      window.history.replaceState({}, "", url.toString());
-    }} />;
+  const closeOverlay = (param: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete(param);
+    window.history.replaceState({}, "", url.toString());
+    setView("home");
+  };
+
+  // Overlay views
+  if (view === "admin") {
+    return <AdminDashboard onClose={() => closeOverlay("admin")} />;
+  }
+  if (view === "apply") {
+    return <ApplyPage onClose={() => closeOverlay("apply")} />;
+  }
+  if (view === "track") {
+    return <TrackPage onClose={() => closeOverlay("track")} />;
   }
 
   return (

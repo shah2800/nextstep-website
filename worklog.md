@@ -312,3 +312,67 @@ Stage Summary:
   1. Instant Profile Screener — instant match scores, no waiting for counselor
   2. Zero-Drop-Off WhatsApp — form submission opens WhatsApp with personalized profile pre-filled
   3. Morphing Landing Pages — ?country= param rewrites hero + banner + highlights matching country card
+
+---
+Task ID: 6
+Agent: full-stack-developer
+Task: Add Applications tab to admin dashboard
+
+Work Log:
+- Read existing /home/z/my-project/src/components/nextstep/admin-dashboard.tsx (2954 lines, 6 tabs) to match code style, imports, helpers (formatLeadDate, SummaryCard, DetailField, EmptyState), fetch/no-store pattern, sonner toasts, and the password-gated Dashboard shell.
+- Verified the API contract at src/app/api/admin/applications/route.ts (GET list w/ milestones, PUT applicationId+headline/status/milestoneId/milestoneStatus/milestoneNote, DELETE ?id=) and the Prisma Application/ApplicationMilestone models.
+- Added imports: `useRef` (React) and `ClipboardList` (lucide-react).
+- Added types: `ApplicationStatus`, `MilestoneStatus`, `ApplicationMilestone`, `Application` (all fields from the API contract).
+- Added constants: `APPLICATION_STATUS_STYLES` (submitted=blue, review=amber, accepted=emerald, rejected=rose, enrolled=violet), `MILESTONE_STATUS_STYLES` (pending=slate, active=amber, done=emerald, issue=rose), `MILESTONE_STATUS_DOT` (matching dot colors for the timeline).
+- Updated Dashboard TabsList: `grid-cols-6` -> `grid-cols-7`, `min-w-[760px]` -> `min-w-[860px]`, inserted the new `applications` TabsTrigger (ClipboardList icon, "Applications"/"Apps" labels) right after Leads, and the matching `TabsContent` rendering `<ApplicationsTab />`.
+- Implemented `ApplicationsTab` (inserted as Tab 2, before AnalyticsTab):
+  - State: applications list, loading, refreshing, viewApp (detail dialog), confirmDelete, updatingId, headlineDraft + noteDrafts (editable text), lastSyncedAppId ref (so drafts only re-sync when a different app is opened, not on every optimistic update).
+  - `fetchApps` (cache: "no-store"), loading skeleton (4 summary cards + table block) + empty state.
+  - Summary cards: Total Applications, New (submitted), In Review (review), Accepted (accepted).
+  - Scrollable table (max-h-[55vh] overflow-y-auto custom-scroll, sticky header) with Registration ID (mono), Name, Phone (tel:), Email (mailto:), Country, Course, Status (inline Select), Created (formatLeadDate), Actions (View details eye + Delete trash).
+  - Detail Dialog (max-w-3xl, max-h-[90vh] overflow): Student Profile section (full name, father, DOB, gender, phone, email, city, passport #, passport expiry), Academic & Preferences section (country, course, university, matric, fsc, IELTS), Status & Headline editor (overall status Select + headline Textarea that auto-saves on blur), Milestone Timeline (vertical timeline with colored dots + connector lines, each milestone shows label, an editable note Input that auto-saves on blur, and a status Select pending/active/done/issue that PUTs instantly).
+  - `patchApplication` PUTs to /api/admin/applications and applies an optimistic local update to both the table list and the open dialog via `applyPatchLocally`; shows a sonner toast on success and re-fetches on failure.
+  - Delete flow with confirmation Dialog naming the student + registrationId; on success closes dialog, refreshes list, shows toast.
+  - Refresh button with spinning RefreshCw icon.
+- Relabeled subsequent section comments for consistency (Tab 2 Analytics -> Tab 3, Countries -> Tab 4, Content -> Tab 5, Services -> Tab 6, Compare Factors -> Tab 7).
+- Verified existing tabs (Leads, Analytics, Countries, Content, Services, Compare) are untouched and remain in order.
+
+Stage Summary:
+- `bun run lint` clean (0 errors, 0 warnings) for the whole project.
+- Dev server recompiled the updated admin-dashboard.tsx successfully ("✓ Compiled in 2.3s", no errors in dev.log).
+- The admin dashboard now has 7 tabs: Leads, Applications (NEW), Analytics, Countries, Content, Services, Compare Factors. The Applications tab reads from GET /api/admin/applications, writes via PUT /api/admin/applications (status, headline, milestone status/note), and deletes via DELETE /api/admin/applications?id=, all with sonner toasts and optimistic UI. The milestone status dropdowns and headline editor flow straight through to the public Track page data.
+
+---
+Task ID: 7
+Agent: Main (orchestrator) + full-stack-developer subagent
+Task: Build Apply and Track pages for the website
+
+Work Log:
+- Prisma: added Application + ApplicationMilestone models (registrationId, all form fields, status, headline, 8 milestones per application) + db:push
+- Built /api/apply (POST): validates form, generates sequential registration ID (NSI-2026-001), creates application + 8 default milestones (first "done", second "active", rest "pending")
+- Built /api/track (GET): public lookup by registrationId → returns application + milestones for the track page
+- Built /api/admin/applications (GET/PUT/DELETE): admin can view all apps, update milestone statuses + headline, delete
+- Built ApplyPage component: 4-step wizard (Start/Program/Details/Documents) with progress indicator, validation per step, animated transitions, document upload inputs, success screen with Registration ID + WhatsApp + Track buttons
+- Built TrackPage component: search by registration ID, shows student name + country + course, animated progress bar, milestone timeline (done=green✅, active=amber⏳, issue=red⚠️, pending=gray⬜), not-found state, WhatsApp CTA
+- Wired ?apply=true and ?track=true into page.tsx as full-screen overlays (alongside existing ?admin=true)
+- Added "Apply Now" button (gold) + "Track" nav link to header (desktop + mobile menu)
+- Added "Apply Now" + "Track Application" buttons to footer "Get Started" section
+- Subagent added "Applications" tab to admin dashboard (tab #2, after Leads): summary cards, scrollable table, detail dialog with milestone timeline editor (admin can change any milestone status → instantly reflects on student's track page)
+
+Verification (all passed):
+- Lint: clean (0 errors)
+- Apply API: submitted test application → generated Registration ID NSI-2026-001 ✓
+- Track API: returns application with 8 milestones (1 done, 1 active, 6 pending) ✓
+- Track API: non-existent ID returns 404 ✓
+- Admin applications API: lists the application with all 8 milestones ✓
+- Apply page UI: renders with 4-step wizard, "Start Your Application" heading ✓
+- Track page UI: search for NSI-2026-001 shows "Test Student", milestones, registration ID ✓
+- Header: "Apply Now" button + "Track" link present ✓
+- Admin dashboard: 7 tabs (Leads, Applications, Analytics, Countries, Content, Services, Compare) ✓
+- No console errors
+
+Stage Summary:
+- Complete Apply + Track system built and verified end-to-end
+- Students: apply via 4-step form → get Registration ID → track status via milestones
+- Admin: view all applications, update milestone statuses (instantly reflects on student's track page), edit headline
+- Access: header "Apply Now" button, "Track" nav link, footer buttons, or ?apply=true / ?track=true

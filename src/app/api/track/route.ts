@@ -1,72 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { z } from "zod";
 
-const schema = z.object({
-  sessionId: z.string().min(1),
-  event: z.enum(["visit", "click", "section"]),
-  // for visit
-  referrer: z.string().optional().default(""),
-  userAgent: z.string().optional().default(""),
-  // for click
-  elementType: z.string().optional().default(""),
-  elementLabel: z.string().optional().default(""),
-  section: z.string().optional().default(""),
-  // for section
-  sectionId: z.string().optional().default(""),
-  durationMs: z.number().int().nonnegative().optional().default(0),
-});
-
-// POST /api/track — receive analytics events (visit, click, section view)
-export async function POST(req: NextRequest) {
+// GET /api/track?registrationId=NSI-2026-001
+// Returns the application + milestones for the public track page
+export async function GET(req: NextRequest) {
   try {
-    const body = await req.json();
-    const parsed = schema.safeParse(body);
-    if (!parsed.success) {
+    const { searchParams } = new URL(req.url);
+    const registrationId = (searchParams.get("registrationId") || "")
+      .trim()
+      .toUpperCase();
+
+    if (!registrationId) {
       return NextResponse.json(
-        { error: parsed.error.issues[0]?.message ?? "Invalid input" },
+        { error: "Please enter your Register ID (e.g. NSI-2026-001)." },
         { status: 400 }
       );
     }
-    const { sessionId, event } = parsed.data;
 
-    if (event === "visit") {
-      // Upsert visit — increment pageViews if session already exists
-      await db.visit.upsert({
-        where: { sessionId },
-        create: {
-          sessionId,
-          referrer: parsed.data.referrer,
-          userAgent: parsed.data.userAgent,
-          pageViews: 1,
-        },
-        update: {
-          lastSeen: new Date(),
-          pageViews: { increment: 1 },
-        },
-      });
-    } else if (event === "click") {
-      await db.clickEvent.create({
-        data: {
-          sessionId,
-          elementType: parsed.data.elementType,
-          elementLabel: parsed.data.elementLabel,
-          section: parsed.data.section,
-        },
-      });
-    } else if (event === "section") {
-      await db.sectionView.create({
-        data: {
-          sessionId,
-          sectionId: parsed.data.sectionId,
-          durationMs: parsed.data.durationMs,
-        },
-      });
+    const application = await db.application.findUnique({
+      where: { registrationId },
+      include: {
+        milestones: { orderBy: { order: "asc" } },
+      },
+    });
+
+    if (!application) {
+      return NextResponse.json(
+        { error: "Application not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      registrationId: application.registrationId,
+      fullName: application.fullName,
+      countryInterest: application.countryInterest,
+      courseInterest: application.courseInterest,
+      status: application.status,
+      headline: application.headline,
+      stageUpdatedAt: application.updatedAt.toISOString(),
+      updatedAt: application.updatedAt.toISOString(),
+      milestones: application.milestones.map((m) => ({
+        label: m.label,
+        note: m.note,
+        status: m.status,
+      })),
+    });
   } catch (error) {
-    console.error("POST /api/track error:", error);
-    return NextResponse.json({ error: "Tracking failed" }, { status: 500 });
+    console.error("GET /api/track error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch application status" },
+      { status: 500 }
+    );
   }
 }

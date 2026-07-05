@@ -1,0 +1,2002 @@
+     1→"use client";
+     2→
+     3→import { useCallback, useEffect, useState } from "react";
+     4→import {
+     5→  Bar,
+     6→  BarChart,
+     7→  CartesianGrid,
+     8→  ResponsiveContainer,
+     9→  Tooltip as RechartsTooltip,
+    10→  XAxis,
+    11→  YAxis,
+    12→} from "recharts";
+    13→import { toast } from "sonner";
+    14→import {
+    15→  ArrowLeft,
+    16→  BadgeCheck,
+    17→  BarChart3,
+    18→  Building2,
+    19→  CalendarClock,
+    20→  CalendarDays,
+    21→  Compass,
+    22→  Eye,
+    23→  FileCheck,
+    24→  Globe2,
+    25→  GraduationCap,
+    26→  Home,
+    27→  Inbox,
+    28→  LayoutDashboard,
+    29→  Loader2,
+    30→  Lock,
+    31→  Mail,
+    32→  MapPin,
+    33→  MessageCircle,
+    34→  MousePointerClick,
+    35→  Pencil,
+    36→  Phone,
+    37→  Plane,
+    38→  Plus,
+    39→  RefreshCw,
+    40→  Save,
+    41→  ShieldCheck,
+    42→  Sparkles,
+    43→  Star,
+    44→  Trash2,
+    45→  Users,
+    46→  Wallet,
+    47→  X,
+    48→} from "lucide-react";
+    49→
+    50→import { Badge } from "@/components/ui/badge";
+    51→import { Button } from "@/components/ui/button";
+    52→import { Card } from "@/components/ui/card";
+    53→import { Checkbox } from "@/components/ui/checkbox";
+    54→import {
+    55→  Dialog,
+    56→  DialogContent,
+    57→  DialogDescription,
+    58→  DialogFooter,
+    59→  DialogHeader,
+    60→  DialogTitle,
+    61→} from "@/components/ui/dialog";
+    62→import { Input } from "@/components/ui/input";
+    63→import { Label } from "@/components/ui/label";
+    64→import {
+    65→  Select,
+    66→  SelectContent,
+    67→  SelectItem,
+    68→  SelectTrigger,
+    69→  SelectValue,
+    70→} from "@/components/ui/select";
+    71→import { Skeleton } from "@/components/ui/skeleton";
+    72→import {
+    73→  Table,
+    74→  TableBody,
+    75→  TableCell,
+    76→  TableHead,
+    77→  TableHeader,
+    78→  TableRow,
+    79→} from "@/components/ui/table";
+    80→import {
+    81→  Tabs,
+    82→  TabsContent,
+    83→  TabsList,
+    84→  TabsTrigger,
+    85→} from "@/components/ui/tabs";
+    86→import { Textarea } from "@/components/ui/textarea";
+    87→
+    88→/* ----------------------------------------------------------------------------
+    89→ * Types
+    90→ * -------------------------------------------------------------------------- */
+    91→
+    92→type Country = {
+    93→  id?: string;
+    94→  slug: string;
+    95→  name: string;
+    96→  flagEmoji: string;
+    97→  tagline: string;
+    98→  shortDesc: string;
+    99→  longDesc: string;
+   100→  capital: string;
+   101→  currency: string;
+   102→  language: string;
+   103→  tuitionRange: string;
+   104→  livingCost: string;
+   105→  visaProcess: string;
+   106→  topUniversities: string;
+   107→  popularCourses: string;
+   108→  intakeMonths: string;
+   109→  scholarships: string;
+   110→  workRights: string;
+   111→  gradient: string;
+   112→  accentColor: string;
+   113→  featured: boolean;
+   114→  order: number;
+   115→};
+   116→
+   117→type Service = {
+   118→  icon: string;
+   119→  title: string;
+   120→  description: string;
+   121→};
+   122→
+   123→type CompareFactor = {
+   124→  icon: string;
+   125→  title: string;
+   126→  description: string;
+   127→  points: string[];
+   128→};
+   129→
+   130→type Stat = {
+   131→  label: string;
+   132→  value: string;
+   133→  icon: string;
+   134→};
+   135→
+   136→type SiteContent = {
+   137→  // Hero
+   138→  heroBadge: string;
+   139→  heroTitle: string;
+   140→  heroSubtitle: string;
+   141→  heroPrimaryCta: string;
+   142→  heroSecondaryCta: string;
+   143→  heroTrust1: string;
+   144→  heroTrust2: string;
+   145→  heroImage: string;
+   146→  // Counseling CTA
+   147→  counselingBadge: string;
+   148→  counselingTitle: string;
+   149→  counselingSubtitle: string;
+   150→  counselingCta1: string;
+   151→  counselingCta2: string;
+   152→  counselingImage: string;
+   153→  // AI Assistant
+   154→  assistantBadge: string;
+   155→  assistantTitle: string;
+   156→  assistantSubtitle: string;
+   157→  assistantCta: string;
+   158→  // Newsletter
+   159→  newsletterTitle: string;
+   160→  newsletterSubtitle: string;
+   161→  // Footer
+   162→  footerAddress: string;
+   163→  footerPhone: string;
+   164→  footerEmail: string;
+   165→  footerWhatsapp: string;
+   166→  footerBrand: string;
+   167→  // Lists
+   168→  stats: Stat[];
+   169→  services: Service[];
+   170→  compareFactors: CompareFactor[];
+   171→};
+   172→
+   173→type AnalyticsData = {
+   174→  stats: {
+   175→    totalVisitors: number;
+   176→    visitorsToday: number;
+   177→    visitorsThisWeek: number;
+   178→    totalClicks: number;
+   179→    clicksToday: number;
+   180→    totalSectionViews: number;
+   181→    avgDurationMs: number;
+   182→    guidanceCount: number;
+   183→    bookingCount: number;
+   184→    newsletterCount: number;
+   185→    countryCount: number;
+   186→  };
+   187→  topClicks: { type: string; label: string; count: number }[];
+   188→  topSections: { section: string; totalMs: number; views: number; avgMs: number }[];
+   189→  dailyVisitors: { date: string; count: number }[];
+   190→  recentClicks: { type: string; label: string; section: string; time: string }[];
+   191→};
+   192→
+   193→type GuidanceLead = {
+   194→  id: string;
+   195→  name: string;
+   196→  email: string;
+   197→  phone: string;
+   198→  qualification: string;
+   199→  graduationYear: string;
+   200→  preferredCourse: string;
+   201→  budget: string;
+   202→  englishTest: string;
+   203→  preferredCountries: string;
+   204→  message: string;
+   205→  status: "new" | "contacted" | "closed";
+   206→  createdAt: string;
+   207→};
+   208→
+   209→type BookingLead = {
+   210→  id: string;
+   211→  name: string;
+   212→  email: string;
+   213→  phone: string;
+   214→  preferredDate: string;
+   215→  preferredTime: string;
+   216→  mode: string;
+   217→  service: string;
+   218→  message: string;
+   219→  status: "pending" | "confirmed" | "completed" | "cancelled";
+   220→  createdAt: string;
+   221→};
+   222→
+   223→type NewsletterLead = {
+   224→  id: string;
+   225→  email: string;
+   226→  createdAt: string;
+   227→};
+   228→
+   229→type LeadsData = {
+   230→  guidance: GuidanceLead[];
+   231→  bookings: BookingLead[];
+   232→  newsletter: NewsletterLead[];
+   233→  counts: {
+   234→    guidance: number;
+   235→    bookings: number;
+   236→    newsletter: number;
+   237→    newGuidance: number;
+   238→    pendingBookings: number;
+   239→  };
+   240→};
+   241→
+   242→type LeadModel = "guidance" | "bookings" | "newsletter";
+   243→
+   244→/* ----------------------------------------------------------------------------
+   245→ * Helpers
+   246→ * -------------------------------------------------------------------------- */
+   247→
+   248→function formatDuration(ms: number) {
+   249→  const s = Math.round(ms / 1000);
+   250→  if (s < 60) return `${s}s`;
+   251→  const m = Math.floor(s / 60);
+   252→  return `${m}m ${s % 60}s`;
+   253→}
+   254→
+   255→function formatRelativeTime(iso: string) {
+   256→  const then = new Date(iso).getTime();
+   257→  const now = Date.now();
+   258→  const diff = Math.max(0, now - then);
+   259→  const sec = Math.floor(diff / 1000);
+   260→  if (sec < 60) return `${sec}s ago`;
+   261→  const min = Math.floor(sec / 60);
+   262→  if (min < 60) return `${min}m ago`;
+   263→  const hr = Math.floor(min / 60);
+   264→  if (hr < 24) return `${hr}h ago`;
+   265→  const day = Math.floor(hr / 24);
+   266→  if (day < 7) return `${day}d ago`;
+   267→  return new Date(iso).toLocaleDateString();
+   268→}
+   269→
+   270→function formatLeadDate(iso: string) {
+   271→  try {
+   272→    const d = new Date(iso);
+   273→    if (Number.isNaN(d.getTime())) return iso;
+   274→    return d.toLocaleString("en-US", {
+   275→      month: "short",
+   276→      day: "numeric",
+   277→      hour: "numeric",
+   278→      minute: "2-digit",
+   279→      hour12: true,
+   280→    });
+   281→  } catch {
+   282→    return iso;
+   283→  }
+   284→}
+   285→
+   286→const SERVICE_ICONS = [
+   287→  { value: "Compass", label: "Compass", Icon: Compass },
+   288→  { value: "FileCheck", label: "FileCheck", Icon: FileCheck },
+   289→  { value: "Plane", label: "Plane", Icon: Plane },
+   290→  { value: "GraduationCap", label: "GraduationCap", Icon: GraduationCap },
+   291→  { value: "Wallet", label: "Wallet", Icon: Wallet },
+   292→  { value: "Home", label: "Home", Icon: Home },
+   293→];
+   294→
+   295→const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+   296→  Compass,
+   297→  FileCheck,
+   298→  Plane,
+   299→  GraduationCap,
+   300→  Wallet,
+   301→  Home,
+   302→};
+   303→
+   304→const STAT_ICONS = [
+   305→  { value: "Users", label: "Users", Icon: Users },
+   306→  { value: "Building2", label: "Building2", Icon: Building2 },
+   307→  { value: "Globe2", label: "Globe2", Icon: Globe2 },
+   308→  { value: "BadgeCheck", label: "BadgeCheck", Icon: BadgeCheck },
+   309→];
+   310→
+   311→const STAT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+   312→  Users,
+   313→  Building2,
+   314→  Globe2,
+   315→  BadgeCheck,
+   316→};
+   317→
+   318→const GUIDANCE_STATUS_STYLES: Record<GuidanceLead["status"], string> = {
+   319→  new: "bg-blue-100 text-blue-700 border-blue-200",
+   320→  contacted: "bg-amber-100 text-amber-800 border-amber-200",
+   321→  closed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+   322→};
+   323→
+   324→const BOOKING_STATUS_STYLES: Record<BookingLead["status"], string> = {
+   325→  pending: "bg-slate-100 text-slate-700 border-slate-200",
+   326→  confirmed: "bg-amber-100 text-amber-800 border-amber-200",
+   327→  completed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+   328→  cancelled: "bg-rose-100 text-rose-700 border-rose-200",
+   329→};
+   330→
+   331→const ADMIN_PASSWORD = "nextstep-admin";
+   332→
+   333→const GRADIENT_PRESETS = [
+   334→  "from-[#1e3a8a] via-[#2563eb] to-[#3b82f6]",
+   335→  "from-[#0f766e] via-[#0d9488] to-[#14b8a6]",
+   336→  "from-[#7c2d12] via-[#b45309] to-[#f59e0b]",
+   337→  "from-[#4c1d95] via-[#6d28d9] to-[#8b5cf6]",
+   338→  "from-[#831843] via-[#be185d] to-[#ec4899]",
+   339→  "from-[#064e3b] via-[#047857] to-[#10b981]",
+   340→];
+   341→
+   342→const emptyCountry: Country = {
+   343→  slug: "",
+   344→  name: "",
+   345→  flagEmoji: "",
+   346→  tagline: "",
+   347→  shortDesc: "",
+   348→  longDesc: "",
+   349→  capital: "",
+   350→  currency: "",
+   351→  language: "",
+   352→  tuitionRange: "",
+   353→  livingCost: "",
+   354→  visaProcess: "",
+   355→  topUniversities: "",
+   356→  popularCourses: "",
+   357→  intakeMonths: "",
+   358→  scholarships: "",
+   359→  workRights: "",
+   360→  gradient: GRADIENT_PRESETS[0],
+   361→  accentColor: "#1e3a8a",
+   362→  featured: false,
+   363→  order: 0,
+   364→};
+   365→
+   366→const defaultStats: Stat[] = [
+   367→  { label: "Students Placed", value: "12,000+", icon: "Users" },
+   368→  { label: "Partner Universities", value: "850+", icon: "Building2" },
+   369→  { label: "Study Destinations", value: "16", icon: "Globe2" },
+   370→  { label: "Visa Success Rate", value: "96%", icon: "BadgeCheck" },
+   371→];
+   372→
+   373→/* ----------------------------------------------------------------------------
+   374→ * Main component
+   375→ * -------------------------------------------------------------------------- */
+   376→
+   377→export function AdminDashboard({ onClose }: { onClose: () => void }) {
+   378→  const [authed, setAuthed] = useState(false);
+   379→
+   380→  // Lock body scroll while the overlay is mounted.
+   381→  useEffect(() => {
+   382→    const prev = document.body.style.overflow;
+   383→    document.body.style.overflow = "hidden";
+   384→    return () => {
+   385→      document.body.style.overflow = prev;
+   386→    };
+   387→  }, []);
+   388→
+   389→  if (!authed) {
+   390→    return <LoginScreen onSuccess={() => setAuthed(true)} onClose={onClose} />;
+   391→  }
+   392→
+   393→  return <Dashboard onClose={onClose} />;
+   394→}
+   395→
+   396→/* ----------------------------------------------------------------------------
+   397→ * Login gate
+   398→ * -------------------------------------------------------------------------- */
+   399→
+   400→function LoginScreen({
+   401→  onSuccess,
+   402→  onClose,
+   403→}: {
+   404→  onSuccess: () => void;
+   405→  onClose: () => void;
+   406→}) {
+   407→  const [password, setPassword] = useState("");
+   408→  const [error, setError] = useState(false);
+   409→  const [submitting, setSubmitting] = useState(false);
+   410→
+   411→  const submit = (e: React.FormEvent) => {
+   412→    e.preventDefault();
+   413→    setSubmitting(true);
+   414→    // Brief delay for UX feedback only.
+   415→    setTimeout(() => {
+   416→      if (password === ADMIN_PASSWORD) {
+   417→        onSuccess();
+   418→      } else {
+   419→        setError(true);
+   420→        setSubmitting(false);
+   421→      }
+   422→    }, 300);
+   423→  };
+   424→
+   425→  return (
+   426→    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-brand px-4">
+   427→      <div className="hero-mesh absolute inset-0 opacity-60" />
+   428→      <div className="dot-grid absolute inset-0 opacity-30" />
+   429→      <Button
+   430→        onClick={onClose}
+   431→        variant="ghost"
+   432→        className="absolute right-4 top-4 z-10 text-white/80 hover:bg-white/10 hover:text-white"
+   433→      >
+   434→        <ArrowLeft className="mr-1.5 h-4 w-4" />
+   435→        Back to Site
+   436→      </Button>
+   437→
+   438→      <Card className="relative z-10 w-full max-w-md border-white/20 bg-white/95 p-8 shadow-2xl backdrop-blur-xl">
+   439→        <div className="mb-6 flex flex-col items-center text-center">
+   440→          <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-lg">
+   441→            <ShieldCheck className="h-7 w-7" />
+   442→          </span>
+   443→          <h1 className="text-2xl font-extrabold text-brand">NextStep Admin</h1>
+   444→          <p className="mt-1 text-sm text-muted-foreground">
+   445→            Enter your password to access the dashboard
+   446→          </p>
+   447→        </div>
+   448→
+   449→        <form onSubmit={submit} className="space-y-4">
+   450→          <div className="space-y-2">
+   451→            <Label htmlFor="admin-pw" className="text-brand">
+   452→              Admin Password
+   453→            </Label>
+   454→            <div className="relative">
+   455→              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+   456→              <Input
+   457→                id="admin-pw"
+   458→                type="password"
+   459→                value={password}
+   460→                onChange={(e) => {
+   461→                  setPassword(e.target.value);
+   462→                  setError(false);
+   463→                }}
+   464→                placeholder="••••••••••"
+   465→                className="pl-9"
+   466→                autoFocus
+   467→                autoComplete="current-password"
+   468→              />
+   469→            </div>
+   470→            {error && (
+   471→              <p className="text-sm font-medium text-destructive">
+   472→                Incorrect password. Please try again.
+   473→              </p>
+   474→            )}
+   475→          </div>
+   476→
+   477→          <Button
+   478→            type="submit"
+   479→            disabled={submitting}
+   480→            className="w-full bg-brand text-white hover:bg-brand/90"
+   481→          >
+   482→            {submitting ? (
+   483→              <>
+   484→                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+   485→                Verifying…
+   486→              </>
+   487→            ) : (
+   488→              <>
+   489→                <ShieldCheck className="mr-2 h-4 w-4" />
+   490→                Enter Dashboard
+   491→              </>
+   492→            )}
+   493→          </Button>
+   494→        </form>
+   495→
+   496→        <p className="mt-5 rounded-md bg-secondary px-3 py-2 text-center text-xs text-muted-foreground">
+   497→          Demo password: <code className="font-mono font-semibold text-brand">nextstep-admin</code>
+   498→        </p>
+   499→      </Card>
+   500→    </div>
+   501→  );
+   502→}
+   503→
+   504→/* ----------------------------------------------------------------------------
+   505→ * Dashboard shell (header + tabs)
+   506→ * -------------------------------------------------------------------------- */
+   507→
+   508→function Dashboard({ onClose }: { onClose: () => void }) {
+   509→  const [tab, setTab] = useState("leads");
+   510→
+   511→  return (
+   512→    <div className="fixed inset-0 z-[100] overflow-y-auto bg-background">
+   513→      {/* Header */}
+   514→      <header className="bg-brand sticky top-0 z-20 border-b border-white/10 shadow-md">
+   515→        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+   516→          <div className="flex items-center gap-3">
+   517→            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-gold">
+   518→              <ShieldCheck className="h-5 w-5" />
+   519→            </span>
+   520→            <div className="leading-none">
+   521→              <h1 className="text-lg font-extrabold tracking-tight text-white">
+   522→                NextStep Admin
+   523→              </h1>
+   524→              <p className="text-[11px] font-medium uppercase tracking-wider text-white/60">
+   525→                Content &amp; Analytics Console
+   526→              </p>
+   527→            </div>
+   528→          </div>
+   529→          <Button
+   530→            onClick={onClose}
+   531→            variant="secondary"
+   532→            className="bg-white/10 text-white hover:bg-white/20 hover:text-white"
+   533→          >
+   534→            <ArrowLeft className="mr-1.5 h-4 w-4" />
+   535→            <span className="hidden sm:inline">Back to Site</span>
+   536→            <span className="sm:hidden">Exit</span>
+   537→          </Button>
+   538→        </div>
+   539→      </header>
+   540→
+   541→      {/* Body */}
+   542→      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+   543→        <Tabs value={tab} onValueChange={setTab} className="w-full">
+   544→          <div className="overflow-x-auto pb-1">
+   545→            <TabsList className="grid w-full min-w-[760px] grid-cols-6 sm:min-w-0">
+   546→              <TabsTrigger value="leads" className="gap-1.5">
+   547→                <Inbox className="h-4 w-4" />
+   548→                <span className="hidden sm:inline">Leads</span>
+   549→                <span className="sm:hidden">Leads</span>
+   550→              </TabsTrigger>
+   551→              <TabsTrigger value="analytics" className="gap-1.5">
+   552→                <LayoutDashboard className="h-4 w-4" />
+   553→                <span className="hidden sm:inline">Analytics</span>
+   554→                <span className="sm:hidden">Stats</span>
+   555→              </TabsTrigger>
+   556→              <TabsTrigger value="countries" className="gap-1.5">
+   557→                <Building2 className="h-4 w-4" />
+   558→                <span className="hidden sm:inline">Countries</span>
+   559→                <span className="sm:hidden">Countries</span>
+   560→              </TabsTrigger>
+   561→              <TabsTrigger value="content" className="gap-1.5">
+   562→                <Sparkles className="h-4 w-4" />
+   563→                <span className="hidden sm:inline">Content</span>
+   564→                <span className="sm:hidden">Content</span>
+   565→              </TabsTrigger>
+   566→              <TabsTrigger value="services" className="gap-1.5">
+   567→                <Compass className="h-4 w-4" />
+   568→                <span className="hidden sm:inline">Services</span>
+   569→                <span className="sm:hidden">Services</span>
+   570→              </TabsTrigger>
+   571→              <TabsTrigger value="compare" className="gap-1.5">
+   572→                <BarChart3 className="h-4 w-4" />
+   573→                <span className="hidden sm:inline">Compare Factors</span>
+   574→                <span className="sm:hidden">Compare</span>
+   575→              </TabsTrigger>
+   576→            </TabsList>
+   577→          </div>
+   578→
+   579→          <TabsContent value="leads" className="mt-6">
+   580→            <LeadsTab />
+   581→          </TabsContent>
+   582→          <TabsContent value="analytics" className="mt-6">
+   583→            <AnalyticsTab />
+   584→          </TabsContent>
+   585→          <TabsContent value="countries" className="mt-6">
+   586→            <CountriesTab />
+   587→          </TabsContent>
+   588→          <TabsContent value="content" className="mt-6">
+   589→            <ContentTab />
+   590→          </TabsContent>
+   591→          <TabsContent value="services" className="mt-6">
+   592→            <ServicesTab />
+   593→          </TabsContent>
+   594→          <TabsContent value="compare" className="mt-6">
+   595→            <CompareFactorsTab />
+   596→          </TabsContent>
+   597→        </Tabs>
+   598→      </main>
+   599→    </div>
+   600→  );
+   601→}
+   602→
+   603→/* ----------------------------------------------------------------------------
+   604→ * Shared loading + section helpers
+   605→ * -------------------------------------------------------------------------- */
+   606→
+   607→function Spinner({ className }: { className?: string }) {
+   608→  return <Loader2 className={`h-5 w-5 animate-spin ${className ?? ""}`} />;
+   609→}
+   610→
+   611→function SectionCard({
+   612→  title,
+   613→  icon: Icon,
+   614→  action,
+   615→  children,
+   616→}: {
+   617→  title: string;
+   618→  icon: React.ComponentType<{ className?: string }>;
+   619→  action?: React.ReactNode;
+   620→  children: React.ReactNode;
+   621→}) {
+   622→  return (
+   623→    <Card className="rounded-2xl border-border p-5 shadow-sm">
+   624→      <div className="mb-4 flex items-center justify-between gap-2">
+   625→        <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-brand">
+   626→          <Icon className="h-4 w-4 text-gold" />
+   627→          {title}
+   628→        </h3>
+   629→        {action}
+   630→      </div>
+   631→      {children}
+   632→    </Card>
+   633→  );
+   634→}
+   635→
+   636→/* ----------------------------------------------------------------------------
+   637→ * Tab 1: Leads
+   638→ * -------------------------------------------------------------------------- */
+   639→
+   640→function LeadsTab() {
+   641→  const [data, setData] = useState<LeadsData | null>(null);
+   642→  const [loading, setLoading] = useState(true);
+   643→  const [refreshing, setRefreshing] = useState(false);
+   644→  const [sub, setSub] = useState<"guidance" | "bookings" | "newsletter">("guidance");
+   645→  const [viewGuidance, setViewGuidance] = useState<GuidanceLead | null>(null);
+   646→  const [viewBooking, setViewBooking] = useState<BookingLead | null>(null);
+   647→  const [confirmDelete, setConfirmDelete] = useState<
+   648→    | { id: string; model: LeadModel; label: string }
+   649→    | null
+   650→  >(null);
+   651→  const [updatingId, setUpdatingId] = useState<string | null>(null);
+   652→
+   653→  const fetchLeads = useCallback(async (silent = false) => {
+   654→    if (silent) setRefreshing(true);
+   655→    else setLoading(true);
+   656→    try {
+   657→      const res = await fetch("/api/admin/leads", { cache: "no-store" });
+   658→      if (!res.ok) throw new Error("Failed to load leads");
+   659→      const json = (await res.json()) as LeadsData;
+   660→      setData(json);
+   661→    } catch {
+   662→      toast.error("Could not load leads. Please try again.");
+   663→    } finally {
+   664→      setLoading(false);
+   665→      setRefreshing(false);
+   666→    }
+   667→  }, []);
+   668→
+   669→  useEffect(() => {
+   670→    fetchLeads();
+   671→  }, [fetchLeads]);
+   672→
+   673→  const updateStatus = async (
+   674→    model: "guidance" | "bookings",
+   675→    id: string,
+   676→    status: string,
+   677→  ) => {
+   678→    setUpdatingId(id);
+   679→    try {
+   680→      const res = await fetch("/api/admin/leads", {
+   681→        method: "PUT",
+   682→        headers: { "Content-Type": "application/json" },
+   683→        body: JSON.stringify({ model, id, status }),
+   684→      });
+   685→      if (!res.ok) {
+   686→        const err = await res.json().catch(() => ({}));
+   687→        throw new Error(err.error ?? "Update failed");
+   688→      }
+   689→      toast.success(`Status updated to "${status}".`);
+   690→      await fetchLeads(true);
+   691→    } catch (e) {
+   692→      toast.error(e instanceof Error ? e.message : "Could not update status.");
+   693→    } finally {
+   694→      setUpdatingId(null);
+   695→    }
+   696→  };
+   697→
+   698→  const deleteLead = async (model: LeadModel, id: string, label: string) => {
+   699→    try {
+   700→      const res = await fetch(
+   701→        `/api/admin/leads?id=${encodeURIComponent(id)}&model=${model}`,
+   702→        { method: "DELETE" },
+   703→      );
+   704→      if (!res.ok) {
+   705→        const err = await res.json().catch(() => ({}));
+   706→        throw new Error(err.error ?? "Delete failed");
+   707→      }
+   708→      toast.success(`${label} deleted.`);
+   709→      setConfirmDelete(null);
+   710→      await fetchLeads(true);
+   711→    } catch (e) {
+   712→      toast.error(e instanceof Error ? e.message : "Could not delete lead.");
+   713→    }
+   714→  };
+   715→
+   716→  if (loading) {
+   717→    return (
+   718→      <div className="space-y-6">
+   719→        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+   720→          {Array.from({ length: 3 }).map((_, i) => (
+   721→            <Skeleton key={i} className="h-24 rounded-2xl" />
+   722→          ))}
+   723→        </div>
+   724→        <Skeleton className="h-12 rounded-2xl" />
+   725→        <Skeleton className="h-[400px] rounded-2xl" />
+   726→      </div>
+   727→    );
+   728→  }
+   729→
+   730→  if (!data) return null;
+   731→
+   732→  const counts = data.counts;
+   733→
+   734→  return (
+   735→    <div className="space-y-5">
+   736→      {/* Header */}
+   737→      <div className="flex flex-wrap items-center justify-between gap-3">
+   738→        <div>
+   739→          <h2 className="text-xl font-extrabold text-brand">Leads &amp; Subscribers</h2>
+   740→          <p className="text-sm text-muted-foreground">
+   741→            Review guidance requests, counseling bookings, and newsletter subscribers.
+   742→          </p>
+   743→        </div>
+   744→        <Button variant="outline" onClick={() => fetchLeads(true)} disabled={refreshing}>
+   745→          <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+   746→          Refresh
+   747→        </Button>
+   748→      </div>
+   749→
+   750→      {/* Summary cards */}
+   751→      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+   752→        <SummaryCard
+   753→          icon={FileCheck}
+   754→          label="Guidance Requests"
+   755→          value={counts.guidance}
+   756→          hint={`${counts.newGuidance} new`}
+   757→          accent="text-blue-600"
+   758→        />
+   759→        <SummaryCard
+   760→          icon={CalendarClock}
+   761→          label="Bookings"
+   762→          value={counts.bookings}
+   763→          hint={`${counts.pendingBookings} pending`}
+   764→          accent="text-amber-600"
+   765→        />
+   766→        <SummaryCard
+   767→          icon={Mail}
+   768→          label="Newsletter Subs"
+   769→          value={counts.newsletter}
+   770→          hint="Email subscribers"
+   771→          accent="text-emerald-600"
+   772→        />
+   773→        <SummaryCard
+   774→          icon={Inbox}
+   775→          label="Total Leads"
+   776→          value={counts.guidance + counts.bookings + counts.newsletter}
+   777→          hint="All inbound contacts"
+   778→          accent="text-brand"
+   779→        />
+   780→      </div>
+   781→
+   782→      {/* Sub-tabs */}
+   783→      <Tabs value={sub} onValueChange={(v) => setSub(v as typeof sub)}>
+   784→        <TabsList className="grid w-full grid-cols-3">
+   785→          <TabsTrigger value="guidance" className="gap-1.5">
+   786→            <FileCheck className="h-4 w-4" />
+   787→            Guidance
+   788→            <Badge variant="secondary" className="ml-1">
+   789→              {counts.guidance}
+   790→              {counts.newGuidance > 0 && (
+   791→                <span className="ml-1 text-blue-600">+{counts.newGuidance} new</span>
+   792→              )}
+   793→            </Badge>
+   794→          </TabsTrigger>
+   795→          <TabsTrigger value="bookings" className="gap-1.5">
+   796→            <CalendarDays className="h-4 w-4" />
+   797→            Bookings
+   798→            <Badge variant="secondary" className="ml-1">
+   799→              {counts.bookings}
+   800→              {counts.pendingBookings > 0 && (
+   801→                <span className="ml-1 text-amber-700">+{counts.pendingBookings}</span>
+   802→              )}
+   803→            </Badge>
+   804→          </TabsTrigger>
+   805→          <TabsTrigger value="newsletter" className="gap-1.5">
+   806→            <Mail className="h-4 w-4" />
+   807→            Newsletter
+   808→            <Badge variant="secondary" className="ml-1">
+   809→              {counts.newsletter}
+   810→            </Badge>
+   811→          </TabsTrigger>
+   812→        </TabsList>
+   813→
+   814→        {/* Guidance requests */}
+   815→        <TabsContent value="guidance" className="mt-4">
+   816→          <div className="rounded-2xl border border-border bg-card shadow-sm">
+   817→            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+   818→              {data.guidance.length === 0 ? (
+   819→                <EmptyState text="No guidance requests yet." />
+   820→              ) : (
+   821→                <div className="overflow-x-auto">
+   822→                  <Table>
+   823→                    <TableHeader className="sticky top-0 z-10 bg-card">
+   824→                      <TableRow>
+   825→                        <TableHead className="min-w-[160px]">Name</TableHead>
+   826→                        <TableHead className="min-w-[200px]">Email</TableHead>
+   827→                        <TableHead className="min-w-[140px]">Phone</TableHead>
+   828→                        <TableHead className="min-w-[160px]">Qualification</TableHead>
+   829→                        <TableHead className="min-w-[160px]">Course</TableHead>
+   830→                        <TableHead className="min-w-[120px]">Budget</TableHead>
+   831→                        <TableHead className="min-w-[140px]">English Test</TableHead>
+   832→                        <TableHead className="min-w-[150px]">Status</TableHead>
+   833→                        <TableHead className="min-w-[140px]">Created</TableHead>
+   834→                        <TableHead className="w-24 text-right">Actions</TableHead>
+   835→                      </TableRow>
+   836→                    </TableHeader>
+   837→                    <TableBody>
+   838→                      {data.guidance.map((g) => (
+   839→                        <TableRow key={g.id} className="cursor-pointer hover:bg-secondary/40">
+   840→                          <TableCell
+   841→                            className="font-semibold text-brand"
+   842→                            onClick={() => setViewGuidance(g)}
+   843→                          >
+   844→                            {g.name || "—"}
+   845→                          </TableCell>
+   846→                          <TableCell className="text-sm">
+   847→                            <a
+   848→                              href={`mailto:${g.email}`}
+   849→                              className="text-foreground hover:text-brand hover:underline"
+   850→                              onClick={(e) => e.stopPropagation()}
+   851→                            >
+   852→                              {g.email || "—"}
+   853→                            </a>
+   854→                          </TableCell>
+   855→                          <TableCell className="text-sm">
+   856→                            <a
+   857→                              href={`tel:${g.phone}`}
+   858→                              className="text-foreground hover:text-brand hover:underline"
+   859→                              onClick={(e) => e.stopPropagation()}
+   860→                            >
+   861→                              {g.phone || "—"}
+   862→                            </a>
+   863→                          </TableCell>
+   864→                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+   865→                            {g.qualification || "—"}
+   866→                          </TableCell>
+   867→                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+   868→                            {g.preferredCourse || "—"}
+   869→                          </TableCell>
+   870→                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+   871→                            {g.budget || "—"}
+   872→                          </TableCell>
+   873→                          <TableCell className="text-sm" onClick={() => setViewGuidance(g)}>
+   874→                            {g.englishTest || "—"}
+   875→                          </TableCell>
+   876→                          <TableCell onClick={(e) => e.stopPropagation()}>
+   877→                            <Select
+   878→                              value={g.status}
+   879→                              onValueChange={(v) => updateStatus("guidance", g.id, v)}
+   880→                              disabled={updatingId === g.id}
+   881→                            >
+   882→                              <SelectTrigger
+   883→                                className={`h-8 w-32 border bg-background text-xs font-semibold ${GUIDANCE_STATUS_STYLES[g.status]}`}
+   884→                              >
+   885→                                <SelectValue />
+   886→                              </SelectTrigger>
+   887→                              <SelectContent>
+   888→                                <SelectItem value="new">New</SelectItem>
+   889→                                <SelectItem value="contacted">Contacted</SelectItem>
+   890→                                <SelectItem value="closed">Closed</SelectItem>
+   891→                              </SelectContent>
+   892→                            </Select>
+   893→                          </TableCell>
+   894→                          <TableCell className="text-xs text-muted-foreground" onClick={() => setViewGuidance(g)}>
+   895→                            {formatLeadDate(g.createdAt)}
+   896→                          </TableCell>
+   897→                          <TableCell onClick={(e) => e.stopPropagation()}>
+   898→                            <div className="flex justify-end gap-1">
+   899→                              <Button
+   900→                                size="sm"
+   901→                                variant="ghost"
+   902→                                onClick={() => setViewGuidance(g)}
+   903→                                aria-label={`View ${g.name}`}
+   904→                              >
+   905→                                <Eye className="h-4 w-4" />
+   906→                              </Button>
+   907→                              <Button
+   908→                                size="sm"
+   909→                                variant="ghost"
+   910→                                onClick={() =>
+   911→                                  setConfirmDelete({
+   912→                                    id: g.id,
+   913→                                    model: "guidance",
+   914→                                    label: g.name || g.email,
+   915→                                  })
+   916→                                }
+   917→                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+   918→                                aria-label={`Delete ${g.name}`}
+   919→                              >
+   920→                                <Trash2 className="h-4 w-4" />
+   921→                              </Button>
+   922→                            </div>
+   923→                          </TableCell>
+   924→                        </TableRow>
+   925→                      ))}
+   926→                    </TableBody>
+   927→                  </Table>
+   928→                </div>
+   929→              )}
+   930→            </div>
+   931→          </div>
+   932→        </TabsContent>
+   933→
+   934→        {/* Bookings */}
+   935→        <TabsContent value="bookings" className="mt-4">
+   936→          <div className="rounded-2xl border border-border bg-card shadow-sm">
+   937→            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+   938→              {data.bookings.length === 0 ? (
+   939→                <EmptyState text="No bookings yet." />
+   940→              ) : (
+   941→                <div className="overflow-x-auto">
+   942→                  <Table>
+   943→                    <TableHeader className="sticky top-0 z-10 bg-card">
+   944→                      <TableRow>
+   945→                        <TableHead className="min-w-[160px]">Name</TableHead>
+   946→                        <TableHead className="min-w-[200px]">Email</TableHead>
+   947→                        <TableHead className="min-w-[140px]">Phone</TableHead>
+   948→                        <TableHead className="min-w-[140px]">Date</TableHead>
+   949→                        <TableHead className="min-w-[110px]">Time</TableHead>
+   950→                        <TableHead className="min-w-[120px]">Mode</TableHead>
+   951→                        <TableHead className="min-w-[180px]">Service</TableHead>
+   952→                        <TableHead className="min-w-[150px]">Status</TableHead>
+   953→                        <TableHead className="min-w-[140px]">Created</TableHead>
+   954→                        <TableHead className="w-24 text-right">Actions</TableHead>
+   955→                      </TableRow>
+   956→                    </TableHeader>
+   957→                    <TableBody>
+   958→                      {data.bookings.map((b) => (
+   959→                        <TableRow key={b.id} className="cursor-pointer hover:bg-secondary/40">
+   960→                          <TableCell
+   961→                            className="font-semibold text-brand"
+   962→                            onClick={() => setViewBooking(b)}
+   963→                          >
+   964→                            {b.name || "—"}
+   965→                          </TableCell>
+   966→                          <TableCell className="text-sm">
+   967→                            <a
+   968→                              href={`mailto:${b.email}`}
+   969→                              className="text-foreground hover:text-brand hover:underline"
+   970→                              onClick={(e) => e.stopPropagation()}
+   971→                            >
+   972→                              {b.email || "—"}
+   973→                            </a>
+   974→                          </TableCell>
+   975→                          <TableCell className="text-sm">
+   976→                            <a
+   977→                              href={`tel:${b.phone}`}
+   978→                              className="text-foreground hover:text-brand hover:underline"
+   979→                              onClick={(e) => e.stopPropagation()}
+   980→                            >
+   981→                              {b.phone || "—"}
+   982→                            </a>
+   983→                          </TableCell>
+   984→                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+   985→                            {b.preferredDate || "—"}
+   986→                          </TableCell>
+   987→                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+   988→                            {b.preferredTime || "—"}
+   989→                          </TableCell>
+   990→                          <TableCell onClick={() => setViewBooking(b)}>
+   991→                            <Badge variant="outline" className="text-[10px] uppercase">
+   992→                              {b.mode || "—"}
+   993→                            </Badge>
+   994→                          </TableCell>
+   995→                          <TableCell className="text-sm" onClick={() => setViewBooking(b)}>
+   996→                            {b.service || "—"}
+   997→                          </TableCell>
+   998→                          <TableCell onClick={(e) => e.stopPropagation()}>
+   999→                            <Select
+  1000→                              value={b.status}
+  1001→                              onValueChange={(v) => updateStatus("bookings", b.id, v)}
+  1002→                              disabled={updatingId === b.id}
+  1003→                            >
+  1004→                              <SelectTrigger
+  1005→                                className={`h-8 w-32 border bg-background text-xs font-semibold ${BOOKING_STATUS_STYLES[b.status]}`}
+  1006→                              >
+  1007→                                <SelectValue />
+  1008→                              </SelectTrigger>
+  1009→                              <SelectContent>
+  1010→                                <SelectItem value="pending">Pending</SelectItem>
+  1011→                                <SelectItem value="confirmed">Confirmed</SelectItem>
+  1012→                                <SelectItem value="completed">Completed</SelectItem>
+  1013→                                <SelectItem value="cancelled">Cancelled</SelectItem>
+  1014→                              </SelectContent>
+  1015→                            </Select>
+  1016→                          </TableCell>
+  1017→                          <TableCell className="text-xs text-muted-foreground" onClick={() => setViewBooking(b)}>
+  1018→                            {formatLeadDate(b.createdAt)}
+  1019→                          </TableCell>
+  1020→                          <TableCell onClick={(e) => e.stopPropagation()}>
+  1021→                            <div className="flex justify-end gap-1">
+  1022→                              <Button
+  1023→                                size="sm"
+  1024→                                variant="ghost"
+  1025→                                onClick={() => setViewBooking(b)}
+  1026→                                aria-label={`View ${b.name}`}
+  1027→                              >
+  1028→                                <Eye className="h-4 w-4" />
+  1029→                              </Button>
+  1030→                              <Button
+  1031→                                size="sm"
+  1032→                                variant="ghost"
+  1033→                                onClick={() =>
+  1034→                                  setConfirmDelete({
+  1035→                                    id: b.id,
+  1036→                                    model: "bookings",
+  1037→                                    label: b.name || b.email,
+  1038→                                  })
+  1039→                                }
+  1040→                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+  1041→                                aria-label={`Delete ${b.name}`}
+  1042→                              >
+  1043→                                <Trash2 className="h-4 w-4" />
+  1044→                              </Button>
+  1045→                            </div>
+  1046→                          </TableCell>
+  1047→                        </TableRow>
+  1048→                      ))}
+  1049→                    </TableBody>
+  1050→                  </Table>
+  1051→                </div>
+  1052→              )}
+  1053→            </div>
+  1054→          </div>
+  1055→        </TabsContent>
+  1056→
+  1057→        {/* Newsletter */}
+  1058→        <TabsContent value="newsletter" className="mt-4">
+  1059→          <div className="rounded-2xl border border-border bg-card shadow-sm">
+  1060→            <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+  1061→              {data.newsletter.length === 0 ? (
+  1062→                <EmptyState text="No newsletter subscribers yet." />
+  1063→              ) : (
+  1064→                <div className="overflow-x-auto">
+  1065→                  <Table>
+  1066→                    <TableHeader className="sticky top-0 z-10 bg-card">
+  1067→                      <TableRow>
+  1068→                        <TableHead className="min-w-[300px]">Email</TableHead>
+  1069→                        <TableHead className="min-w-[180px]">Subscribed</TableHead>
+  1070→                        <TableHead className="w-20 text-right">Actions</TableHead>
+  1071→                      </TableRow>
+  1072→                    </TableHeader>
+  1073→                    <TableBody>
+  1074→                      {data.newsletter.map((n) => (
+  1075→                        <TableRow key={n.id}>
+  1076→                          <TableCell>
+  1077→                            <a
+  1078→                              href={`mailto:${n.email}`}
+  1079→                              className="font-medium text-foreground hover:text-brand hover:underline"
+  1080→                            >
+  1081→                              {n.email}
+  1082→                            </a>
+  1083→                          </TableCell>
+  1084→                          <TableCell className="text-xs text-muted-foreground">
+  1085→                            {formatLeadDate(n.createdAt)}
+  1086→                          </TableCell>
+  1087→                          <TableCell className="text-right">
+  1088→                            <Button
+  1089→                              size="sm"
+  1090→                              variant="ghost"
+  1091→                              onClick={() =>
+  1092→                                setConfirmDelete({
+  1093→                                  id: n.id,
+  1094→                                  model: "newsletter",
+  1095→                                  label: n.email,
+  1096→                                })
+  1097→                              }
+  1098→                              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+  1099→                              aria-label={`Unsubscribe ${n.email}`}
+  1100→                            >
+  1101→                              <Trash2 className="h-4 w-4" />
+  1102→                            </Button>
+  1103→                          </TableCell>
+  1104→                        </TableRow>
+  1105→                      ))}
+  1106→                    </TableBody>
+  1107→                  </Table>
+  1108→                </div>
+  1109→              )}
+  1110→            </div>
+  1111→          </div>
+  1112→        </TabsContent>
+  1113→      </Tabs>
+  1114→
+  1115→      {/* Guidance detail dialog */}
+  1116→      <Dialog
+  1117→        open={!!viewGuidance}
+  1118→        onOpenChange={(o) => !o && setViewGuidance(null)}
+  1119→      >
+  1120→        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto custom-scroll">
+  1121→          <DialogHeader>
+  1122→            <DialogTitle className="text-brand">
+  1123→              Guidance Request · {viewGuidance?.name}
+  1124→            </DialogTitle>
+  1125→            <DialogDescription>
+  1126→              Submitted {viewGuidance ? formatLeadDate(viewGuidance.createdAt) : ""}
+  1127→            </DialogDescription>
+  1128→          </DialogHeader>
+  1129→          {viewGuidance && (
+  1130→            <div className="grid gap-4 sm:grid-cols-2">
+  1131→              <DetailField label="Email" value={viewGuidance.email} />
+  1132→              <DetailField label="Phone" value={viewGuidance.phone} />
+  1133→              <DetailField label="Qualification" value={viewGuidance.qualification} />
+  1134→              <DetailField label="Graduation Year" value={viewGuidance.graduationYear} />
+  1135→              <DetailField label="Preferred Course" value={viewGuidance.preferredCourse} />
+  1136→              <DetailField label="Budget" value={viewGuidance.budget} />
+  1137→              <DetailField label="English Test" value={viewGuidance.englishTest} />
+  1138→              <DetailField label="Preferred Countries" value={viewGuidance.preferredCountries} />
+  1139→              <div className="sm:col-span-2">
+  1140→                <DetailField label="Message" value={viewGuidance.message} multiline />
+  1141→              </div>
+  1142→              <div className="sm:col-span-2">
+  1143→                <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+  1144→                  Status
+  1145→                </Label>
+  1146→                <div className="mt-1">
+  1147→                  <span
+  1148→                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold capitalize ${GUIDANCE_STATUS_STYLES[viewGuidance.status]}`}
+  1149→                  >
+  1150→                    {viewGuidance.status}
+  1151→                  </span>
+  1152→                </div>
+  1153→              </div>
+  1154→            </div>
+  1155→          )}
+  1156→          <DialogFooter>
+  1157→            <Button variant="outline" onClick={() => setViewGuidance(null)}>
+  1158→              Close
+  1159→            </Button>
+  1160→          </DialogFooter>
+  1161→        </DialogContent>
+  1162→      </Dialog>
+  1163→
+  1164→      {/* Booking detail dialog */}
+  1165→      <Dialog
+  1166→        open={!!viewBooking}
+  1167→        onOpenChange={(o) => !o && setViewBooking(null)}
+  1168→      >
+  1169→        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto custom-scroll">
+  1170→          <DialogHeader>
+  1171→            <DialogTitle className="text-brand">
+  1172→              Booking · {viewBooking?.name}
+  1173→            </DialogTitle>
+  1174→            <DialogDescription>
+  1175→              Submitted {viewBooking ? formatLeadDate(viewBooking.createdAt) : ""}
+  1176→            </DialogDescription>
+  1177→          </DialogHeader>
+  1178→          {viewBooking && (
+  1179→            <div className="grid gap-4 sm:grid-cols-2">
+  1180→              <DetailField label="Email" value={viewBooking.email} />
+  1181→              <DetailField label="Phone" value={viewBooking.phone} />
+  1182→              <DetailField label="Preferred Date" value={viewBooking.preferredDate} />
+  1183→              <DetailField label="Preferred Time" value={viewBooking.preferredTime} />
+  1184→              <DetailField label="Mode" value={viewBooking.mode} />
+  1185→              <DetailField label="Service" value={viewBooking.service} />
+  1186→              <div className="sm:col-span-2">
+  1187→                <DetailField label="Message" value={viewBooking.message} multiline />
+  1188→              </div>
+  1189→              <div className="sm:col-span-2">
+  1190→                <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+  1191→                  Status
+  1192→                </Label>
+  1193→                <div className="mt-1">
+  1194→                  <span
+  1195→                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold capitalize ${BOOKING_STATUS_STYLES[viewBooking.status]}`}
+  1196→                  >
+  1197→                    {viewBooking.status}
+  1198→                  </span>
+  1199→                </div>
+  1200→              </div>
+  1201→            </div>
+  1202→          )}
+  1203→          <DialogFooter>
+  1204→            <Button variant="outline" onClick={() => setViewBooking(null)}>
+  1205→              Close
+  1206→            </Button>
+  1207→          </DialogFooter>
+  1208→        </DialogContent>
+  1209→      </Dialog>
+  1210→
+  1211→      {/* Delete confirmation */}
+  1212→      <Dialog
+  1213→        open={!!confirmDelete}
+  1214→        onOpenChange={(o) => !o && setConfirmDelete(null)}
+  1215→      >
+  1216→        <DialogContent className="max-w-md">
+  1217→          <DialogHeader>
+  1218→            <DialogTitle className="text-brand">Delete lead?</DialogTitle>
+  1219→            <DialogDescription>
+  1220→              This will permanently remove{" "}
+  1221→              <span className="font-semibold text-foreground">
+  1222→                {confirmDelete?.label}
+  1223→              </span>{" "}
+  1224→              ({confirmDelete?.model}). This action cannot be undone.
+  1225→            </DialogDescription>
+  1226→          </DialogHeader>
+  1227→          <DialogFooter>
+  1228→            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+  1229→              Cancel
+  1230→            </Button>
+  1231→            <Button
+  1232→              variant="destructive"
+  1233→              onClick={() =>
+  1234→                confirmDelete &&
+  1235→                deleteLead(confirmDelete.model, confirmDelete.id, confirmDelete.label)
+  1236→              }
+  1237→            >
+  1238→              <Trash2 className="mr-1.5 h-4 w-4" />
+  1239→              Delete
+  1240→            </Button>
+  1241→          </DialogFooter>
+  1242→        </DialogContent>
+  1243→      </Dialog>
+  1244→    </div>
+  1245→  );
+  1246→}
+  1247→
+  1248→function SummaryCard({
+  1249→  icon: Icon,
+  1250→  label,
+  1251→  value,
+  1252→  hint,
+  1253→  accent,
+  1254→}: {
+  1255→  icon: React.ComponentType<{ className?: string }>;
+  1256→  label: string;
+  1257→  value: number;
+  1258→  hint: string;
+  1259→  accent: string;
+  1260→}) {
+  1261→  return (
+  1262→    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+  1263→      <div className="mb-3 flex items-center justify-between">
+  1264→        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/5">
+  1265→          <Icon className={`h-4.5 w-4.5 ${accent}`} />
+  1266→        </span>
+  1267→      </div>
+  1268→      <div className="text-3xl font-extrabold tracking-tight text-brand">
+  1269→        {value.toLocaleString()}
+  1270→      </div>
+  1271→      <div className="mt-1 text-sm font-medium text-foreground">{label}</div>
+  1272→      <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div>
+  1273→    </div>
+  1274→  );
+  1275→}
+  1276→
+  1277→function DetailField({
+  1278→  label,
+  1279→  value,
+  1280→  multiline,
+  1281→}: {
+  1282→  label: string;
+  1283→  value: string;
+  1284→  multiline?: boolean;
+  1285→}) {
+  1286→  return (
+  1287→    <div className="space-y-1">
+  1288→      <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+  1289→        {label}
+  1290→      </Label>
+  1291→      {multiline ? (
+  1292→        <div className="whitespace-pre-wrap rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm text-foreground">
+  1293→          {value || "—"}
+  1294→        </div>
+  1295→      ) : (
+  1296→        <div className="truncate rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm font-medium text-foreground">
+  1297→          {value || "—"}
+  1298→        </div>
+  1299→      )}
+  1300→    </div>
+  1301→  );
+  1302→}
+  1303→
+  1304→/* ----------------------------------------------------------------------------
+  1305→ * Tab 2: Analytics
+  1306→ * -------------------------------------------------------------------------- */
+  1307→
+  1308→function AnalyticsTab() {
+  1309→  const [data, setData] = useState<AnalyticsData | null>(null);
+  1310→  const [loading, setLoading] = useState(true);
+  1311→  const [refreshing, setRefreshing] = useState(false);
+  1312→
+  1313→  const fetchAnalytics = useCallback(async (silent = false) => {
+  1314→    if (silent) setRefreshing(true);
+  1315→    else setLoading(true);
+  1316→    try {
+  1317→      const res = await fetch("/api/admin/analytics", { cache: "no-store" });
+  1318→      if (!res.ok) throw new Error("Failed to load analytics");
+  1319→      const json = (await res.json()) as AnalyticsData;
+  1320→      setData(json);
+  1321→    } catch {
+  1322→      toast.error("Could not load analytics. Please try again.");
+  1323→    } finally {
+  1324→      setLoading(false);
+  1325→      setRefreshing(false);
+  1326→    }
+  1327→  }, []);
+  1328→
+  1329→  useEffect(() => {
+  1330→    fetchAnalytics();
+  1331→  }, [fetchAnalytics]);
+  1332→
+  1333→  if (loading) {
+  1334→    return (
+  1335→      <div className="space-y-6">
+  1336→        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+  1337→          {Array.from({ length: 8 }).map((_, i) => (
+  1338→            <Skeleton key={i} className="h-28 rounded-2xl" />
+  1339→          ))}
+  1340→        </div>
+  1341→        <div className="grid gap-4 lg:grid-cols-2">
+  1342→          <Skeleton className="h-72 rounded-2xl" />
+  1343→          <Skeleton className="h-72 rounded-2xl" />
+  1344→        </div>
+  1345→        <Skeleton className="h-64 rounded-2xl" />
+  1346→      </div>
+  1347→    );
+  1348→  }
+  1349→
+  1350→  if (!data) return null;
+  1351→
+  1352→  const stats = data.stats;
+  1353→  const statCards: {
+  1354→    label: string;
+  1355→    value: string;
+  1356→    icon: React.ComponentType<{ className?: string }>;
+  1357→    hint?: string;
+  1358→  }[] = [
+  1359→    {
+  1360→      label: "Total Visitors",
+  1361→      value: stats.totalVisitors.toLocaleString(),
+  1362→      icon: Users,
+  1363→      hint: `${stats.visitorsThisWeek.toLocaleString()} this week`,
+  1364→    },
+  1365→    {
+  1366→      label: "Visitors Today",
+  1367→      value: stats.visitorsToday.toLocaleString(),
+  1368→      icon: CalendarClock,
+  1369→      hint: "Unique new sessions",
+  1370→    },
+  1371→    {
+  1372→      label: "Total Clicks",
+  1373→      value: stats.totalClicks.toLocaleString(),
+  1374→      icon: MousePointerClick,
+  1375→      hint: `${stats.totalSectionViews.toLocaleString()} section views`,
+  1376→    },
+  1377→    {
+  1378→      label: "Clicks Today",
+  1379→      value: stats.clicksToday.toLocaleString(),
+  1380→      icon: MousePointerClick,
+  1381→      hint: "Interactions in last 24h",
+  1382→    },
+  1383→    {
+  1384→      label: "Avg Session Duration",
+  1385→      value: formatDuration(stats.avgDurationMs),
+  1386→      icon: CalendarClock,
+  1387→      hint: "Per unique session",
+  1388→    },
+  1389→    {
+  1390→      label: "Guidance Requests",
+  1391→      value: stats.guidanceCount.toLocaleString(),
+  1392→      icon: FileCheck,
+  1393→      hint: "Form submissions",
+  1394→    },
+  1395→    {
+  1396→      label: "Bookings",
+  1397→      value: stats.bookingCount.toLocaleString(),
+  1398→      icon: CalendarClock,
+  1399→      hint: "Counseling sessions",
+  1400→    },
+  1401→    {
+  1402→      label: "Newsletter Subs",
+  1403→      value: stats.newsletterCount.toLocaleString(),
+  1404→      icon: Sparkles,
+  1405→      hint: "Email subscribers",
+  1406→    },
+  1407→  ];
+  1408→
+  1409→  const maxClick = Math.max(1, ...data.topClicks.map((c) => c.count));
+  1410→
+  1411→  return (
+  1412→    <div className="space-y-6">
+  1413→      {/* Header row */}
+  1414→      <div className="flex flex-wrap items-center justify-between gap-3">
+  1415→        <div>
+  1416→          <h2 className="text-xl font-extrabold text-brand">Overview</h2>
+  1417→          <p className="text-sm text-muted-foreground">
+  1418→            Real-time visitor and engagement metrics across the NextStep site.
+  1419→          </p>
+  1420→        </div>
+  1421→        <Button
+  1422→          variant="outline"
+  1423→          onClick={() => fetchAnalytics(true)}
+  1424→          disabled={refreshing}
+  1425→        >
+  1426→          <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+  1427→          Refresh
+  1428→        </Button>
+  1429→      </div>
+  1430→
+  1431→      {/* Stat grid */}
+  1432→      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+  1433→        {statCards.map((s) => {
+  1434→          const Icon = s.icon;
+  1435→          return (
+  1436→            <div
+  1437→              key={s.label}
+  1438→              className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+  1439→            >
+  1440→              <div className="mb-3 flex items-center justify-between">
+  1441→                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/5 text-brand">
+  1442→                  <Icon className="h-4.5 w-4.5" />
+  1443→                </span>
+  1444→              </div>
+  1445→              <div className="text-3xl font-extrabold tracking-tight text-brand">
+  1446→                {s.value}
+  1447→              </div>
+  1448→              <div className="mt-1 text-sm font-medium text-foreground">
+  1449→                {s.label}
+  1450→              </div>
+  1451→              {s.hint && (
+  1452→                <div className="mt-0.5 text-xs text-muted-foreground">{s.hint}</div>
+  1453→              )}
+  1454→            </div>
+  1455→          );
+  1456→        })}
+  1457→      </div>
+  1458→
+  1459→      {/* Charts + lists */}
+  1460→      <div className="grid gap-4 lg:grid-cols-2">
+  1461→        <SectionCard title="Visitors (last 7 days)" icon={BarChart3}>
+  1462→          <div className="h-64 w-full">
+  1463→            <ResponsiveContainer width="100%" height="100%">
+  1464→              <BarChart
+  1465→                data={data.dailyVisitors}
+  1466→                margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
+  1467→              >
+  1468→                <CartesianGrid
+  1469→                  strokeDasharray="3 3"
+  1470→                  vertical={false}
+  1471→                  stroke="oklch(0.91 0.01 240)"
+  1472→                />
+  1473→                <XAxis
+  1474→                  dataKey="date"
+  1475→                  tickFormatter={(d: string) => d.slice(5)}
+  1476→                  tick={{ fontSize: 11, fill: "oklch(0.5 0.02 256)" }}
+  1477→                  axisLine={false}
+  1478→                  tickLine={false}
+  1479→                />
+  1480→                <YAxis
+  1481→                  allowDecimals={false}
+  1482→                  tick={{ fontSize: 11, fill: "oklch(0.5 0.02 256)" }}
+  1483→                  axisLine={false}
+  1484→                  tickLine={false}
+  1485→                />
+  1486→                <RechartsTooltip
+  1487→                  cursor={{ fill: "oklch(0.96 0.01 240)" }}
+  1488→                  contentStyle={{
+  1489→                    borderRadius: 8,
+  1490→                    border: "1px solid oklch(0.91 0.01 240)",
+  1491→                    fontSize: 12,
+  1492→                  }}
+  1493→                />
+  1494→                <Bar
+  1495→                  dataKey="count"
+  1496→                  name="Visitors"
+  1497→                  fill="oklch(0.28 0.06 256)"
+  1498→                  radius={[6, 6, 0, 0]}
+  1499→                  maxBarSize={48}
+  1500→                />
+  1501→              </BarChart>
+  1502→            </ResponsiveContainer>
+  1503→          </div>
+  1504→        </SectionCard>
+  1505→
+  1506→        <SectionCard title="Top Clicked Elements" icon={MousePointerClick}>
+  1507→          {data.topClicks.length === 0 ? (
+  1508→            <EmptyState text="No clicks recorded yet." />
+  1509→          ) : (
+  1510→            <ul className="space-y-2.5">
+  1511→              {data.topClicks.map((c, i) => (
+  1512→                <li key={`${c.type}-${c.label}-${i}`}>
+  1513→                  <div className="mb-1 flex items-center justify-between gap-2 text-sm">
+  1514→                    <span className="flex min-w-0 items-center gap-2">
+  1515→                      <Badge variant="outline" className="shrink-0 text-[10px] uppercase">
+  1516→                        {c.type}
+  1517→                      </Badge>
+  1518→                      <span className="truncate font-medium text-foreground">
+  1519→                        {c.label}
+  1520→                      </span>
+  1521→                    </span>
+  1522→                    <span className="shrink-0 font-semibold text-brand">{c.count}</span>
+  1523→                  </div>
+  1524→                  <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+  1525→                    <div
+  1526→                      className="h-full rounded-full bg-gold"
+  1527→                      style={{ width: `${(c.count / maxClick) * 100}%` }}
+  1528→                    />
+  1529→                  </div>
+  1530→                </li>
+  1531→              ))}
+  1532→            </ul>
+  1533→          )}
+  1534→        </SectionCard>
+  1535→      </div>
+  1536→
+  1537→      <div className="grid gap-4 lg:grid-cols-2">
+  1538→        <SectionCard title="Top Sections by Time" icon={BarChart3}>
+  1539→          {data.topSections.length === 0 ? (
+  1540→            <EmptyState text="No section engagement recorded yet." />
+  1541→          ) : (
+  1542→            <ul className="divide-y divide-border">
+  1543→              {data.topSections.map((s, i) => (
+  1544→                <li key={s.section + i} className="flex items-center justify-between gap-3 py-2.5">
+  1545→                  <div className="min-w-0">
+  1546→                    <div className="truncate text-sm font-semibold text-foreground">
+  1547→                      {s.section}
+  1548→                    </div>
+  1549→                    <div className="text-xs text-muted-foreground">
+  1550→                      {s.views} view{s.views === 1 ? "" : "s"} · avg {formatDuration(s.avgMs)}
+  1551→                    </div>
+  1552→                  </div>
+  1553→                  <Badge className="shrink-0 bg-brand/10 text-brand hover:bg-brand/15">
+  1554→                    {formatDuration(s.totalMs)}
+  1555→                  </Badge>
+  1556→                </li>
+  1557→              ))}
+  1558→            </ul>
+  1559→          )}
+  1560→        </SectionCard>
+  1561→
+  1562→        <SectionCard title="Recent Activity" icon={CalendarClock}>
+  1563→          {data.recentClicks.length === 0 ? (
+  1564→            <EmptyState text="No recent clicks." />
+  1565→          ) : (
+  1566→            <ul className="max-h-80 space-y-2 overflow-y-auto pr-1 custom-scroll">
+  1567→              {data.recentClicks.map((c, i) => (
+  1568→                <li
+  1569→                  key={i}
+  1570→                  className="flex items-start gap-3 rounded-lg border border-border bg-card/50 px-3 py-2"
+  1571→                >
+  1572→                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand/5 text-brand">
+  1573→                    <MousePointerClick className="h-3.5 w-3.5" />
+  1574→                  </span>
+  1575→                  <div className="min-w-0 flex-1">
+  1576→                    <div className="flex items-center gap-2">
+  1577→                      <Badge variant="outline" className="text-[10px] uppercase">
+  1578→                        {c.type}
+  1579→                      </Badge>
+  1580→                      <span className="truncate text-sm font-medium text-foreground">
+  1581→                        {c.label}
+  1582→                      </span>
+  1583→                    </div>
+  1584→                    <div className="mt-0.5 text-xs text-muted-foreground">
+  1585→                      {c.section} · {formatRelativeTime(c.time)}
+  1586→                    </div>
+  1587→                  </div>
+  1588→                </li>
+  1589→              ))}
+  1590→            </ul>
+  1591→          )}
+  1592→        </SectionCard>
+  1593→      </div>
+  1594→    </div>
+  1595→  );
+  1596→}
+  1597→
+  1598→function EmptyState({ text }: { text: string }) {
+  1599→  return (
+  1600→    <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">
+  1601→      {text}
+  1602→    </div>
+  1603→  );
+  1604→}
+  1605→
+  1606→/* ----------------------------------------------------------------------------
+  1607→ * Tab 3: Countries (CRUD)
+  1608→ * -------------------------------------------------------------------------- */
+  1609→
+  1610→function CountriesTab() {
+  1611→  const [countries, setCountries] = useState<Country[]>([]);
+  1612→  const [loading, setLoading] = useState(true);
+  1613→  const [dialogOpen, setDialogOpen] = useState(false);
+  1614→  const [editing, setEditing] = useState<Country | null>(null);
+  1615→  const [form, setForm] = useState<Country>(emptyCountry);
+  1616→  const [saving, setSaving] = useState(false);
+  1617→  const [confirmDelete, setConfirmDelete] = useState<Country | null>(null);
+  1618→
+  1619→  const fetchCountries = useCallback(async () => {
+  1620→    setLoading(true);
+  1621→    try {
+  1622→      const res = await fetch("/api/admin/countries", { cache: "no-store" });
+  1623→      if (!res.ok) throw new Error("Failed");
+  1624→      const json = (await res.json()) as { countries: Country[] };
+  1625→      setCountries(json.countries);
+  1626→    } catch {
+  1627→      toast.error("Could not load countries.");
+  1628→    } finally {
+  1629→      setLoading(false);
+  1630→    }
+  1631→  }, []);
+  1632→
+  1633→  useEffect(() => {
+  1634→    fetchCountries();
+  1635→  }, [fetchCountries]);
+  1636→
+  1637→  const openAdd = () => {
+  1638→    setEditing(null);
+  1639→    setForm({ ...emptyCountry, order: countries.length });
+  1640→    setDialogOpen(true);
+  1641→  };
+  1642→
+  1643→  const openEdit = (c: Country) => {
+  1644→    setEditing(c);
+  1645→    setForm({ ...c });
+  1646→    setDialogOpen(true);
+  1647→  };
+  1648→
+  1649→  const updateField = <K extends keyof Country>(key: K, value: Country[K]) =>
+  1650→    setForm((f) => ({ ...f, [key]: value }));
+  1651→
+  1652→  const submitCountry = async () => {
+  1653→    if (!form.slug || !form.name || !form.flagEmoji) {
+  1654→      toast.error("Slug, name and flag emoji are required.");
+  1655→      return;
+  1656→    }
+  1657→    setSaving(true);
+  1658→    try {
+  1659→      const isEdit = !!editing && !!editing.id;
+  1660→      const body = isEdit ? { id: editing!.id, ...form } : form;
+  1661→      const res = await fetch("/api/admin/countries", {
+  1662→        method: isEdit ? "PUT" : "POST",
+  1663→        headers: { "Content-Type": "application/json" },
+  1664→        body: JSON.stringify(body),
+  1665→      });
+  1666→      if (!res.ok) {
+  1667→        const err = await res.json().catch(() => ({}));
+  1668→        throw new Error(err.error ?? "Save failed");
+  1669→      }
+  1670→      toast.success(isEdit ? "Country updated." : "Country created.");
+  1671→      setDialogOpen(false);
+  1672→      await fetchCountries();
+  1673→    } catch (e) {
+  1674→      toast.error(e instanceof Error ? e.message : "Save failed.");
+  1675→    } finally {
+  1676→      setSaving(false);
+  1677→    }
+  1678→  };
+  1679→
+  1680→  const deleteCountry = async (c: Country) => {
+  1681→    if (!c.id) return;
+  1682→    try {
+  1683→      const res = await fetch(`/api/admin/countries?id=${encodeURIComponent(c.id)}`, {
+  1684→        method: "DELETE",
+  1685→      });
+  1686→      if (!res.ok) throw new Error("Delete failed");
+  1687→      toast.success(`${c.name} deleted.`);
+  1688→      setConfirmDelete(null);
+  1689→      await fetchCountries();
+  1690→    } catch {
+  1691→      toast.error("Could not delete country.");
+  1692→    }
+  1693→  };
+  1694→
+  1695→  return (
+  1696→    <div className="space-y-5">
+  1697→      <div className="flex flex-wrap items-center justify-between gap-3">
+  1698→        <div>
+  1699→          <h2 className="text-xl font-extrabold text-brand">Destinations</h2>
+  1700→          <p className="text-sm text-muted-foreground">
+  1701→            Manage the {countries.length} country guides shown on the site.
+  1702→          </p>
+  1703→        </div>
+  1704→        <div className="flex items-center gap-2">
+  1705→          <Button variant="outline" onClick={fetchCountries} disabled={loading}>
+  1706→            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+  1707→            Refresh
+  1708→          </Button>
+  1709→          <Button onClick={openAdd} className="bg-brand text-white hover:bg-brand/90">
+  1710→            <Plus className="mr-1.5 h-4 w-4" />
+  1711→            Add Country
+  1712→          </Button>
+  1713→        </div>
+  1714→      </div>
+  1715→
+  1716→      <div className="rounded-2xl border border-border bg-card shadow-sm">
+  1717→        {loading ? (
+  1718→          <div className="space-y-2 p-4">
+  1719→            {Array.from({ length: 6 }).map((_, i) => (
+  1720→              <Skeleton key={i} className="h-12 w-full" />
+  1721→            ))}
+  1722→          </div>
+  1723→        ) : countries.length === 0 ? (
+  1724→          <EmptyState text="No countries yet. Click “Add Country” to create one." />
+  1725→        ) : (
+  1726→          <div className="max-h-[60vh] overflow-y-auto custom-scroll">
+  1727→            <Table>
+  1728→              <TableHeader className="sticky top-0 z-10 bg-card">
+  1729→                <TableRow>
+  1730→                  <TableHead className="w-10">Flag</TableHead>
+  1731→                  <TableHead className="min-w-[160px]">Name / Slug</TableHead>
+  1732→                  <TableHead className="min-w-[220px]">Tagline</TableHead>
+  1733→                  <TableHead className="w-20 text-center">Featured</TableHead>
+  1734→                  <TableHead className="w-16 text-center">Order</TableHead>
+  1735→                  <TableHead className="w-28 text-right">Actions</TableHead>
+  1736→                </TableRow>
+  1737→              </TableHeader>
+  1738→              <TableBody>
+  1739→                {countries.map((c) => (
+  1740→                  <TableRow key={c.id ?? c.slug}>
+  1741→                    <TableCell>
+  1742→                      <span className="text-2xl">{c.flagEmoji}</span>
+  1743→                    </TableCell>
+  1744→                    <TableCell>
+  1745→                      <div className="font-semibold text-brand">{c.name}</div>
+  1746→                      <div className="font-mono text-xs text-muted-foreground">/{c.slug}</div>
+  1747→                    </TableCell>
+  1748→                    <TableCell className="max-w-[260px]">
+  1749→                      <span className="line-clamp-2 text-sm text-foreground">
+  1750→                        {c.tagline}
+  1751→                      </span>
+  1752→                    </TableCell>
+  1753→                    <TableCell className="text-center">
+  1754→                      {c.featured ? (
+  1755→                        <Star className="mx-auto h-4 w-4 fill-gold text-gold" />
+  1756→                      ) : (
+  1757→                        <span className="text-muted-foreground">—</span>
+  1758→                      )}
+  1759→                    </TableCell>
+  1760→                    <TableCell className="text-center text-sm font-medium">
+  1761→                      {c.order}
+  1762→                    </TableCell>
+  1763→                    <TableCell className="text-right">
+  1764→                      <div className="flex justify-end gap-1">
+  1765→                        <Button
+  1766→                          size="sm"
+  1767→                          variant="ghost"
+  1768→                          onClick={() => openEdit(c)}
+  1769→                          aria-label={`Edit ${c.name}`}
+  1770→                        >
+  1771→                          <Pencil className="h-4 w-4" />
+  1772→                        </Button>
+  1773→                        <Button
+  1774→                          size="sm"
+  1775→                          variant="ghost"
+  1776→                          onClick={() => setConfirmDelete(c)}
+  1777→                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+  1778→                          aria-label={`Delete ${c.name}`}
+  1779→                        >
+  1780→                          <Trash2 className="h-4 w-4" />
+  1781→                        </Button>
+  1782→                      </div>
+  1783→                    </TableCell>
+  1784→                  </TableRow>
+  1785→                ))}
+  1786→              </TableBody>
+  1787→            </Table>
+  1788→          </div>
+  1789→        )}
+  1790→      </div>
+  1791→
+  1792→      {/* Country form dialog */}
+  1793→      <CountryFormDialog
+  1794→        open={dialogOpen}
+  1795→        editing={editing}
+  1796→        form={form}
+  1797→        saving={saving}
+  1798→        onField={updateField}
+  1799→        onClose={() => setDialogOpen(false)}
+  1800→        onSubmit={submitCountry}
+  1801→      />
+  1802→
+  1803→      {/* Delete confirm dialog */}
+  1804→      <Dialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
+  1805→        <DialogContent className="max-w-md">
+  1806→          <DialogHeader>
+  1807→            <DialogTitle className="text-brand">Delete country?</DialogTitle>
+  1808→            <DialogDescription>
+  1809→              This will permanently remove{" "}
+  1810→              <span className="font-semibold text-foreground">
+  1811→                {confirmDelete?.flagEmoji} {confirmDelete?.name}
+  1812→              </span>
+  1813→              . This action cannot be undone.
+  1814→            </DialogDescription>
+  1815→          </DialogHeader>
+  1816→          <DialogFooter>
+  1817→            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+  1818→              Cancel
+  1819→            </Button>
+  1820→            <Button
+  1821→              variant="destructive"
+  1822→              onClick={() => confirmDelete && deleteCountry(confirmDelete)}
+  1823→            >
+  1824→              <Trash2 className="mr-1.5 h-4 w-4" />
+  1825→              Delete
+  1826→            </Button>
+  1827→          </DialogFooter>
+  1828→        </DialogContent>
+  1829→      </Dialog>
+  1830→    </div>
+  1831→  );
+  1832→}
+  1833→
+  1834→function CountryFormDialog({
+  1835→  open,
+  1836→  editing,
+  1837→  form,
+  1838→  saving,
+  1839→  onField,
+  1840→  onClose,
+  1841→  onSubmit,
+  1842→}: {
+  1843→  open: boolean;
+  1844→  editing: Country | null;
+  1845→  form: Country;
+  1846→  saving: boolean;
+  1847→  onField: <K extends keyof Country>(key: K, value: Country[K]) => void;
+  1848→  onClose: () => void;
+  1849→  onSubmit: () => void;
+  1850→}) {
+  1851→  return (
+  1852→    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+  1853→      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto custom-scroll">
+  1854→        <DialogHeader>
+  1855→          <DialogTitle className="text-brand">
+  1856→            {editing ? "Edit Destination" : "Add New Destination"}
+  1857→          </DialogTitle>
+  1858→          <DialogDescription>
+  1859→            {editing
+  1860→              ? `Updating ${editing.name}.`
+  1861→              : "Fill in the fields below to publish a new country guide."}
+  1862→          </DialogDescription>
+  1863→        </DialogHeader>
+  1864→
+  1865→        <div className="grid gap-4 sm:grid-cols-2">
+  1866→          <Field label="Slug" hint="URL identifier (e.g. uk, germany)">
+  1867→            <Input
+  1868→              value={form.slug}
+  1869→              onChange={(e) => onField("slug", e.target.value)}
+  1870→              placeholder="uk"
+  1871→            />
+  1872→          </Field>
+  1873→          <Field label="Name">
+  1874→            <Input
+  1875→              value={form.name}
+  1876→              onChange={(e) => onField("name", e.target.value)}
+  1877→              placeholder="United Kingdom"
+  1878→            />
+  1879→          </Field>
+  1880→          <Field label="Flag Emoji">
+  1881→            <Input
+  1882→              value={form.flagEmoji}
+  1883→              onChange={(e) => onField("flagEmoji", e.target.value)}
+  1884→              placeholder="🇬🇧"
+  1885→              className="text-xl"
+  1886→            />
+  1887→          </Field>
+  1888→          <Field label="Tagline">
+  1889→            <Input
+  1890→              value={form.tagline}
+  1891→              onChange={(e) => onField("tagline", e.target.value)}
+  1892→              placeholder="World-leading universities, global recognition"
+  1893→            />
+  1894→          </Field>
+  1895→          <Field label="Capital" className="sm:col-span-1">
+  1896→            <Input
+  1897→              value={form.capital}
+  1898→              onChange={(e) => onField("capital", e.target.value)}
+  1899→              placeholder="London"
+  1900→            />
+  1901→          </Field>
+  1902→          <Field label="Currency">
+  1903→            <Input
+  1904→              value={form.currency}
+  1905→              onChange={(e) => onField("currency", e.target.value)}
+  1906→              placeholder="GBP (£)"
+  1907→            />
+  1908→          </Field>
+  1909→          <Field label="Language">
+  1910→            <Input
+  1911→              value={form.language}
+  1912→              onChange={(e) => onField("language", e.target.value)}
+  1913→              placeholder="English"
+  1914→            />
+  1915→          </Field>
+  1916→          <Field label="Tuition Range">
+  1917→            <Input
+  1918→              value={form.tuitionRange}
+  1919→              onChange={(e) => onField("tuitionRange", e.target.value)}
+  1920→              placeholder="£10,000 – £30,000 / year"
+  1921→            />
+  1922→          </Field>
+  1923→          <Field label="Living Cost">
+  1924→            <Input
+  1925→              value={form.livingCost}
+  1926→              onChange={(e) => onField("livingCost", e.target.value)}
+  1927→              placeholder="£900 – £1,300 / month"
+  1928→            />
+  1929→          </Field>
+  1930→          <Field label="Intake Months">
+  1931→            <Input
+  1932→              value={form.intakeMonths}
+  1933→              onChange={(e) => onField("intakeMonths", e.target.value)}
+  1934→              placeholder="September, January"
+  1935→            />
+  1936→          </Field>
+  1937→          <Field label="Short Description" className="sm:col-span-2">
+  1938→            <Textarea
+  1939→              value={form.shortDesc}
+  1940→              onChange={(e) => onField("shortDesc", e.target.value)}
+  1941→              placeholder="One-line summary shown on the country card."
+  1942→              rows={2}
+  1943→            />
+  1944→          </Field>
+  1945→          <Field label="Long Description" className="sm:col-span-2">
+  1946→            <Textarea
+  1947→              value={form.longDesc}
+  1948→              onChange={(e) => onField("longDesc", e.target.value)}
+  1949→              placeholder="Detailed overview shown on the country detail page."
+  1950→              rows={4}
+  1951→            />
+  1952→          </Field>
+  1953→          <Field label="Visa Process" className="sm:col-span-2">
+  1954→            <Textarea
+  1955→              value={form.visaProcess}
+  1956→              onChange={(e) => onField("visaProcess", e.target.value)}
+  1957→              placeholder="Step-by-step student visa guidance."
+  1958→              rows={3}
+  1959→            />
+  1960→          </Field>
+  1961→          <Field label="Top Universities" className="sm:col-span-2">
+  1962→            <Textarea
+  1963→              value={form.topUniversities}
+  1964→              onChange={(e) => onField("topUniversities", e.target.value)}
+  1965→              placeholder="Comma-separated list (e.g. Oxford, Cambridge, Imperial)."
+  1966→              rows={2}
+  1967→            />
+  1968→          </Field>
+  1969→          <Field label="Popular Courses" className="sm:col-span-2">
+  1970→            <Textarea
+  1971→              value={form.popularCourses}
+  1972→              onChange={(e) => onField("popularCourses", e.target.value)}
+  1973→              placeholder="Comma-separated list."
+  1974→              rows={2}
+  1975→            />
+  1976→          </Field>
+  1977→          <Field label="Scholarships" className="sm:col-span-2">
+  1978→            <Textarea
+  1979→              value={form.scholarships}
+  1980→              onChange={(e) => onField("scholarships", e.target.value)}
+  1981→              placeholder="Available scholarships & funding notes."
+  1982→              rows={3}
+  1983→            />
+  1984→          </Field>
+  1985→          <Field label="Work Rights" className="sm:col-span-2">
+  1986→            <Textarea
+  1987→              value={form.workRights}
+  1988→              onChange={(e) => onField("workRights", e.target.value)}
+  1989→              placeholder="Post-study work, part-time rules, etc."
+  1990→              rows={2}
+  1991→            />
+  1992→          </Field>
+  1993→
+  1994→          <Field label="Accent Color">
+  1995→            <div className="flex items-center gap-2">
+  1996→              <Input
+  1997→                value={form.accentColor}
+  1998→                onChange={(e) => onField("accentColor", e.target.value)}
+  1999→                placeholder="#1e3a8a"
+  2000→              />
+
+[showing lines 1-2000 of 2954; use offset=2001 with limit to continue reading]

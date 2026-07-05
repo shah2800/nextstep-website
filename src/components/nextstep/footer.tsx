@@ -126,17 +126,23 @@ export function Footer({
               Get Started
             </h4>
             <div className="mt-3 flex flex-col gap-2">
+              <a
+                href="/?apply=true"
+                className="rounded-lg bg-gold px-4 py-2.5 text-center text-sm font-semibold text-gold-foreground transition hover:bg-gold/90"
+              >
+                Apply Now
+              </a>
+              <a
+                href="/?track=true"
+                className="rounded-lg border border-white/20 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/15"
+              >
+                Track Application
+              </a>
               <button
                 onClick={onGetGuidance}
-                className="rounded-lg bg-gold px-4 py-2.5 text-sm font-semibold text-gold-foreground transition hover:bg-gold/90"
-              >
-                Course Finder
-              </button>
-              <button
-                onClick={onBookSession}
                 className="rounded-lg border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
               >
-                Book a Session
+                Course Finder
               </button>
             </div>
 

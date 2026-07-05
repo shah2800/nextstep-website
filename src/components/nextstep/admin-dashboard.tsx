@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -18,6 +18,7 @@ import {
   Building2,
   CalendarClock,
   CalendarDays,
+  ClipboardList,
   Compass,
   Eye,
   FileCheck,
@@ -241,6 +242,49 @@ type LeadsData = {
 
 type LeadModel = "guidance" | "bookings" | "newsletter";
 
+/* ---- Applications ---- */
+
+type ApplicationStatus =
+  | "submitted"
+  | "review"
+  | "accepted"
+  | "rejected"
+  | "enrolled";
+
+type MilestoneStatus = "pending" | "active" | "done" | "issue";
+
+type ApplicationMilestone = {
+  id: string;
+  label: string;
+  note: string;
+  status: MilestoneStatus;
+  order: number;
+};
+
+type Application = {
+  id: string;
+  registrationId: string;
+  fullName: string;
+  fatherName: string;
+  dob: string;
+  gender: string;
+  phone: string;
+  email: string;
+  cityAddress: string;
+  passportNumber: string;
+  passportExpiry: string;
+  countryInterest: string;
+  courseInterest: string;
+  universityInterest: string;
+  matricGrade: string;
+  fscGrade: string;
+  ieltsScore: string;
+  status: ApplicationStatus;
+  headline: string;
+  createdAt: string;
+  milestones: ApplicationMilestone[];
+};
+
 /* ----------------------------------------------------------------------------
  * Helpers
  * -------------------------------------------------------------------------- */
@@ -326,6 +370,28 @@ const BOOKING_STATUS_STYLES: Record<BookingLead["status"], string> = {
   confirmed: "bg-amber-100 text-amber-800 border-amber-200",
   completed: "bg-emerald-100 text-emerald-700 border-emerald-200",
   cancelled: "bg-rose-100 text-rose-700 border-rose-200",
+};
+
+const APPLICATION_STATUS_STYLES: Record<ApplicationStatus, string> = {
+  submitted: "bg-blue-100 text-blue-700 border-blue-200",
+  review: "bg-amber-100 text-amber-800 border-amber-200",
+  accepted: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  rejected: "bg-rose-100 text-rose-700 border-rose-200",
+  enrolled: "bg-violet-100 text-violet-700 border-violet-200",
+};
+
+const MILESTONE_STATUS_STYLES: Record<MilestoneStatus, string> = {
+  pending: "bg-slate-100 text-slate-700 border-slate-200",
+  active: "bg-amber-100 text-amber-800 border-amber-200",
+  done: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  issue: "bg-rose-100 text-rose-700 border-rose-200",
+};
+
+const MILESTONE_STATUS_DOT: Record<MilestoneStatus, string> = {
+  pending: "bg-slate-400",
+  active: "bg-amber-500",
+  done: "bg-emerald-500",
+  issue: "bg-rose-500",
 };
 
 const ADMIN_PASSWORD = "nextstep-admin";
@@ -542,11 +608,16 @@ function Dashboard({ onClose }: { onClose: () => void }) {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <div className="overflow-x-auto pb-1">
-            <TabsList className="grid w-full min-w-[760px] grid-cols-6 sm:min-w-0">
+            <TabsList className="grid w-full min-w-[860px] grid-cols-7 sm:min-w-0">
               <TabsTrigger value="leads" className="gap-1.5">
                 <Inbox className="h-4 w-4" />
                 <span className="hidden sm:inline">Leads</span>
                 <span className="sm:hidden">Leads</span>
+              </TabsTrigger>
+              <TabsTrigger value="applications" className="gap-1.5">
+                <ClipboardList className="h-4 w-4" />
+                <span className="hidden sm:inline">Applications</span>
+                <span className="sm:hidden">Apps</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="gap-1.5">
                 <LayoutDashboard className="h-4 w-4" />
@@ -578,6 +649,9 @@ function Dashboard({ onClose }: { onClose: () => void }) {
 
           <TabsContent value="leads" className="mt-6">
             <LeadsTab />
+          </TabsContent>
+          <TabsContent value="applications" className="mt-6">
+            <ApplicationsTab />
           </TabsContent>
           <TabsContent value="analytics" className="mt-6">
             <AnalyticsTab />
@@ -1302,7 +1376,607 @@ function DetailField({
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 2: Analytics
+ * Tab 2: Applications
+ * -------------------------------------------------------------------------- */
+
+function ApplicationsTab() {
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [viewApp, setViewApp] = useState<Application | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Application | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [headlineDraft, setHeadlineDraft] = useState("");
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
+  const lastSyncedAppId = useRef<string | null>(null);
+
+  const fetchApps = useCallback(async (silent = false) => {
+    if (silent) setRefreshing(true);
+    else setLoading(true);
+    try {
+      const res = await fetch("/api/admin/applications", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load applications");
+      const json = (await res.json()) as { applications: Application[] };
+      setApplications(json.applications ?? []);
+    } catch {
+      toast.error("Could not load applications. Please try again.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchApps();
+  }, [fetchApps]);
+
+  // Sync editable drafts whenever a different application is opened.
+  useEffect(() => {
+    if (!viewApp) {
+      lastSyncedAppId.current = null;
+      return;
+    }
+    if (viewApp.id === lastSyncedAppId.current) return;
+    lastSyncedAppId.current = viewApp.id;
+    setHeadlineDraft(viewApp.headline);
+    const notes: Record<string, string> = {};
+    viewApp.milestones.forEach((m) => {
+      notes[m.id] = m.note;
+    });
+    setNoteDrafts(notes);
+  }, [viewApp]);
+
+  const applyPatchLocally = (
+    applicationId: string,
+    patch: {
+      headline?: string;
+      status?: ApplicationStatus;
+      milestoneId?: string;
+      milestoneStatus?: MilestoneStatus;
+      milestoneNote?: string;
+    },
+  ) => {
+    const mutate = (a: Application): Application => {
+      if (a.id !== applicationId) return a;
+      const next: Application = {
+        ...a,
+        milestones: a.milestones.map((m) => ({ ...m })),
+      };
+      if (patch.headline !== undefined) next.headline = patch.headline;
+      if (patch.status !== undefined) next.status = patch.status;
+      if (patch.milestoneId) {
+        next.milestones = next.milestones.map((m) =>
+          m.id === patch.milestoneId
+            ? {
+                ...m,
+                ...(patch.milestoneStatus !== undefined
+                  ? { status: patch.milestoneStatus }
+                  : {}),
+                ...(patch.milestoneNote !== undefined
+                  ? { note: patch.milestoneNote }
+                  : {}),
+              }
+            : m,
+        );
+      }
+      return next;
+    };
+    setApplications((prev) => prev.map(mutate));
+    setViewApp((prev) => (prev ? mutate(prev) : prev));
+  };
+
+  const patchApplication = async (
+    applicationId: string,
+    payload: {
+      headline?: string;
+      status?: ApplicationStatus;
+      milestoneId?: string;
+      milestoneStatus?: MilestoneStatus;
+      milestoneNote?: string;
+    },
+    successMsg: string,
+  ) => {
+    setUpdatingId(applicationId);
+    try {
+      const res = await fetch("/api/admin/applications", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId, ...payload }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Update failed");
+      }
+      applyPatchLocally(applicationId, payload);
+      toast.success(successMsg);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not update application.");
+      fetchApps(true);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const saveHeadline = () => {
+    if (!viewApp) return;
+    if (headlineDraft === viewApp.headline) return;
+    patchApplication(
+      viewApp.id,
+      { headline: headlineDraft },
+      "Status headline updated.",
+    );
+  };
+
+  const saveMilestoneNote = (milestoneId: string) => {
+    if (!viewApp) return;
+    const milestone = viewApp.milestones.find((m) => m.id === milestoneId);
+    if (!milestone) return;
+    const draft = noteDrafts[milestoneId] ?? "";
+    if (draft === milestone.note) return;
+    patchApplication(
+      viewApp.id,
+      { milestoneId, milestoneNote: draft },
+      `Note saved for "${milestone.label}".`,
+    );
+  };
+
+  const deleteApplication = async (app: Application) => {
+    try {
+      const res = await fetch(
+        `/api/admin/applications?id=${encodeURIComponent(app.id)}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Delete failed");
+      }
+      toast.success(`Application ${app.registrationId} deleted.`);
+      setConfirmDelete(null);
+      if (viewApp?.id === app.id) setViewApp(null);
+      await fetchApps(true);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not delete application.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-2xl" />
+          ))}
+        </div>
+        <Skeleton className="h-[400px] rounded-2xl" />
+      </div>
+    );
+  }
+
+  const counts = {
+    total: applications.length,
+    submitted: applications.filter((a) => a.status === "submitted").length,
+    review: applications.filter((a) => a.status === "review").length,
+    accepted: applications.filter((a) => a.status === "accepted").length,
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-extrabold text-brand">Student Applications</h2>
+          <p className="text-sm text-muted-foreground">
+            Review submitted applications and update milestone statuses that students see on the public Track page.
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => fetchApps(true)} disabled={refreshing}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <SummaryCard
+          icon={ClipboardList}
+          label="Total Applications"
+          value={counts.total}
+          hint="All submissions"
+          accent="text-brand"
+        />
+        <SummaryCard
+          icon={Inbox}
+          label="New"
+          value={counts.submitted}
+          hint="Status: submitted"
+          accent="text-blue-600"
+        />
+        <SummaryCard
+          icon={CalendarClock}
+          label="In Review"
+          value={counts.review}
+          hint="Status: review"
+          accent="text-amber-600"
+        />
+        <SummaryCard
+          icon={BadgeCheck}
+          label="Accepted"
+          value={counts.accepted}
+          hint="Status: accepted"
+          accent="text-emerald-600"
+        />
+      </div>
+
+      {/* Table */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm">
+        <div className="max-h-[55vh] overflow-y-auto custom-scroll">
+          {applications.length === 0 ? (
+            <EmptyState text="No applications submitted yet." />
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader className="sticky top-0 z-10 bg-card">
+                  <TableRow>
+                    <TableHead className="min-w-[150px]">Registration ID</TableHead>
+                    <TableHead className="min-w-[160px]">Name</TableHead>
+                    <TableHead className="min-w-[140px]">Phone</TableHead>
+                    <TableHead className="min-w-[200px]">Email</TableHead>
+                    <TableHead className="min-w-[130px]">Country</TableHead>
+                    <TableHead className="min-w-[150px]">Course</TableHead>
+                    <TableHead className="min-w-[150px]">Status</TableHead>
+                    <TableHead className="min-w-[140px]">Created</TableHead>
+                    <TableHead className="w-24 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {applications.map((a) => (
+                    <TableRow key={a.id} className="cursor-pointer hover:bg-secondary/40">
+                      <TableCell
+                        className="font-mono text-xs font-semibold text-brand"
+                        onClick={() => setViewApp(a)}
+                      >
+                        {a.registrationId}
+                      </TableCell>
+                      <TableCell
+                        className="font-semibold text-brand"
+                        onClick={() => setViewApp(a)}
+                      >
+                        {a.fullName || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        <a
+                          href={`tel:${a.phone}`}
+                          className="text-foreground hover:text-brand hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {a.phone || "—"}
+                        </a>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        <a
+                          href={`mailto:${a.email}`}
+                          className="text-foreground hover:text-brand hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {a.email || "—"}
+                        </a>
+                      </TableCell>
+                      <TableCell className="text-sm" onClick={() => setViewApp(a)}>
+                        {a.countryInterest || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm" onClick={() => setViewApp(a)}>
+                        {a.courseInterest || "—"}
+                      </TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Select
+                          value={a.status}
+                          onValueChange={(v) =>
+                            patchApplication(
+                              a.id,
+                              { status: v as ApplicationStatus },
+                              `Status updated to "${v}".`,
+                            )
+                          }
+                          disabled={updatingId === a.id}
+                        >
+                          <SelectTrigger
+                            className={`h-8 w-32 border bg-background text-xs font-semibold ${APPLICATION_STATUS_STYLES[a.status]}`}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="submitted">Submitted</SelectItem>
+                            <SelectItem value="review">In Review</SelectItem>
+                            <SelectItem value="accepted">Accepted</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                            <SelectItem value="enrolled">Enrolled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground" onClick={() => setViewApp(a)}>
+                        {formatLeadDate(a.createdAt)}
+                      </TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setViewApp(a)}
+                            aria-label={`View details for ${a.fullName}`}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setConfirmDelete(a)}
+                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            aria-label={`Delete ${a.fullName}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Detail dialog */}
+      <Dialog open={!!viewApp} onOpenChange={(o) => !o && setViewApp(null)}>
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto custom-scroll">
+          <DialogHeader>
+            <DialogTitle className="flex flex-wrap items-center gap-2 text-brand">
+              <span>Application · {viewApp?.fullName}</span>
+              {viewApp && (
+                <span className="rounded-md bg-secondary px-2 py-0.5 font-mono text-[11px] font-semibold text-foreground">
+                  {viewApp.registrationId}
+                </span>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              Submitted {viewApp ? formatLeadDate(viewApp.createdAt) : ""}
+            </DialogDescription>
+          </DialogHeader>
+
+          {viewApp && (
+            <div className="space-y-5">
+              {/* Student profile */}
+              <section className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
+                  Student Profile
+                </h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <DetailField label="Full Name" value={viewApp.fullName} />
+                  <DetailField label="Father's Name" value={viewApp.fatherName} />
+                  <DetailField label="Date of Birth" value={viewApp.dob} />
+                  <DetailField label="Gender" value={viewApp.gender} />
+                  <DetailField label="Phone" value={viewApp.phone} />
+                  <DetailField label="Email" value={viewApp.email} />
+                  <DetailField label="City / Address" value={viewApp.cityAddress} />
+                  <DetailField label="Passport Number" value={viewApp.passportNumber} />
+                  <DetailField label="Passport Expiry" value={viewApp.passportExpiry} />
+                </div>
+              </section>
+
+              {/* Academic & preferences */}
+              <section className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
+                  Academic &amp; Preferences
+                </h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <DetailField label="Country of Interest" value={viewApp.countryInterest} />
+                  <DetailField label="Course of Interest" value={viewApp.courseInterest} />
+                  <DetailField label="University Preference" value={viewApp.universityInterest} />
+                  <DetailField label="Matric Grade" value={viewApp.matricGrade} />
+                  <DetailField label="FSc Grade" value={viewApp.fscGrade} />
+                  <DetailField label="IELTS Score" value={viewApp.ieltsScore} />
+                </div>
+              </section>
+
+              {/* Status + headline editor */}
+              <section className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-4">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
+                  Status &amp; Student-Facing Headline
+                </h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-brand">
+                      Overall Status
+                    </Label>
+                    <Select
+                      value={viewApp.status}
+                      onValueChange={(v) =>
+                        patchApplication(
+                          viewApp.id,
+                          { status: v as ApplicationStatus },
+                          `Status updated to "${v}".`,
+                        )
+                      }
+                      disabled={updatingId === viewApp.id}
+                    >
+                      <SelectTrigger
+                        className={`w-full border bg-background text-xs font-semibold ${APPLICATION_STATUS_STYLES[viewApp.status]}`}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="submitted">Submitted</SelectItem>
+                        <SelectItem value="review">In Review</SelectItem>
+                        <SelectItem value="accepted">Accepted</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                        <SelectItem value="enrolled">Enrolled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Drives the badge shown on the Track page.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="app-headline"
+                      className="text-xs font-semibold uppercase tracking-wide text-brand"
+                    >
+                      Headline Message
+                    </Label>
+                    <Textarea
+                      id="app-headline"
+                      value={headlineDraft}
+                      onChange={(e) => setHeadlineDraft(e.target.value)}
+                      onBlur={saveHeadline}
+                      rows={3}
+                      className="resize-none bg-background text-sm"
+                      placeholder="Shown to the student on the Track page…"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Saves automatically when you click away.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Milestone timeline */}
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
+                    Milestone Timeline
+                  </h4>
+                  <span className="text-xs text-muted-foreground">
+                    Visible to student on Track page
+                  </span>
+                </div>
+
+                {viewApp.milestones.length === 0 ? (
+                  <EmptyState text="No milestones defined for this application." />
+                ) : (
+                  <ol className="space-y-3">
+                    {[...viewApp.milestones]
+                      .sort((x, y) => x.order - y.order)
+                      .map((m, idx, arr) => (
+                        <li key={m.id} className="flex gap-3">
+                          <div className="flex flex-col items-center">
+                            <span
+                              className={`mt-1.5 h-4 w-4 rounded-full border-2 border-background ${MILESTONE_STATUS_DOT[m.status]}`}
+                              aria-hidden
+                            />
+                            {idx < arr.length - 1 && (
+                              <span className="mt-1 w-px flex-1 bg-border" aria-hidden />
+                            )}
+                          </div>
+                          <div className="flex-1 rounded-xl border border-border bg-card p-3 shadow-sm">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="text-sm font-bold text-brand">
+                                {m.label}
+                              </span>
+                              <Select
+                                value={m.status}
+                                onValueChange={(v) =>
+                                  patchApplication(
+                                    viewApp.id,
+                                    {
+                                      milestoneId: m.id,
+                                      milestoneStatus: v as MilestoneStatus,
+                                    },
+                                    `"${m.label}" marked as "${v}".`,
+                                  )
+                                }
+                                disabled={updatingId === viewApp.id}
+                              >
+                                <SelectTrigger
+                                  className={`h-8 w-32 border bg-background text-xs font-semibold ${MILESTONE_STATUS_STYLES[m.status]}`}
+                                >
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="active">Active</SelectItem>
+                                  <SelectItem value="done">Done</SelectItem>
+                                  <SelectItem value="issue">Issue</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="mt-2 space-y-1">
+                              <Label
+                                htmlFor={`note-${m.id}`}
+                                className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+                              >
+                                Note
+                              </Label>
+                              <Input
+                                id={`note-${m.id}`}
+                                value={noteDrafts[m.id] ?? ""}
+                                onChange={(e) =>
+                                  setNoteDrafts((prev) => ({
+                                    ...prev,
+                                    [m.id]: e.target.value,
+                                  }))
+                                }
+                                onBlur={() => saveMilestoneNote(m.id)}
+                                placeholder="Add a short note for the student…"
+                                className="h-8 bg-background text-sm"
+                              />
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </section>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewApp(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation */}
+      <Dialog
+        open={!!confirmDelete}
+        onOpenChange={(o) => !o && setConfirmDelete(null)}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-brand">Delete application?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete the application from{" "}
+              <span className="font-semibold text-foreground">
+                {confirmDelete?.fullName}
+              </span>{" "}
+              (ID{" "}
+              <span className="font-mono font-semibold text-foreground">
+                {confirmDelete?.registrationId}
+              </span>
+              ) and all of its milestones. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => confirmDelete && deleteApplication(confirmDelete)}
+            >
+              <Trash2 className="mr-1.5 h-4 w-4" />
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+ * Tab 3: Analytics
  * -------------------------------------------------------------------------- */
 
 function AnalyticsTab() {
@@ -1604,7 +2278,7 @@ function EmptyState({ text }: { text: string }) {
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 3: Countries (CRUD)
+ * Tab 4: Countries (CRUD)
  * -------------------------------------------------------------------------- */
 
 function CountriesTab() {
@@ -2143,7 +2817,7 @@ async function saveContentKey(
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 4: Content (Stats + Hero + Counseling + Assistant + Newsletter + Footer)
+ * Tab 5: Content (Stats + Hero + Counseling + Assistant + Newsletter + Footer)
  * -------------------------------------------------------------------------- */
 
 type ContentField = {
@@ -2550,7 +3224,7 @@ function FieldCard({
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 5: Services editor
+ * Tab 6: Services editor
  * -------------------------------------------------------------------------- */
 
 function ServicesTab() {
@@ -2738,7 +3412,7 @@ function ServicesTab() {
 }
 
 /* ----------------------------------------------------------------------------
- * Tab 6: Compare Factors editor
+ * Tab 7: Compare Factors editor
  * -------------------------------------------------------------------------- */
 
 function CompareFactorsTab() {

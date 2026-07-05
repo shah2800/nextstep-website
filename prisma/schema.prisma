@@ -135,3 +135,49 @@ model SiteContent {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+// ---- Applications (Apply page) ----
+model Application {
+  id                 String   @id @default(cuid())
+  registrationId     String   @unique
+  fullName           String
+  fatherName         String   @default("")
+  dob                String   @default("")
+  gender             String   @default("")
+  phone              String
+  email              String
+  cityAddress        String   @default("")
+  passportNumber     String   @default("")
+  passportIssueDate  String   @default("")
+  passportExpiry     String   @default("")
+  matricGrade        String   @default("")
+  fscGrade           String   @default("")
+  otherDegree        String   @default("")
+  ieltsScore         String   @default("")
+  countryInterest    String
+  universityInterest String   @default("")
+  courseInterest     String   @default("")
+  documents          String   @default("") // JSON of file names
+  status             String   @default("submitted")
+  headline           String   @default("Application received — our team is reviewing your documents.")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  milestones         ApplicationMilestone[]
+
+  @@index([registrationId])
+  @@index([status])
+}
+
+model ApplicationMilestone {
+  id            String      @id @default(cuid())
+  applicationId String
+  label         String
+  note          String      @default("")
+  status        String      @default("pending") // done | active | issue | pending
+  order         Int         @default(0)
+  updatedAt     DateTime    @default(now()) @updatedAt
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+}

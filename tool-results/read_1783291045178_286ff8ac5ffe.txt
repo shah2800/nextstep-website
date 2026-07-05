@@ -1,0 +1,363 @@
+     1→﻿<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→  <meta charset="utf-8">
+     5→  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+     6→
+     7→  <!-- Primary SEO -->
+     8→  <title>Track Your Application | NextStep International — Study Abroad Pakistan</title>
+     9→  <meta name="description" content="Track your university application status with NextStep International. Enter your Register ID to see real-time updates on your study abroad journey.">
+    10→  <meta name="keywords" content="nextstep international track application, NSI application status, study abroad application tracking, nextstepinternational">
+    11→  <meta name="author" content="NextStep International">
+    12→  <meta name="robots" content="index, follow">
+    13→  <meta name="theme-color" content="#0a1f44">
+    14→  <link rel="canonical" href="https://www.nextstepinternationals.com/track.html">
+    15→  <meta property="og:type" content="website">
+    16→  <meta property="og:url" content="https://www.nextstepinternationals.com/track.html">
+    17→  <meta property="og:title" content="Track Your Application | NextStep International">
+    18→  <meta property="og:description" content="Check the real-time status of your university application with NextStep International.">
+    19→  <meta property="og:image" content="https://www.nextstepinternationals.com/images/og-image.jpg">
+    20→  <meta property="og:site_name" content="NextStep International">
+    21→
+    22→  <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+    23→  <link rel="apple-touch-icon" href="images/logo.svg">
+    24→  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    25→  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    26→  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap">
+    27→  <style>
+    28→    :root{
+    29→      --navy:#0a1f44; --navy2:#1a3a6e; --navylight:#eef3fb;
+    30→      --gold:#b8960c; --goldlight:#fdf6e3; --goldbright:#d4a843;
+    31→      --ink:#0d1b2a; --soft:#3d4f63; --muted:#6b7280;
+    32→      --bg:#f7f9fc; --surface:#fff; --border:#e5e7eb;
+    33→      --danger:#dc2626; --success:#059669; --warn:#d97706; --wa:#25d366;
+    34→      --r:12px; --rsm:8px; --max:720px;
+    35→      --serif:"DM Serif Display",Georgia,serif;
+    36→      --sans:"Inter",system-ui,sans-serif;
+    37→    }
+    38→    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    39→    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    40→    body{font-family:var(--sans);font-size:1rem;line-height:1.65;color:var(--soft);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+    41→    a{color:inherit;text-decoration:none}
+    42→
+    43→    /* ── Header ── */
+    44→    .site-header{position:sticky;top:0;z-index:400;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 16px rgba(10,31,68,.07)}
+    45→    .hdr{max-width:1140px;margin:0 auto;padding:0 24px;height:66px;display:flex;align-items:center;gap:16px}
+    46→    .brand{display:flex;align-items:center;gap:10px}
+    47→    .brand img{height:38px;width:auto}
+    48→    .hdr-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+    49→    .nav-link{font-size:.875rem;font-weight:600;color:var(--soft);padding:8px 14px;border-radius:var(--rsm);transition:.15s}
+    50→    .nav-link:hover{background:var(--navylight);color:var(--navy)}
+    51→    .nav-cta{background:var(--navy);color:#fff!important;box-shadow:0 4px 12px rgba(10,31,68,.2)}
+    52→    .nav-cta:hover{background:var(--navy2)!important;transform:translateY(-1px)}
+    53→    @media(max-width:600px){.nav-link:not(.nav-cta){display:none}}
+    54→
+    55→    /* ── Page hero ── */
+    56→    .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:48px 24px 44px;text-align:center;color:#fff;position:relative;overflow:hidden}
+    57→    .page-hero::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+    58→    .hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:50px;margin-bottom:18px;position:relative}
+    59→    .hero-dot{width:7px;height:7px;background:var(--goldbright);border-radius:50%;animation:dotPulse 1.8s ease-in-out infinite}
+    60→    @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+    61→    .page-hero h1{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:400;letter-spacing:-.01em;margin-bottom:12px;position:relative}
+    62→    .page-hero p{font-size:.9375rem;opacity:.82;max-width:460px;margin:0 auto;line-height:1.6;position:relative}
+    63→    .gold-line{width:56px;height:3px;background:linear-gradient(90deg,var(--goldbright),var(--gold));border-radius:2px;margin:16px auto 0;position:relative}
+    64→
+    65→    /* ── Search section ── */
+    66→    .search-wrap{max-width:var(--max);margin:0 auto;padding:32px 20px 40px}
+    67→    .search-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;box-shadow:0 4px 24px rgba(10,31,68,.07)}
+    68→    .search-label{font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);margin-bottom:10px}
+    69→    .search-row{display:flex;gap:10px;flex-wrap:wrap}
+    70→    .search-input{flex:1;min-width:200px;padding:14px 16px;border-radius:var(--rsm);border:1.5px solid var(--border);font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;letter-spacing:.04em;font-weight:600}
+    71→    .search-input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,31,68,.08);background:#fff}
+    72→    .search-input::placeholder{color:var(--muted);font-weight:400;letter-spacing:0}
+    73→    .btn-search{padding:14px 26px;border:none;border-radius:var(--rsm);background:var(--navy);color:#fff;font:inherit;font-size:.9375rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(10,31,68,.22);transition:transform .15s,box-shadow .15s,background .15s;display:flex;align-items:center;gap:8px}
+    74→    .btn-search:hover:not(:disabled){background:var(--navy2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,31,68,.28)}
+    75→    .btn-search:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    76→    .btn-search svg{width:17px;height:17px}
+    77→    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    78→    @keyframes spin{to{transform:rotate(360deg)}}
+    79→    .hint-text{margin-top:12px;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+    80→    .hint-text svg{width:14px;height:14px;color:var(--navy);flex-shrink:0}
+    81→
+    82→    /* ── Alert ── */
+    83→    .alert-error{display:flex;align-items:flex-start;gap:10px;padding:13px 15px;border-radius:var(--rsm);background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);color:#b91c1c;font-size:.875rem;line-height:1.5;margin-top:14px}
+    84→    .alert-error svg{flex-shrink:0;width:16px;height:16px;margin-top:2px}
+    85→
+    86→    /* ── Result card ── */
+    87→    #out{margin-top:20px}
+    88→    .result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 8px 32px rgba(10,31,68,.1);overflow:hidden;animation:fadeUp .4s cubic-bezier(.16,1,.3,1)}
+    89→    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    90→
+    91→    .result-header{padding:24px;background:var(--navylight);border-bottom:1px solid var(--border)}
+    92→    .result-name{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:6px}
+    93→    .result-rid{font-family:ui-monospace,"Cascadia Code",monospace;font-size:.875rem;color:var(--navy);font-weight:700;background:#fff;border:1px solid rgba(10,31,68,.15);padding:4px 12px;border-radius:6px;display:inline-block;margin-bottom:12px}
+    94→    .result-meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--muted)}
+    95→    .result-meta span{display:flex;align-items:center;gap:5px;white-space:nowrap}
+    96→    .result-meta svg{width:13px;height:13px;color:var(--navy);flex-shrink:0}
+    97→
+    98→    /* ── Progress bar ── */
+    99→    .progress-section{padding:20px 24px;border-bottom:1px solid var(--border)}
+   100→    .progress-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+   101→    .progress-label span:last-child{color:var(--navy);font-weight:800}
+   102→    .progress-bar-bg{height:8px;background:var(--border);border-radius:50px;overflow:hidden}
+   103→    .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--goldbright));border-radius:50px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+   104→
+   105→    /* ── Milestones ── */
+   106→    .milestones-section{padding:20px 24px}
+   107→    .milestones-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:14px}
+   108→    .milestone-list{display:flex;flex-direction:column;gap:8px}
+   109→    .milestone{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:var(--rsm);border:1px solid transparent;transition:transform .15s}
+   110→    .milestone:hover{transform:translateX(3px)}
+   111→    .milestone-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+   112→    .milestone-body{flex:1;min-width:0}
+   113→    .milestone-text{font-weight:600;color:var(--soft);line-height:1.35;font-size:.9rem}
+   114→    .milestone-note{font-size:.78rem;color:var(--muted);margin-top:2px}
+   115→    .milestone-badge{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+   116→
+   117→    .m-done{background:rgba(22,163,74,.05);border-color:rgba(22,163,74,.15)}
+   118→    .m-done .milestone-icon{background:rgba(22,163,74,.1)}
+   119→    .m-done .milestone-text{color:var(--ink)}
+   120→    .m-done .milestone-badge{background:rgba(22,163,74,.1);color:var(--success)}
+   121→    .m-active{background:rgba(184,150,12,.06);border-color:rgba(184,150,12,.2)}
+   122→    .m-active .milestone-icon{background:rgba(184,150,12,.12)}
+   123→    .m-active .milestone-badge{background:rgba(184,150,12,.1);color:var(--gold)}
+   124→    .m-active::after{content:"";position:absolute;right:16px;top:50%;transform:translateY(-50%);width:7px;height:7px;background:var(--goldbright);border-radius:50%;animation:activePulse 1.5s ease-in-out infinite}
+   125→    @keyframes activePulse{0%,100%{opacity:1;transform:translateY(-50%) scale(1)}50%{opacity:.4;transform:translateY(-50%) scale(.6)}}
+   126→    .m-issue{background:rgba(220,38,38,.04);border-color:rgba(220,38,38,.15)}
+   127→    .m-issue .milestone-icon{background:rgba(220,38,38,.08)}
+   128→    .m-issue .milestone-badge{background:rgba(220,38,38,.08);color:var(--danger)}
+   129→    .m-pending{background:var(--bg);border-color:var(--border)}
+   130→    .m-pending .milestone-icon{background:rgba(10,31,68,.05)}
+   131→    .m-pending .milestone-text{color:var(--muted)}
+   132→    .m-pending .milestone-badge{background:rgba(10,31,68,.05);color:var(--muted)}
+   133→
+   134→    /* ── Result footer ── */
+   135→    .result-footer{padding:18px 24px;border-top:1px solid var(--border);background:var(--navylight);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+   136→    .result-updated{font-size:.8rem;color:var(--muted)}
+   137→    .result-headline{font-size:.85rem;color:var(--soft);font-style:italic;margin-top:2px}
+   138→    .wa-link{display:inline-flex;align-items:center;gap:7px;font-size:.875rem;font-weight:700;color:#fff;text-decoration:none;padding:10px 18px;border-radius:var(--rsm);background:var(--wa);box-shadow:0 4px 14px rgba(37,211,102,.3);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+   139→    .wa-link:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.38)}
+   140→    .wa-link svg{width:16px;height:16px}
+   141→
+   142→    /* ── Not found ── */
+   143→    .not-found{text-align:center;padding:52px 24px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);animation:fadeUp .4s cubic-bezier(.16,1,.3,1)}
+   144→    .not-found .nf-icon{width:68px;height:68px;background:var(--navylight);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 18px}
+   145→    .not-found h3{font-family:var(--serif);font-size:1.4rem;font-weight:400;color:var(--ink);margin-bottom:8px}
+   146→    .not-found p{font-size:.9rem;color:var(--muted);max-width:380px;margin:0 auto 20px}
+   147→    .not-found a{display:inline-flex;align-items:center;gap:7px;font-size:.875rem;font-weight:700;color:var(--navy);text-decoration:none;padding:10px 18px;border-radius:var(--rsm);background:var(--navylight);border:1px solid rgba(10,31,68,.12);transition:background .15s}
+   148→    .not-found a:hover{background:rgba(10,31,68,.1)}
+   149→
+   150→    /* ── Info cards ── */
+   151→    .info-section{max-width:var(--max);margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+   152→    .info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;box-shadow:0 2px 12px rgba(10,31,68,.05)}
+   153→    .info-card .ic-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin:0 auto 12px}
+   154→    .info-card h4{font-size:.9375rem;font-weight:700;color:var(--ink);margin-bottom:5px}
+   155→    .info-card p{font-size:.825rem;color:var(--muted);line-height:1.5}
+   156→    .ic-navy .ic-icon{background:var(--navylight)}
+   157→    .ic-gold .ic-icon{background:var(--goldlight)}
+   158→
+   159→    /* ── Floating WhatsApp ── */
+   160→    .wa-float{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));right:24px;z-index:500}
+   161→    .wa-pulse{position:absolute;inset:-4px;border-radius:50%;border:3px solid rgba(37,211,102,.5);animation:waPulse 2s ease-out infinite;pointer-events:none}
+   162→    @keyframes waPulse{0%{opacity:1;transform:scale(1)}70%{opacity:0;transform:scale(1.5)}100%{opacity:0;transform:scale(1.5)}}
+   163→    .wa-btn{position:relative;display:flex;align-items:center;justify-content:center;width:56px;height:56px;background:linear-gradient(135deg,#25d366,#128c7e);border-radius:50%;box-shadow:0 6px 24px rgba(37,211,102,.45);text-decoration:none;transition:transform .2s,box-shadow .2s}
+   164→    .wa-btn:hover{transform:scale(1.08);box-shadow:0 10px 32px rgba(37,211,102,.55)}
+   165→    .wa-btn svg{width:28px;height:28px;fill:#fff}
+   166→    .wa-label{position:absolute;right:64px;top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;font-size:.8rem;font-weight:600;padding:5px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.15);opacity:0;pointer-events:none;transition:opacity .2s}
+   167→    .wa-float:hover .wa-label{opacity:1}
+   168→
+   169→    @media(max-width:480px){
+   170→      .search-row{flex-direction:column}
+   171→      .btn-search{width:100%;justify-content:center}
+   172→      .result-header,.milestones-section,.progress-section,.result-footer{padding:16px 18px}
+   173→      .info-section{grid-template-columns:1fr}
+   174→      .page-hero{padding:36px 18px 32px}
+   175→    }
+   176→    @media(prefers-reduced-motion:reduce){
+   177→      .result-card{animation:none}
+   178→      .spinner,.m-active::after,.hero-dot{animation:none}
+   179→    }
+   180→  </style>
+   181→  <link rel="stylesheet" href="css/site.css">
+   182→  <link rel="stylesheet" href="css/site-ui.css">
+   183→</head>
+   184→<body class="ns-site has-mobile-bar">
+   185→
+   186→  <header class="site-header">
+   187→    <div class="hdr">
+   188→      <a class="brand" href="/">
+   189→        <img src="images/logo.svg" height="38" alt="NextStep International">
+   190→      </a>
+   191→      <nav class="hdr-nav">
+   192→        <a class="nav-link" href="/">Home</a>
+   193→        <a class="nav-link nav-cta" href="apply.html">Apply Now</a>
+   194→      </nav>
+   195→    </div>
+   196→  </header>
+   197→
+   198→  <!-- Hero -->
+   199→  <section class="page-hero">
+   200→    <div class="hero-badge"><div class="hero-dot"></div>Live Tracking</div>
+   201→    <h1>Track Your Application</h1>
+   202→    <div class="gold-line"></div>
+   203→    <p style="margin-top:14px">Enter your Register ID to see real-time status updates and milestones for your university journey.</p>
+   204→  </section>
+   205→
+   206→  <!-- Search -->
+   207→  <div class="search-wrap">
+   208→    <div class="search-card">
+   209→      <div class="search-label">Your Register ID</div>
+   210→      <div class="search-row">
+   211→        <input type="text" id="rid" class="search-input" placeholder="e.g. NSI-2026-001"
+   212→          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Register ID">
+   213→        <button type="button" id="go" class="btn-search">
+   214→          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+   215→          Check Status
+   216→        </button>
+   217→      </div>
+   218→      <div class="hint-text">
+   219→        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 16v-4m0-4h.01"/></svg>
+   220→        Your Register ID was sent to your WhatsApp after submitting the application form.
+   221→      </div>
+   222→      <div id="err" class="alert-error" hidden>
+   223→        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>
+   224→        <span id="err-text"></span>
+   225→      </div>
+   226→    </div>
+   227→
+   228→    <div id="out"></div>
+   229→  </div>
+   230→
+   231→  <!-- Info cards shown before search -->
+   232→  <div class="info-section" id="info-cards">
+   233→    <div class="info-card ic-navy">
+   234→      <div class="ic-icon">🔍</div>
+   235→      <h4>Real-time Updates</h4>
+   236→      <p>Your application status updates automatically as our team processes each stage.</p>
+   237→    </div>
+   238→    <div class="info-card ic-gold">
+   239→      <div class="ic-icon">💬</div>
+   240→      <h4>Need Help?</h4>
+   241→      <p>Our advisors are available on WhatsApp to answer any questions about your application.</p>
+   242→    </div>
+   243→  </div>
+   244→
+   245→  <!-- Floating WhatsApp -->
+   246→  <div class="wa-float">
+   247→    <div class="wa-pulse"></div>
+   248→    <a class="wa-btn" href="https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20know%20about%20study%20abroad%20programs" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+   249→      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.134.558 4.133 1.532 5.866L.057 23.857a.5.5 0 00.606.606l6.056-1.467A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.375l-.36-.213-3.733.904.921-3.648-.233-.376A9.818 9.818 0 1112 21.818z"/></svg>
+   250→    </a>
+   251→    <div class="wa-label">Chat with us</div>
+   252→  </div>
+   253→
+   254→  <script src="js/ns-config.js"></script>
+   255→  <script>
+   256→    function esc(s) {
+   257→      return String(s||"").replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];});
+   258→    }
+   259→    function milestoneClass(s){return s==="done"?"m-done":s==="active"?"m-active":s==="issue"?"m-issue":"m-pending"}
+   260→    function milestoneEmoji(s){return s==="done"?"✅":s==="active"?"⏳":s==="issue"?"⚠️":"⬜"}
+   261→    function milestoneBadge(s){return s==="done"?"Completed":s==="active"?"In Progress":s==="issue"?"Action Needed":"Pending"}
+   262→    function fmtDate(d){if(!d)return"";var dt=new Date(d);return isNaN(dt.getTime())?"":dt.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}
+   263→
+   264→    var go=document.getElementById("go"),ridInput=document.getElementById("rid"),
+   265→        errBox=document.getElementById("err"),errText=document.getElementById("err-text"),
+   266→        out=document.getElementById("out"),infoCards=document.getElementById("info-cards");
+   267→
+   268→    function showErr(msg){errText.textContent=msg;errBox.hidden=false}
+   269→    function hideErr(){errBox.hidden=true}
+   270→
+   271→    ridInput.addEventListener("keydown",function(e){if(e.key==="Enter")go.click();});
+   272→
+   273→    go.addEventListener("click",async function(){
+   274→      var cfg=window.NSI_CONFIG||{},base=String(cfg.apiBase||"").replace(/\/+$/,"");
+   275→      hideErr();out.innerHTML="";
+   276→      var registrationId=ridInput.value.trim().toUpperCase();
+   277→      ridInput.value=registrationId;
+   278→      if(!registrationId){showErr("Please enter your Register ID (e.g. NSI-2026-001).");ridInput.focus();return;}
+   279→      if(!base){showErr("API not configured. Please contact support.");return;}
+   280→
+   281→      go.disabled=true;
+   282→      go.innerHTML='<span class="spinner"></span> Searching…';
+   283→      if(infoCards)infoCards.style.display="none";
+   284→
+   285→      try{
+   286→        var res=await fetch(base+"/public/website/track?registrationId="+encodeURIComponent(registrationId));
+   287→        var data=await res.json().catch(function(){return{};});
+   288→
+   289→        if(!res.ok){
+   290→          if(res.status===404||(data.error&&data.error.toLowerCase().includes("not found"))){
+   291→            out.innerHTML='<div class="not-found"><div class="nf-icon">🔍</div><h3>Application Not Found</h3><p>We couldn\'t find an application with ID <strong>'+esc(registrationId)+'</strong>. Please double-check your Register ID or contact us on WhatsApp.</p><a href="https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20know%20about%20study%20abroad%20programs" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg> Chat on WhatsApp</a></div>';
+   292→          }else{
+   293→            showErr(data.error||"Something went wrong. Please try again.");
+   294→            if(infoCards)infoCards.style.display="";
+   295→          }
+   296→          go.disabled=false;
+   297→          go.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg> Check Status';
+   298→          return;
+   299→        }
+   300→
+   301→        var milestones=data.milestones||[];
+   302→        var doneCount=milestones.filter(function(m){return m.status==="done";}).length;
+   303→        var progressPct=milestones.length?Math.round((doneCount/milestones.length)*100):0;
+   304→
+   305→        var metaParts=[];
+   306→        if(data.countryInterest)metaParts.push('<span><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'+esc(data.countryInterest)+'</span>');
+   307→        if(data.courseInterest)metaParts.push('<span><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>'+esc(data.courseInterest)+'</span>');
+   308→
+   309→        var msHtml=milestones.map(function(m){
+   310→          var cls=milestoneClass(m.status);
+   311→          return '<div class="milestone '+cls+'"><div class="milestone-icon">'+milestoneEmoji(m.status)+'</div><div class="milestone-body"><div class="milestone-text">'+esc(m.label)+'</div>'+(m.note?'<div class="milestone-note">'+esc(m.note)+'</div>':'')+'</div><span class="milestone-badge">'+milestoneBadge(m.status)+'</span></div>';
+   312→        }).join("");
+   313→
+   314→        out.innerHTML='<div class="result-card">'+
+   315→          '<div class="result-header">'+
+   316→            '<div class="result-name">'+esc(data.fullName||"—")+'</div>'+
+   317→            '<div class="result-rid">'+esc(data.registrationId||registrationId)+'</div>'+
+   318→            (metaParts.length?'<div class="result-meta">'+metaParts.join("")+'</div>':'')+
+   319→          '</div>'+
+   320→          (milestones.length?
+   321→            '<div class="progress-section">'+
+   322→              '<div class="progress-label"><span>Overall Progress</span><span>'+progressPct+'% complete</span></div>'+
+   323→              '<div class="progress-bar-bg"><div class="progress-bar-fill" id="pb" style="width:0%"></div></div>'+
+   324→            '</div>':'')+
+   325→          (msHtml?
+   326→            '<div class="milestones-section">'+
+   327→              '<div class="milestones-title">Application milestones</div>'+
+   328→              '<div class="milestone-list">'+msHtml+'</div>'+
+   329→            '</div>':'')+
+   330→          '<div class="result-footer">'+
+   331→            '<div>'+
+   332→              '<div class="result-updated">Last updated: '+(fmtDate(data.stageUpdatedAt||data.updatedAt)||"—")+'</div>'+
+   333→              (data.headline?'<div class="result-headline">'+esc(data.headline)+'</div>':'')+
+   334→            '</div>'+
+   335→            '<a class="wa-link" href="https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20know%20about%20study%20abroad%20programs" target="_blank" rel="noopener noreferrer">'+
+   336→              '<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>'+
+   337→              'WhatsApp Us'+
+   338→            '</a>'+
+   339→          '</div>'+
+   340→        '</div>';
+   341→
+   342→        setTimeout(function(){var pb=document.getElementById("pb");if(pb)pb.style.width=progressPct+"%";},200);
+   343→
+   344→      }catch(e){
+   345→        showErr("Could not reach the server. Please check your connection and try again.");
+   346→        if(infoCards)infoCards.style.display="";
+   347→      }
+   348→
+   349→      go.disabled=false;
+   350→      go.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg> Check Status';
+   351→    });
+   352→
+   353→    // Pre-fill from URL param
+   354→    (function(){
+   355→      var params=new URLSearchParams(window.location.search);
+   356→      var id=params.get("id")||params.get("registrationId");
+   357→      if(id){ridInput.value=id;go.click();}
+   358→    })();
+   359→  </script>
+   360→  <script src="js/site-shell.js" defer></script>
+   361→</body>
+   362→</html>
+   363→

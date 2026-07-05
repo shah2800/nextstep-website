@@ -11,6 +11,7 @@ const navLinks = [
   { label: "AI Tools", href: "#ai-tools" },
   { label: "Services", href: "#services" },
   { label: "Assistant", href: "#assistant" },
+  { label: "Track", href: "/?track=true" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -74,12 +75,13 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
             <MessageCircle className="h-4 w-4" />
             +92 314 2638901
           </a>
-          <Button
-            onClick={onBookSession}
-            className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-sm"
-          >
-            Book Session
-          </Button>
+          <a href="/?apply=true">
+            <Button
+              className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-sm"
+            >
+              Apply Now
+            </Button>
+          </a>
         </div>
 
         {/* Mobile toggle */}
@@ -114,15 +116,23 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
             >
               <MessageCircle className="h-4 w-4" /> +92 314 2638901
             </a>
-            <Button
-              onClick={() => {
-                setOpen(false);
-                onBookSession();
-              }}
-              className="mt-2 bg-gold text-gold-foreground hover:bg-gold/90"
-            >
-              Book Session
-            </Button>
+            <a href="/?apply=true" className="mt-2 block">
+              <Button
+                onClick={() => setOpen(false)}
+                className="w-full bg-gold text-gold-foreground hover:bg-gold/90"
+              >
+                Apply Now
+              </Button>
+            </a>
+            <a href="/?track=true" className="mt-2 block">
+              <Button
+                onClick={() => setOpen(false)}
+                variant="outline"
+                className="w-full"
+              >
+                Track Application
+              </Button>
+            </a>
           </nav>
         </div>
       )}
