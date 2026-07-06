@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ArrowRight, Sparkles, Globe2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCountryParam } from "@/hooks/use-country-param";
@@ -109,11 +110,17 @@ export function Hero({
           className="relative"
         >
           <div className="relative h-[300px] overflow-hidden rounded-3xl border border-white/20 bg-brand/40 shadow-2xl sm:h-[420px]">
-            <img
-              src="/images/hero-animated.gif"
-              alt="International students celebrating graduation on a university campus"
+            <Image
+              src="/images/hero-students.png"
+              alt="International students on a university campus"
+              width={1344}
+              height={768}
+              priority
+              fetchPriority="high"
+              sizes="(max-width: 640px) 100vw, 50vw"
+              quality={70}
+              placeholder="empty"
               className="h-[300px] w-full object-cover sm:h-[420px]"
-              loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/60 via-transparent to-transparent" />
           </div>
