@@ -70,6 +70,7 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<string | null>(null); // registrationId on success
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Set<string>>(new Set());
   const [form, setForm] = useState<FormState>({
     fullName: "", phone: "", countryInterest: "", courseInterest: "",
     universityInterest: "", matricGrade: "", fscGrade: "", otherDegree: "",
@@ -80,6 +81,13 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
   const set = (k: keyof FormState, v: string) => {
     setForm((p) => ({ ...p, [k]: v }));
     setError(null);
+    // Clear the field error as soon as the user types/selects
+    setFieldErrors((prev) => {
+      if (!prev.has(k)) return prev;
+      const next = new Set(prev);
+      next.delete(k);
+      return next;
+    });
   };
 
   const steps = [
@@ -89,21 +97,35 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
     { n: 4, label: "Documents", icon: UploadCloud },
   ];
 
+  // Map field keys → human labels for the error message
+  const fieldLabels: Record<string, string> = {
+    fullName: "Full Name",
+    phone: "WhatsApp Number",
+    countryInterest: "Destination Country",
+    courseInterest: "Program",
+    fatherName: "Father's Name",
+    gender: "Gender",
+    dob: "Date of Birth",
+    email: "Email",
+    passportNumber: "Passport Number",
+    passportExpiry: "Passport Expiry",
+  };
+
   const validateStep = (n: number): string[] => {
     const missing: string[] = [];
     if (n === 1) {
-      if (!form.fullName.trim()) missing.push("Full Name");
-      if (!form.phone.trim()) missing.push("WhatsApp Number");
-      if (!form.countryInterest) missing.push("Destination Country");
+      if (!form.fullName.trim()) missing.push("fullName");
+      if (!form.phone.trim()) missing.push("phone");
+      if (!form.countryInterest) missing.push("countryInterest");
     } else if (n === 2) {
-      if (!form.courseInterest) missing.push("Program");
+      if (!form.courseInterest) missing.push("courseInterest");
     } else if (n === 3) {
-      if (!form.fatherName.trim()) missing.push("Father's Name");
-      if (!form.gender) missing.push("Gender");
-      if (!form.dob) missing.push("Date of Birth");
-      if (!form.email.trim()) missing.push("Email");
-      if (!form.passportNumber.trim()) missing.push("Passport Number");
-      if (!form.passportExpiry) missing.push("Passport Expiry");
+      if (!form.fatherName.trim()) missing.push("fatherName");
+      if (!form.gender) missing.push("gender");
+      if (!form.dob) missing.push("dob");
+      if (!form.email.trim()) missing.push("email");
+      if (!form.passportNumber.trim()) missing.push("passportNumber");
+      if (!form.passportExpiry) missing.push("passportExpiry");
     }
     return missing;
   };
@@ -111,26 +133,45 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
   const nextStep = () => {
     const missing = validateStep(step);
     if (missing.length) {
+      setFieldErrors(new Set(missing));
+      const labels = missing.map((k) => fieldLabels[k] || k);
       setError(
-        `Step ${step}: Please fill in the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}`
+        `Step ${step}: Please fill in the required field${missing.length > 1 ? "s" : ""}: ${labels.join(", ")}`
       );
-      // Scroll the error banner into view
+      // Scroll the first invalid field into view so the user sees the red border
       setTimeout(() => {
-        const banner = document.querySelector("[data-error-banner]");
-        banner?.scrollIntoView({ behavior: "smooth", block: "center" });
+        const firstKey = missing[0];
+        const el = document.querySelector(`[data-field="${firstKey}"]`);
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        (el as HTMLElement | null)?.focus?.();
       }, 50);
       return;
     }
+    setFieldErrors(new Set());
     setStep((s) => Math.min(s + 1, 4));
   };
 
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const prevStep = () => {
+    setFieldErrors(new Set());
+    setError(null);
+    setStep((s) => Math.max(s - 1, 1));
+  };
 
   const submit = async () => {
     const missing = validateStep(3);
     if (missing.length) {
-      setError("Please complete: " + missing.join(", "));
+      setFieldErrors(new Set(missing));
+      const labels = missing.map((k) => fieldLabels[k] || k);
+      setError(
+        `Step 3: Please fill in the required field${missing.length > 1 ? "s" : ""}: ${labels.join(", ")}`
+      );
       setStep(3);
+      setTimeout(() => {
+        const firstKey = missing[0];
+        const el = document.querySelector(`[data-field="${firstKey}"]`);
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        (el as HTMLElement | null)?.focus?.();
+      }, 50);
       return;
     }
     if (submitting) return;
@@ -330,16 +371,16 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                     <p className="mb-4 rounded-lg bg-secondary/50 p-3 text-sm text-muted-foreground">
                       Just three quick things to begin — no documents needed yet.
                     </p>
-                    <Field label="Full Name" required>
-                      <Input value={form.fullName} onChange={(e) => set("fullName", e.target.value)} placeholder="As on passport" />
+                    <Field label="Full Name" required fieldKey="fullName" error={fieldErrors.has("fullName")}>
+                      <Input value={form.fullName} onChange={(e) => set("fullName", e.target.value)} placeholder="As on passport" className={fieldErrors.has("fullName") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                     </Field>
-                    <Field label="WhatsApp Number" required>
-                      <Input value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+92 300 0000000" />
+                    <Field label="WhatsApp Number" required fieldKey="phone" error={fieldErrors.has("phone")}>
+                      <Input value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+92 300 0000000" className={fieldErrors.has("phone") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                       <p className="mt-1 text-xs text-muted-foreground">This is where our team will message you within 24 hours.</p>
                     </Field>
-                    <Field label="Where do you want to study?" required>
+                    <Field label="Where do you want to study?" required fieldKey="countryInterest" error={fieldErrors.has("countryInterest")}>
                       <Select value={form.countryInterest} onValueChange={(v) => set("countryInterest", v)}>
-                        <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+                        <SelectTrigger className={fieldErrors.has("countryInterest") ? "border-destructive ring-2 ring-destructive/20" : ""}><SelectValue placeholder="Select country" /></SelectTrigger>
                         <SelectContent className="max-h-60">
                           {COUNTRIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                         </SelectContent>
@@ -352,9 +393,9 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                 {step === 2 && (
                   <StepCard icon={BookOpen} title="Your study plan" sub="What you want to study">
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <Field label="Course / Program" required>
+                      <Field label="Course / Program" required fieldKey="courseInterest" error={fieldErrors.has("courseInterest")}>
                         <Select value={form.courseInterest} onValueChange={(v) => set("courseInterest", v)}>
-                          <SelectTrigger><SelectValue placeholder="Select program" /></SelectTrigger>
+                          <SelectTrigger className={fieldErrors.has("courseInterest") ? "border-destructive ring-2 ring-destructive/20" : ""}><SelectValue placeholder="Select program" /></SelectTrigger>
                           <SelectContent>
                             {COURSES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                           </SelectContent>
@@ -383,23 +424,23 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                 {step === 3 && (
                   <StepCard icon={FileText} title="Personal & passport details" sub="Needed to prepare your admission file">
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <Field label="Father's Name" required>
-                        <Input value={form.fatherName} onChange={(e) => set("fatherName", e.target.value)} placeholder="As on documents" />
+                      <Field label="Father's Name" required fieldKey="fatherName" error={fieldErrors.has("fatherName")}>
+                        <Input value={form.fatherName} onChange={(e) => set("fatherName", e.target.value)} placeholder="As on documents" className={fieldErrors.has("fatherName") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                       </Field>
-                      <Field label="Gender" required>
+                      <Field label="Gender" required fieldKey="gender" error={fieldErrors.has("gender")}>
                         <Select value={form.gender} onValueChange={(v) => set("gender", v)}>
-                          <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                          <SelectTrigger className={fieldErrors.has("gender") ? "border-destructive ring-2 ring-destructive/20" : ""}><SelectValue placeholder="Select gender" /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="Male">Male</SelectItem>
                             <SelectItem value="Female">Female</SelectItem>
                           </SelectContent>
                         </Select>
                       </Field>
-                      <Field label="Date of Birth" required>
-                        <Input type="date" value={form.dob} onChange={(e) => set("dob", e.target.value)} max={new Date(new Date().setFullYear(new Date().getFullYear() - 5)).toISOString().slice(0, 10)} />
+                      <Field label="Date of Birth" required fieldKey="dob" error={fieldErrors.has("dob")}>
+                        <Input type="date" value={form.dob} onChange={(e) => set("dob", e.target.value)} max={new Date(new Date().setFullYear(new Date().getFullYear() - 5)).toISOString().slice(0, 10)} className={fieldErrors.has("dob") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                       </Field>
-                      <Field label="Email Address" required>
-                        <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="you@gmail.com" />
+                      <Field label="Email Address" required fieldKey="email" error={fieldErrors.has("email")}>
+                        <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="you@gmail.com" className={fieldErrors.has("email") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                       </Field>
                       <div className="sm:col-span-2">
                         <Field label="City / Address">
@@ -407,12 +448,12 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                         </Field>
                       </div>
                       <div className="sm:col-span-2">
-                        <Field label="Passport Number" required>
+                        <Field label="Passport Number" required fieldKey="passportNumber" error={fieldErrors.has("passportNumber")}>
                           <Input
                             value={form.passportNumber}
                             onChange={(e) => set("passportNumber", e.target.value.toUpperCase())}
                             placeholder="AB1234567"
-                            className="uppercase"
+                            className={`uppercase ${fieldErrors.has("passportNumber") ? "border-destructive ring-2 ring-destructive/20" : ""}`}
                             maxLength={20}
                           />
                           <p className="mt-1 text-xs text-muted-foreground">CAPITAL letters and numbers only — e.g. AB1234567</p>
@@ -421,8 +462,8 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                       <Field label="Passport Issue Date">
                         <Input type="date" value={form.passportIssueDate} onChange={(e) => set("passportIssueDate", e.target.value)} />
                       </Field>
-                      <Field label="Passport Expiry Date" required>
-                        <Input type="date" value={form.passportExpiry} onChange={(e) => set("passportExpiry", e.target.value)} />
+                      <Field label="Passport Expiry Date" required fieldKey="passportExpiry" error={fieldErrors.has("passportExpiry")}>
+                        <Input type="date" value={form.passportExpiry} onChange={(e) => set("passportExpiry", e.target.value)} className={fieldErrors.has("passportExpiry") ? "border-destructive ring-2 ring-destructive/20" : ""} />
                       </Field>
                     </div>
                   </StepCard>
@@ -528,15 +569,19 @@ function StepCard({
 function Field({
   label,
   required,
+  fieldKey,
+  error,
   children,
 }: {
   label: string;
   required?: boolean;
+  fieldKey?: string;
+  error?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs font-medium">
+    <div className="space-y-1.5" data-field={fieldKey}>
+      <Label className={`text-xs font-medium ${error ? "text-destructive" : ""}`}>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
       {children}
