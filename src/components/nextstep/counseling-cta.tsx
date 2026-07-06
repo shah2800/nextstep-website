@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,16 +32,13 @@ export function CounselingCta({
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="relative h-64 lg:h-full"
+            className="relative h-64 overflow-hidden lg:h-full"
           >
-            <Image
-              src={c.counselingImage}
+            <img
+              src="/images/counseling-animated.gif"
               alt="NextStep counselor advising a student"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={80}
+              className="h-full w-full object-cover"
               loading="lazy"
-              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/40 to-transparent lg:bg-gradient-to-r" />
           </motion.div>
