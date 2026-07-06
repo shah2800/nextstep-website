@@ -45,7 +45,7 @@ export function CompareFactors() {
           <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand">
             Before you shortlist
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 headline-tight text-3xl font-extrabold text-foreground sm:text-4xl">
             Compare the factors that affect your application
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
@@ -65,7 +65,7 @@ export function CompareFactors() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.45, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+                className="card-premium group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
                 <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gold/10 transition-transform group-hover:scale-150" />
                 <div className="relative">

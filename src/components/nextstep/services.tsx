@@ -47,7 +47,7 @@ export function Services() {
           <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand">
             What we do
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 headline-tight text-3xl font-extrabold text-foreground sm:text-4xl">
             End-to-end support from course selection to visa
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
@@ -67,7 +67,7 @@ export function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.4, delay: (i % 3) * 0.08 }}
-                className="group relative rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/30 hover:shadow-md"
+                className="card-premium group relative rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-brand/30"
               >
                 <div className="flex items-start gap-4">
                   <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">

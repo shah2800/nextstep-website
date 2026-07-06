@@ -75,8 +75,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to font origin for faster font fetch */}
+        {/* Resource hints — tell browser to start fetching critical assets NOW */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://wa.me" />
+        <link rel="preload" as="image" href="/images/hero-students.png" fetchPriority="high" />
         {/* Inline critical background color so there's no white flash before CSS loads */}
         <style dangerouslySetInnerHTML={{ __html: "body{background:#f7f9fc;margin:0}" }} />
       </head>

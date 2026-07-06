@@ -33,14 +33,14 @@ export function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
+          <span className="label-tracked inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-white/90 backdrop-blur" style={{ letterSpacing: "0.1em" }}>
             <Sparkles className="h-3.5 w-3.5 text-gold" />
             {morphCountry
               ? `${morphCountry.flagEmoji} Specialized in ${morphCountry.name}`
               : "Trusted by 12,000+ Pakistani students"}
           </span>
 
-          <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="headline-tight fade-in-up mt-5 text-4xl font-extrabold sm:text-5xl lg:text-6xl">
             {morphCountry ? (
               <>
                 Study in{" "}
@@ -72,7 +72,7 @@ export function Hero({
               size="lg"
               data-track="cta"
               data-label="Get My Options Reviewed"
-              className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
+              className="btn-premium bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
             >
               Get My Options Reviewed
               <ArrowRight className="ml-2 h-4 w-4" />

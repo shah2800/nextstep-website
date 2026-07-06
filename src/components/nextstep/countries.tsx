@@ -59,7 +59,7 @@ export function Countries() {
           <Badge variant="secondary" className="mb-3">
             <GlobeIcon /> Country Guides
           </Badge>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="headline-tight text-3xl font-extrabold text-foreground sm:text-4xl">
             Country guides for planning your application
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
@@ -112,16 +112,16 @@ export function Countries() {
                   key={i}
                   className="overflow-hidden rounded-2xl border border-border bg-card"
                 >
-                  <Skeleton className="h-36 w-full rounded-none" />
+                  <div className="skeleton h-36 w-full" />
                   <div className="space-y-3 p-5">
-                    <Skeleton className="h-5 w-2/3" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
+                    <div className="skeleton h-5 w-2/3 rounded" />
+                    <div className="skeleton h-4 w-full rounded" />
+                    <div className="skeleton h-4 w-5/6 rounded" />
                     <div className="flex gap-2 pt-2">
-                      <Skeleton className="h-6 w-16" />
-                      <Skeleton className="h-6 w-20" />
+                      <div className="skeleton h-6 w-16 rounded-full" />
+                      <div className="skeleton h-6 w-20 rounded-full" />
                     </div>
-                    <Skeleton className="h-9 w-full" />
+                    <div className="skeleton h-9 w-full rounded-lg" />
                   </div>
                 </div>
               ))
@@ -136,7 +136,7 @@ export function Countries() {
                   onClick={() => setActive(c)}
                   data-track="country-card"
                   data-label={c.name}
-                  className={`group relative overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl ${
+                  className={`card-premium group relative overflow-hidden rounded-2xl border bg-card text-left shadow-sm ${
                     morphSlug && c.slug === morphSlug
                       ? "border-gold ring-2 ring-gold/50 ring-offset-2"
                       : "border-border"

@@ -20,7 +20,7 @@ export function AiTools() {
             <Sparkles className="h-3.5 w-3.5 text-gold" />
             Smart Tools
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 headline-tight text-3xl font-extrabold text-foreground sm:text-4xl">
             AI-powered tools to fast-track your application
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg">
