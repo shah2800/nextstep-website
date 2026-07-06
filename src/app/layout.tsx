@@ -77,9 +77,12 @@ export default function RootLayout({
       <head>
         {/* Preconnect to font origin for faster font fetch */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Inline critical background color so there's no white flash before CSS loads */}
+        <style dangerouslySetInnerHTML={{ __html: "body{background:#f7f9fc;margin:0}" }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        style={{ background: "#f7f9fc" }}
       >
         {children}
         <Toaster />

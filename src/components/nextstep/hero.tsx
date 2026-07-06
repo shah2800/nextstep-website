@@ -20,7 +20,7 @@ export function Hero({
     : null;
 
   return (
-    <section className="relative overflow-hidden [contain:paint] hero-mesh text-white">
+    <section className="hero-section relative overflow-hidden [contain:paint] hero-mesh text-white">
       <div className="absolute inset-0 dot-grid opacity-40" />
       {/* Floating decorative shapes */}
       <div className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
@@ -109,7 +109,7 @@ export function Hero({
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           className="relative"
         >
-          <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-2xl">
+          <div className="relative h-[300px] overflow-hidden rounded-3xl border border-white/20 bg-brand/40 shadow-2xl sm:h-[420px]">
             <Image
               src="/images/hero-students.png"
               alt="International students on a university campus"
@@ -118,7 +118,8 @@ export function Hero({
               priority
               fetchPriority="high"
               sizes="(max-width: 640px) 100vw, 50vw"
-              quality={80}
+              quality={70}
+              placeholder="empty"
               className="h-[300px] w-full object-cover sm:h-[420px]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/60 via-transparent to-transparent" />

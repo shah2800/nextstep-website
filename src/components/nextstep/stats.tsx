@@ -34,7 +34,7 @@ export function Stats() {
   }, []);
 
   return (
-    <section className="relative -mt-6 z-10">
+    <section className="stats-section relative -mt-6 z-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-card p-4 shadow-lg sm:gap-4 sm:p-6 lg:grid-cols-4">
           {stats.map((s, i) => {

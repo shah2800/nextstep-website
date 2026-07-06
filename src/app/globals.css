@@ -175,9 +175,10 @@
     cursor: not-allowed;
   }
   /* Content-visibility: skip rendering offscreen sections until scrolled to.
-     This is a big-company trick that dramatically speeds up initial paint
-     and scroll performance on long pages. */
-  section {
+     This speeds up initial paint and scroll on long pages.
+     IMPORTANT: Exclude above-fold sections (hero, stats) so they render
+     instantly — otherwise users on slow connections see a blank screen. */
+  section:not(.hero-section):not(.stats-section) {
     content-visibility: auto;
     contain-intrinsic-size: auto 400px;
   }
