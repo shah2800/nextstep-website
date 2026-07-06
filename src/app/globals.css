@@ -153,6 +153,18 @@
   html {
     scroll-behavior: smooth;
   }
+  /* Buttons should always show the pointer (hand) cursor — fixes UX bug where
+     shadcn buttons showed the default arrow cursor */
+  button,
+  [role="button"],
+  a.btn,
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
 }
 
 /* Utility helpers */
