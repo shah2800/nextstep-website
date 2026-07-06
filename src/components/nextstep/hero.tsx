@@ -116,6 +116,9 @@ export function Hero({
               width={1344}
               height={768}
               priority
+              fetchPriority="high"
+              sizes="(max-width: 640px) 100vw, 50vw"
+              quality={80}
               className="h-[300px] w-full object-cover sm:h-[420px]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/60 via-transparent to-transparent" />

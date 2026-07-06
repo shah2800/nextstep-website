@@ -39,6 +39,9 @@ export function CounselingCta({
               src={c.counselingImage}
               alt="NextStep counselor advising a student"
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={80}
+              loading="lazy"
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/40 to-transparent lg:bg-gradient-to-r" />

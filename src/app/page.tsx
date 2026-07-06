@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Header } from "@/components/nextstep/header";
 import { Hero } from "@/components/nextstep/hero";
 import { Stats } from "@/components/nextstep/stats";
 import { Countries } from "@/components/nextstep/countries";
 import { CompareFactors } from "@/components/nextstep/compare-factors";
 import { Services } from "@/components/nextstep/services";
-import { AiTools } from "@/components/nextstep/ai-tools";
 import { CounselingCta } from "@/components/nextstep/counseling-cta";
 import { AssistantSection } from "@/components/nextstep/assistant-section";
 import { Newsletter } from "@/components/nextstep/newsletter";
@@ -15,11 +14,39 @@ import { Footer } from "@/components/nextstep/footer";
 import { GuidanceFormDialog } from "@/components/nextstep/guidance-form-dialog";
 import { BookSessionDialog } from "@/components/nextstep/book-session-dialog";
 import { AiAssistant } from "@/components/nextstep/ai-assistant";
-import { AdminDashboard } from "@/components/nextstep/admin-dashboard";
-import { ApplyPage } from "@/components/nextstep/apply-page";
-import { TrackPage } from "@/components/nextstep/track-page";
 import { MorphingBanner } from "@/components/nextstep/morphing-banner";
 import { useAnalytics } from "@/hooks/use-analytics";
+
+// Lazy-load heavy below-the-fold components so they don't block first paint.
+// Recharts (~400KB) only loads when AI Tools scrolls into view.
+// Admin/Apply/Track only load when accessed.
+const AiTools = lazy(() =>
+  import("@/components/nextstep/ai-tools").then((m) => ({ default: m.AiTools }))
+);
+const AdminDashboard = lazy(() =>
+  import("@/components/nextstep/admin-dashboard").then((m) => ({
+    default: m.AdminDashboard,
+  }))
+);
+const ApplyPage = lazy(() =>
+  import("@/components/nextstep/apply-page").then((m) => ({
+    default: m.ApplyPage,
+  }))
+);
+const TrackPage = lazy(() =>
+  import("@/components/nextstep/track-page").then((m) => ({
+    default: m.TrackPage,
+  }))
+);
+
+// Minimal loading fallback for lazy sections
+function SectionFallback() {
+  return (
+    <div className="flex min-h-[300px] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand/20 border-t-brand" />
+    </div>
+  );
+}
 
 type View = "home" | "apply" | "track" | "admin";
 
@@ -56,15 +83,27 @@ export default function Home() {
     setView("home");
   };
 
-  // Overlay views
+  // Overlay views (lazy-loaded)
   if (view === "admin") {
-    return <AdminDashboard onClose={() => closeOverlay("admin")} />;
+    return (
+      <Suspense fallback={<SectionFallback />}>
+        <AdminDashboard onClose={() => closeOverlay("admin")} />
+      </Suspense>
+    );
   }
   if (view === "apply") {
-    return <ApplyPage onClose={() => closeOverlay("apply")} />;
+    return (
+      <Suspense fallback={<SectionFallback />}>
+        <ApplyPage onClose={() => closeOverlay("apply")} />
+      </Suspense>
+    );
   }
   if (view === "track") {
-    return <TrackPage onClose={() => closeOverlay("track")} />;
+    return (
+      <Suspense fallback={<SectionFallback />}>
+        <TrackPage onClose={() => closeOverlay("track")} />
+      </Suspense>
+    );
   }
 
   return (
@@ -81,7 +120,10 @@ export default function Home() {
         <Countries />
         <CompareFactors />
         <Services />
-        <AiTools />
+        {/* AI Tools is heavy (Recharts) — lazy load with Suspense */}
+        <Suspense fallback={<SectionFallback />}>
+          <AiTools />
+        </Suspense>
         <CounselingCta
           onGetGuidance={() => setGuidanceOpen(true)}
           onBookSession={() => setBookingOpen(true)}
