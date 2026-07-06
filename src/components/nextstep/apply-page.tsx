@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -111,7 +111,14 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
   const nextStep = () => {
     const missing = validateStep(step);
     if (missing.length) {
-      setError("Please complete: " + missing.join(", "));
+      setError(
+        `Step ${step}: Please fill in the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}`
+      );
+      // Scroll the error banner into view
+      setTimeout(() => {
+        const banner = document.querySelector("[data-error-banner]");
+        banner?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
       return;
     }
     setStep((s) => Math.min(s + 1, 4));
@@ -232,7 +239,10 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
 
         {/* Error banner */}
         {error && !done && (
-          <div className="mb-5 flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+          <div
+            data-error-banner
+            className="mb-5 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive shadow-sm"
+          >
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
