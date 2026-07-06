@@ -83,9 +83,11 @@ export const cityCosts: CityCost[] = [
   { city: "Singapore", baseCost: 1900, currency: "SGD", currencySymbol: "S$", breakdown: { rent: 1000, food: 400, transport: 150, utilities: 130, health: 60, leisure: 160 } },
   // Indonesia
   { city: "Jakarta", baseCost: 450, currency: "USD", currencySymbol: "$", breakdown: { rent: 180, food: 130, transport: 45, utilities: 40, health: 20, leisure: 35 } },
-  // Sri Lanka
-  { city: "Colombo", baseCost: 380, currency: "USD", currencySymbol: "$", breakdown: { rent: 150, food: 110, transport: 40, utilities: 35, health: 15, leisure: 30 } },
-  // Vietnam
-  { city: "Hanoi", baseCost: 420, currency: "USD", currencySymbol: "$", breakdown: { rent: 170, food: 120, transport: 40, utilities: 38, health: 18, leisure: 34 } },
-  { city: "Ho Chi Minh", baseCost: 440, currency: "USD", currencySymbol: "$", breakdown: { rent: 180, food: 125, transport: 42, utilities: 38, health: 18, leisure: 37 } },
+  // Georgia
+  { city: "Tbilisi", baseCost: 420, currency: "USD", currencySymbol: "$", breakdown: { rent: 180, food: 120, transport: 40, utilities: 40, health: 20, leisure: 20 } },
+  { city: "Batumi", baseCost: 380, currency: "USD", currencySymbol: "$", breakdown: { rent: 160, food: 110, transport: 35, utilities: 35, health: 20, leisure: 20 } },
+  // China
+  { city: "Beijing", baseCost: 650, currency: "CNY", currencySymbol: "¥", breakdown: { rent: 300, food: 180, transport: 50, utilities: 50, health: 20, leisure: 50 } },
+  { city: "Shanghai", baseCost: 680, currency: "CNY", currencySymbol: "¥", breakdown: { rent: 320, food: 190, transport: 55, utilities: 50, health: 20, leisure: 45 } },
+  { city: "Guangzhou", baseCost: 550, currency: "CNY", currencySymbol: "¥", breakdown: { rent: 250, food: 160, transport: 45, utilities: 45, health: 20, leisure: 30 } },
 ];

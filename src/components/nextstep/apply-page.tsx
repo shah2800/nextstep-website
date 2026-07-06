@@ -35,7 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const COUNTRIES = [
   "United Kingdom", "Australia", "United States", "Canada", "Germany",
   "Ireland", "Netherlands", "UAE", "Malaysia", "Türkiye", "Hungary",
-  "New Zealand", "Singapore", "Indonesia", "Sri Lanka", "Vietnam",
+  "New Zealand", "Singapore", "Indonesia", "Georgia", "China",
   "Not sure yet — advise me", "Other",
 ];
 
