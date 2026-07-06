@@ -22,6 +22,7 @@ import {
   Compass,
   Eye,
   FileCheck,
+  FileText,
   Globe2,
   GraduationCap,
   Home,
@@ -279,6 +280,7 @@ type Application = {
   matricGrade: string;
   fscGrade: string;
   ieltsScore: string;
+  documents: string;
   status: ApplicationStatus;
   headline: string;
   createdAt: string;
@@ -1778,6 +1780,72 @@ function ApplicationsTab() {
                 </div>
               </section>
 
+              {/* Documents submitted */}
+              <section className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
+                  Documents Submitted
+                </h4>
+                {(() => {
+                  let docs: Array<{ name: string; type: string }> = [];
+                  try {
+                    if (viewApp.documents) {
+                      const parsed = JSON.parse(viewApp.documents);
+                      docs = Array.isArray(parsed) ? parsed : [];
+                    }
+                  } catch {
+                    docs = [];
+                  }
+                  if (docs.length === 0) {
+                    return (
+                      <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 text-center">
+                        <p className="text-sm text-muted-foreground">
+                          No documents were uploaded with this application.
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Ask the student to send their documents (transcript,
+                          passport, photo, CNIC) via WhatsApp.
+                        </p>
+                        <a
+                          href={`https://wa.me/${viewApp.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                            `Hello ${viewApp.fullName}, please send your documents (Matric certificate, FSc transcript, passport copy, passport-size photo, CNIC) for your application ${viewApp.registrationId}. Thank you!`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            size="sm"
+                            className="mt-3 bg-green-500 text-white hover:bg-green-600"
+                          >
+                            <MessageCircle className="mr-1.5 h-3.5 w-3.5" />
+                            Request Documents on WhatsApp
+                          </Button>
+                        </a>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {docs.map((d, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                        >
+                          <FileText className="h-8 w-8 shrink-0 text-brand" />
+                          <div className="flex-1 min-w-0">
+                            <div className="truncate text-sm font-semibold text-foreground">
+                              {d.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {d.type}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </section>
+
               {/* Status + headline editor */}
               <section className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-4">
                 <h4 className="text-xs font-bold uppercase tracking-wide text-brand">
@@ -2435,23 +2503,26 @@ function CountriesTab() {
                       {c.order}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-2">
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="outline"
                           onClick={() => openEdit(c)}
+                          className="h-8 px-3 text-xs font-semibold"
                           aria-label={`Edit ${c.name}`}
                         >
-                          <Pencil className="h-4 w-4" />
+                          <Pencil className="mr-1 h-3.5 w-3.5" />
+                          Edit
                         </Button>
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="outline"
                           onClick={() => setConfirmDelete(c)}
-                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          className="h-8 px-3 text-xs font-semibold text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
                           aria-label={`Delete ${c.name}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="mr-1 h-3.5 w-3.5" />
+                          Delete
                         </Button>
                       </div>
                     </TableCell>

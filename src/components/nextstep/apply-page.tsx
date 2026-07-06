@@ -178,10 +178,20 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
     setSubmitting(true);
     setError(null);
     try {
+      // Collect uploaded file names so the admin can see what was submitted
+      const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+      const docs: Array<{ name: string; type: string }> = [];
+      fileInputs.forEach((inp) => {
+        if (inp.files && inp.files.length > 0) {
+          const label = inp.closest(".space-y-1.5")?.querySelector("label")?.textContent?.replace("*", "").trim() || "Document";
+          docs.push({ name: inp.files[0].name, type: label });
+        }
+      });
+      const payload = { ...form, documents: JSON.stringify(docs) };
       const res = await fetch("/api/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Submission failed");
