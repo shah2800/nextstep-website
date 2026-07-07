@@ -18,9 +18,12 @@ import {
   Building2,
   CalendarClock,
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
   ClipboardList,
   Compass,
   Eye,
+  EyeOff,
   FileCheck,
   FileText,
   Globe2,
@@ -114,6 +117,7 @@ type Country = {
   accentColor: string;
   featured: boolean;
   order: number;
+  hidden: boolean;
 };
 
 type Service = {
@@ -429,6 +433,7 @@ const emptyCountry: Country = {
   accentColor: "#1e3a8a",
   featured: false,
   order: 0,
+  hidden: false,
 };
 
 const defaultStats: Stat[] = [
@@ -2434,6 +2439,90 @@ function CountriesTab() {
     }
   };
 
+  // Quick toggle: featured (Popular label)
+  const toggleFeatured = async (c: Country) => {
+    if (!c.id) return;
+    // Optimistic update
+    setCountries((prev) =>
+      prev.map((x) => (x.id === c.id ? { ...x, featured: !x.featured } : x))
+    );
+    try {
+      const res = await fetch("/api/admin/countries", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: c.id, featured: !c.featured }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success(`${c.name} ${c.featured ? "removed from" : "marked as"} Popular`);
+    } catch {
+      toast.error("Could not update. Reverting.");
+      setCountries((prev) =>
+        prev.map((x) => (x.id === c.id ? { ...x, featured: c.featured } : x))
+      );
+    }
+  };
+
+  // Quick toggle: hidden (show/hide on public site)
+  const toggleHidden = async (c: Country) => {
+    if (!c.id) return;
+    setCountries((prev) =>
+      prev.map((x) => (x.id === c.id ? { ...x, hidden: !x.hidden } : x))
+    );
+    try {
+      const res = await fetch("/api/admin/countries", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: c.id, hidden: !c.hidden }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success(`${c.name} ${c.hidden ? "shown" : "hidden"} on the site`);
+    } catch {
+      toast.error("Could not update. Reverting.");
+      setCountries((prev) =>
+        prev.map((x) => (x.id === c.id ? { ...x, hidden: c.hidden } : x))
+      );
+    }
+  };
+
+  // Reorder: swap order with adjacent country
+  const moveCountry = async (c: Country, direction: "up" | "down") => {
+    if (!c.id) return;
+    const sorted = [...countries].sort((a, b) => a.order - b.order);
+    const idx = sorted.findIndex((x) => x.id === c.id);
+    if (idx < 0) return;
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= sorted.length) return;
+    const swapWith = sorted[swapIdx];
+    if (!swapWith.id) return;
+    // Optimistic: swap order values locally
+    setCountries((prev) =>
+      prev.map((x) => {
+        if (x.id === c.id) return { ...x, order: swapWith.order };
+        if (x.id === swapWith.id) return { ...x, order: c.order };
+        return x;
+      })
+    );
+    try {
+      // Update both countries
+      await Promise.all([
+        fetch("/api/admin/countries", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: c.id, order: swapWith.order }),
+        }),
+        fetch("/api/admin/countries", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: swapWith.id, order: c.order }),
+        }),
+      ]);
+      toast.success(`${c.name} moved ${direction}`);
+    } catch {
+      toast.error("Could not reorder. Refreshing.");
+      await fetchCountries();
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -2470,37 +2559,84 @@ function CountriesTab() {
               <TableHeader className="sticky top-0 z-10 bg-card">
                 <TableRow>
                   <TableHead className="w-10">Flag</TableHead>
-                  <TableHead className="min-w-[160px]">Name / Slug</TableHead>
-                  <TableHead className="min-w-[220px]">Tagline</TableHead>
-                  <TableHead className="w-20 text-center">Featured</TableHead>
-                  <TableHead className="w-16 text-center">Order</TableHead>
+                  <TableHead className="min-w-[140px]">Name / Slug</TableHead>
+                  <TableHead className="min-w-[180px]">Tagline</TableHead>
+                  <TableHead className="w-24 text-center">Popular</TableHead>
+                  <TableHead className="w-20 text-center">Visible</TableHead>
+                  <TableHead className="w-20 text-center">Order</TableHead>
                   <TableHead className="w-28 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {countries.map((c) => (
-                  <TableRow key={c.id ?? c.slug}>
+                {[...countries]
+                  .sort((a, b) => a.order - b.order)
+                  .map((c) => (
+                  <TableRow
+                    key={c.id ?? c.slug}
+                    className={c.hidden ? "opacity-40" : ""}
+                  >
                     <TableCell>
                       <span className="text-2xl">{c.flagEmoji}</span>
                     </TableCell>
                     <TableCell>
                       <div className="font-semibold text-brand">{c.name}</div>
                       <div className="font-mono text-xs text-muted-foreground">/{c.slug}</div>
+                      {c.hidden && (
+                        <span className="mt-0.5 inline-block rounded bg-secondary px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">
+                          Hidden
+                        </span>
+                      )}
                     </TableCell>
-                    <TableCell className="max-w-[260px]">
+                    <TableCell className="max-w-[200px]">
                       <span className="line-clamp-2 text-sm text-foreground">
                         {c.tagline}
                       </span>
                     </TableCell>
+                    {/* Popular toggle */}
                     <TableCell className="text-center">
-                      {c.featured ? (
-                        <Star className="mx-auto h-4 w-4 fill-gold text-gold" />
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                      <button
+                        onClick={() => toggleFeatured(c)}
+                        className="rounded-md p-1.5 transition hover:bg-secondary"
+                        aria-label={`Toggle Popular for ${c.name}`}
+                      >
+                        <Star
+                          className={`h-5 w-5 transition ${c.featured ? "fill-gold text-gold" : "text-muted-foreground hover:text-gold"}`}
+                        />
+                      </button>
                     </TableCell>
-                    <TableCell className="text-center text-sm font-medium">
-                      {c.order}
+                    {/* Visible/Hidden toggle */}
+                    <TableCell className="text-center">
+                      <button
+                        onClick={() => toggleHidden(c)}
+                        className="rounded-md p-1.5 transition hover:bg-secondary"
+                        aria-label={`Toggle visibility for ${c.name}`}
+                      >
+                        {c.hidden ? (
+                          <EyeOff className="h-5 w-5 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-brand" />
+                        )}
+                      </button>
+                    </TableCell>
+                    {/* Order + move up/down */}
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => moveCountry(c, "up")}
+                          className="rounded p-0.5 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                          aria-label={`Move ${c.name} up`}
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </button>
+                        <span className="w-5 text-xs font-bold tabular-nums">{c.order}</span>
+                        <button
+                          onClick={() => moveCountry(c, "down")}
+                          className="rounded p-0.5 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                          aria-label={`Move ${c.name} down`}
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
@@ -2790,7 +2926,22 @@ function CountryFormDialog({
               <span className="text-sm font-medium">
                 Featured destination{" "}
                 <span className="text-muted-foreground">
-                  (shown with a gold star)
+                  (shown with a gold star + "Popular" label)
+                </span>
+              </span>
+            </label>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-border bg-secondary/50 px-3 py-2.5">
+              <Checkbox
+                checked={form.hidden}
+                onCheckedChange={(v) => onField("hidden", v === true)}
+              />
+              <span className="text-sm font-medium">
+                Hide from public site{" "}
+                <span className="text-muted-foreground">
+                  (country stays in admin but won't appear on the website)
                 </span>
               </span>
             </label>

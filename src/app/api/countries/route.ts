@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
     }
 
     let countries = await db.country.findMany({
-      orderBy: { order: "asc" },
+      where: { hidden: false },
+      orderBy: [{ featured: "desc" }, { order: "asc" }],
     });
 
     // Auto-seed if empty

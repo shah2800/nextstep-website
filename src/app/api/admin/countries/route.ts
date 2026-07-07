@@ -24,6 +24,7 @@ const createSchema = z.object({
   accentColor: z.string().default("#1e3a8a"),
   featured: z.boolean().default(false),
   order: z.number().int().default(0),
+  hidden: z.boolean().default(false),
 });
 
 // GET /api/admin/countries — list all countries (admin view)
