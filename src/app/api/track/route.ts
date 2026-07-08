@@ -1,56 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { backendGet } from "@/lib/backend";
 
 // GET /api/track?registrationId=NSI-2026-001
-// Returns the application + milestones for the public track page
+// Proxies to the existing CRM backend, which owns the register-ID + milestone
+// data. The old backend returns the exact shape the track page renders, so we
+// relay it verbatim.
 export async function GET(req: NextRequest) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const registrationId = (searchParams.get("registrationId") || "")
-      .trim()
-      .toUpperCase();
+  const { searchParams } = new URL(req.url);
+  const registrationId = (searchParams.get("registrationId") || "").trim().toUpperCase();
 
-    if (!registrationId) {
-      return NextResponse.json(
-        { error: "Please enter your Register ID (e.g. NSI-2026-001)." },
-        { status: 400 }
-      );
-    }
-
-    const application = await db.application.findUnique({
-      where: { registrationId },
-      include: {
-        milestones: { orderBy: { order: "asc" } },
-      },
-    });
-
-    if (!application) {
-      return NextResponse.json(
-        { error: "Application not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      registrationId: application.registrationId,
-      fullName: application.fullName,
-      countryInterest: application.countryInterest,
-      courseInterest: application.courseInterest,
-      status: application.status,
-      headline: application.headline,
-      stageUpdatedAt: application.updatedAt.toISOString(),
-      updatedAt: application.updatedAt.toISOString(),
-      milestones: application.milestones.map((m) => ({
-        label: m.label,
-        note: m.note,
-        status: m.status,
-      })),
-    });
-  } catch (error) {
-    console.error("GET /api/track error:", error);
+  if (!registrationId) {
     return NextResponse.json(
-      { error: "Failed to fetch application status" },
-      { status: 500 }
+      { error: "Please enter your Register ID (e.g. NSI-2026-001)." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const res = await backendGet(
+      `/public/website/track?registrationId=${encodeURIComponent(registrationId)}`
+    );
+    const text = await res.text();
+    let data: unknown;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { error: text || "Unexpected response from server" };
+    }
+    return NextResponse.json(data, { status: res.status });
+  } catch (error) {
+    console.error("GET /api/track proxy error:", error);
+    return NextResponse.json(
+      { error: "Could not reach the server. Please try again in a moment." },
+      { status: 502 }
     );
   }
 }

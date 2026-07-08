@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    qualities: [70, 75, 80], // quality values used across the site
   },
   // Experimental: faster page loads via fewer client-side re-renders
   experimental: {
