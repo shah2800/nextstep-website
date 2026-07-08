@@ -565,10 +565,6 @@ function LoginScreen({
             )}
           </Button>
         </form>
-
-        <p className="mt-5 rounded-md bg-secondary px-3 py-2 text-center text-xs text-muted-foreground">
-          Demo password: <code className="font-mono font-semibold text-brand">nextstep-admin</code>
-        </p>
       </Card>
     </div>
   );
