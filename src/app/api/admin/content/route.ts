@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { defaultContent } from "@/lib/content";
 
@@ -46,6 +47,8 @@ export async function PUT(req: NextRequest) {
       update: { value: stored },
     });
 
+    revalidatePath("/");
+
     return NextResponse.json({ success: true, key });
   } catch (error) {
     console.error("PUT /api/admin/content error:", error);
@@ -62,6 +65,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "key is required" }, { status: 400 });
     }
     await db.siteContent.delete({ where: { key } }).catch(() => {});
+    
+    revalidatePath("/");
+    
     return NextResponse.json({ success: true, key, reset: true });
   } catch (error) {
     console.error("POST /api/admin/content error:", error);
