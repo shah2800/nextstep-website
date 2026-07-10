@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { defaultContent } from "@/lib/content";
+import { useSiteContent } from "./site-content-provider";
 
 export function CounselingCta({
   onGetGuidance,
@@ -14,14 +14,8 @@ export function CounselingCta({
   onGetGuidance: () => void;
   onBookSession: () => void;
 }) {
-  const [c, setC] = useState(defaultContent);
+  const c = useSiteContent();
 
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => d.content && setC(d.content))
-      .catch(() => {});
-  }, []);
 
   return (
     <section className="py-16 sm:py-20">
@@ -36,7 +30,7 @@ export function CounselingCta({
             className="relative h-64 overflow-hidden lg:h-full"
           >
             <Image
-              src="/images/counseling.png"
+              src={c.counselingImage}
               alt="NextStep counselor advising a student"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

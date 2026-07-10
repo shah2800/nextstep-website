@@ -1,23 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSiteContent } from "./site-content-provider";
 import { Bot, Sparkles, Zap, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { defaultContent } from "@/lib/content";
-
 export function AssistantSection({
   onOpenAssistant,
 }: {
   onOpenAssistant?: () => void;
 }) {
-  const [c, setC] = useState(defaultContent);
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => d.content && setC(d.content))
-      .catch(() => {});
-  }, []);
+  const c = useSiteContent();
+
   const handleOpen = () => {
     if (onOpenAssistant) onOpenAssistant();
     window.dispatchEvent(new CustomEvent("open-nextstep-assistant"));

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSiteContent } from "./site-content-provider";
 import {
   Users,
   Building2,
@@ -10,7 +10,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { defaultContent } from "@/lib/content";
 
 const iconMap: Record<string, LucideIcon> = {
   Users,
@@ -22,16 +21,9 @@ const iconMap: Record<string, LucideIcon> = {
 type Stat = { label: string; value: string; icon: string };
 
 export function Stats() {
-  const [stats, setStats] = useState<Stat[]>(defaultContent.stats);
+  const content = useSiteContent();
+  const stats = content.stats;
 
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.content?.stats) setStats(d.content.stats);
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <section className="stats-section relative -mt-6 z-10">

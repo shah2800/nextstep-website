@@ -1,24 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSiteContent } from "./site-content-provider";
 import { Mail, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { defaultContent } from "@/lib/content";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
-  const [c, setC] = useState(defaultContent);
+  const c = useSiteContent();
 
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => d.content && setC(d.content))
-      .catch(() => {});
-  }, []);
 
   const subscribe = async () => {
     if (loading || !email) return;

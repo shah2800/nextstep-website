@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSiteContent } from "./site-content-provider";
 import {
   GraduationCap,
   Phone,
@@ -13,7 +13,6 @@ import {
   Youtube,
   Award,
 } from "lucide-react";
-import { defaultContent } from "@/lib/content";
 
 const popular = [
   "United Kingdom",
@@ -49,13 +48,7 @@ export function Footer({
   onGetGuidance: () => void;
   onBookSession: () => void;
 }) {
-  const [c, setC] = useState(defaultContent);
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => d.content && setC(d.content))
-      .catch(() => {});
-  }, []);
+  const c = useSiteContent();
   return (
     <footer
       id="contact"

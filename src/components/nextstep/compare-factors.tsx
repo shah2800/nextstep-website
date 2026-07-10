@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSiteContent } from "./site-content-provider";
 import {
   GraduationCap,
   Wallet,
@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from "lucide-react";
-import { defaultContent } from "@/lib/content";
 
 const iconMap: Record<string, LucideIcon> = {
   GraduationCap,
@@ -25,18 +24,9 @@ type Factor = {
 };
 
 export function CompareFactors() {
-  const [factors, setFactors] = useState<Factor[]>(
-    defaultContent.compareFactors
-  );
+  const content = useSiteContent();
+  const factors = content.compareFactors;
 
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.content?.compareFactors) setFactors(d.content.compareFactors);
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <section id="compare" className="scroll-mt-20 bg-secondary/40 py-16 sm:py-20">

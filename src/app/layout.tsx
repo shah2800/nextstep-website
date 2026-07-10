@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { loadContent } from "@/lib/content";
+import { SiteContentProvider } from "@/components/nextstep/site-content-provider";
+import { Analytics } from "@vercel/analytics/react";
 
 // Font optimization: preload + display swap so text renders instantly
 const geistSans = Geist({
@@ -67,11 +70,13 @@ export const viewport: Viewport = {
   themeColor: "#0a1f44",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const content = await loadContent();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -86,9 +91,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
         style={{ background: "#f7f9fc" }}
       >
-        {children}
-        <Toaster />
-        <Sonner />
+        <SiteContentProvider content={content}>
+          {children}
+          <Toaster />
+          <Sonner />
+          <Analytics />
+        </SiteContentProvider>
       </body>
     </html>
   );

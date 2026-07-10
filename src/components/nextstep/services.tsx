@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSiteContent } from "./site-content-provider";
 import {
   Compass,
   FileCheck,
@@ -11,7 +11,6 @@ import {
   Home,
   type LucideIcon,
 } from "lucide-react";
-import { defaultContent } from "@/lib/content";
 
 const iconMap: Record<string, LucideIcon> = {
   Compass,
@@ -29,16 +28,9 @@ type Service = {
 };
 
 export function Services() {
-  const [services, setServices] = useState<Service[]>(defaultContent.services);
+  const content = useSiteContent();
+  const services = content.services;
 
-  useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.content?.services) setServices(d.content.services);
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <section id="services" className="scroll-mt-20 py-16 sm:py-20">

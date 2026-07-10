@@ -6,6 +6,8 @@ import { ArrowRight, Sparkles, Globe2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCountryParam } from "@/hooks/use-country-param";
 import { countries } from "@/lib/countries";
+import { useSiteContent } from "./site-content-provider";
+
 
 export function Hero({
   onGetGuidance,
@@ -18,6 +20,8 @@ export function Hero({
   const morphCountry = countrySlug
     ? countries.find((c) => c.slug === countrySlug)
     : null;
+  const content = useSiteContent();
+
 
   return (
     <section className="hero-section relative overflow-hidden [contain:paint] hero-mesh text-white">
@@ -37,7 +41,7 @@ export function Hero({
             <Sparkles className="h-3.5 w-3.5 text-gold" />
             {morphCountry
               ? `${morphCountry.flagEmoji} Specialized in ${morphCountry.name}`
-              : "Trusted by 12,000+ Pakistani students"}
+              : content.heroBadge}
           </span>
 
           <h1 className="headline-tight fade-in-up mt-5 text-4xl font-extrabold sm:text-5xl lg:text-6xl">
@@ -50,20 +54,14 @@ export function Hero({
                 {morphCountry.flagEmoji}
               </>
             ) : (
-              <>
-                Study destinations{" "}
-                <span className="bg-gradient-to-r from-gold to-amber-200 bg-clip-text text-transparent">
-                  matched to your goals
-                </span>{" "}
-                and budget
-              </>
+              <>{content.heroTitle}</>
             )}
           </h1>
 
           <p className="mt-5 max-w-xl text-base text-white/85 sm:text-lg">
             {morphCountry
               ? `${morphCountry.shortDesc} Tuition from ${morphCountry.tuitionRange.split(" – ")[0]}. ${morphCountry.workRights.split(";")[0]}.`
-              : "Compare country guides covering universities, admissions, tuition, living costs, scholarships, and visa considerations for students applying from Pakistan — all in one place."}
+              : content.heroSubtitle}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -74,7 +72,7 @@ export function Hero({
               data-label="Get My Options Reviewed"
               className="btn-premium bg-gold text-gold-foreground hover:bg-gold/90 shadow-lg"
             >
-              Get My Options Reviewed
+              {content.heroPrimaryCta}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button
@@ -85,7 +83,7 @@ export function Hero({
               data-label="Book a Session"
               className="border-white/40 bg-white/5 text-white hover:bg-white/10 hover:text-white"
             >
-              Book a Session
+              {content.heroSecondaryCta}
             </Button>
           </div>
 
@@ -93,11 +91,11 @@ export function Hero({
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/80">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-gold" />
-              Direct University Partnerships · 850+ Institutions
+              {content.heroTrust1}
             </span>
             <span className="inline-flex items-center gap-2">
               <Globe2 className="h-4 w-4 text-gold" />
-              15+ Years of Trusted Guidance
+              {content.heroTrust2}
             </span>
           </div>
         </motion.div>
@@ -111,7 +109,7 @@ export function Hero({
         >
           <div className="relative h-[300px] overflow-hidden rounded-3xl border border-white/20 bg-brand/40 shadow-2xl sm:h-[420px]">
             <Image
-              src="/images/hero-students.png"
+              src={content.heroImage}
               alt="International students on a university campus"
               width={1344}
               height={768}
