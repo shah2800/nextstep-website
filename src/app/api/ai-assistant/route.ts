@@ -60,8 +60,8 @@ export async function POST(req: NextRequest) {
     });
 
     // Build messages array for the LLM
-    const messages: { role: "assistant" | "user"; content: string }[] = [
-      { role: "assistant", content: buildSystemPrompt() },
+    const messages: { role: "system" | "assistant" | "user"; content: string }[] = [
+      { role: "system", content: buildSystemPrompt() },
       ...dbHistory.slice(-10).map((m) => ({
         role: (m.role === "assistant" ? "assistant" : "user") as
           | "assistant"
@@ -71,17 +71,34 @@ export async function POST(req: NextRequest) {
       { role: "user", content: message },
     ];
 
-    // Dynamically import the SDK (server-only)
-    const ZAIModule = await import("z-ai-web-dev-sdk");
-    const ZAI = ZAIModule.default;
-    const zai = await ZAI.create();
+    // Groq (OpenAI-compatible) — same provider that powers the WhatsApp AI bot.
+    // Baked fallback for zero-config deploy; override via GROQ_API_KEY env var.
+    const groqKey = process.env.GROQ_API_KEY || "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";
 
-    const completion = await zai.chat.completions.create({
-      messages,
-      thinking: { type: "disabled" },
-    });
+    const groqRes = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${groqKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages,
+          max_tokens: 600,
+          temperature: 0.6,
+        }),
+      }
+    );
 
-    const reply =
+    if (!groqRes.ok) {
+      const errBody = await groqRes.text();
+      throw new Error(`Groq API ${groqRes.status}: ${errBody.slice(0, 200)}`);
+    }
+
+    const completion = await groqRes.json();
+    const reply: string =
       completion.choices?.[0]?.message?.content ??
       "I'm sorry, I couldn't generate a response right now. Please try again.";
 

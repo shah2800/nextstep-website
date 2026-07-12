@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     qualities: [70, 75, 80], // quality values used across the site
+    // Allow CMS images uploaded to Cloudflare R2 (admin "Upload image")
+    remotePatterns: [
+      { protocol: "https", hostname: "media.nextstepinternationals.com" },
+      { protocol: "https", hostname: "*.r2.dev" },
+    ],
   },
   // Experimental: faster page loads via fewer client-side re-renders
   experimental: {

@@ -195,6 +195,27 @@ export function CountryDetailDialog({
                   </section>
                 </div>
 
+                {/* China MBBS universities link */}
+                {country.slug === "china" && (
+                  <a
+                    href="/china-mbbs"
+                    className="flex items-center justify-between gap-3 rounded-xl border-2 border-gold/60 bg-gold/10 p-4 transition hover:bg-gold/20"
+                  >
+                    <div>
+                      <p className="text-sm font-bold text-foreground">
+                        🇨🇳 MBBS Universities &amp; Costs 2026
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Compare 29 partner universities — packages, tuition,
+                        hostel &amp; HSK requirements
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-gold-foreground">
+                      View all →
+                    </span>
+                  </a>
+                )}
+
                 {/* CTA */}
                 <div className="flex flex-col gap-2 rounded-xl bg-brand p-4 text-white sm:flex-row sm:items-center sm:justify-between">
                   <div>
