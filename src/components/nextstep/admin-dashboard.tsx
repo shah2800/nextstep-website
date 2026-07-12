@@ -33,6 +33,7 @@ import {
   LayoutDashboard,
   Loader2,
   Lock,
+  UploadCloud,
   Mail,
   MapPin,
   MessageCircle,
@@ -3043,6 +3044,7 @@ type ContentField = {
   label: string;
   multiline?: boolean;
   hint?: string;
+  image?: boolean;
 };
 
 const HERO_FIELDS: ContentField[] = [
@@ -3053,7 +3055,7 @@ const HERO_FIELDS: ContentField[] = [
   { key: "heroSecondaryCta", label: "Secondary CTA Button" },
   { key: "heroTrust1", label: "Trust Badge #1" },
   { key: "heroTrust2", label: "Trust Badge #2" },
-  { key: "heroImage", label: "Hero Image URL", hint: "Path or absolute URL" },
+  { key: "heroImage", label: "Hero Image", hint: "Upload an image or paste a URL", image: true },
 ];
 
 const COUNSELING_FIELDS: ContentField[] = [
@@ -3062,7 +3064,7 @@ const COUNSELING_FIELDS: ContentField[] = [
   { key: "counselingSubtitle", label: "Subtitle", multiline: true },
   { key: "counselingCta1", label: "Primary CTA Button" },
   { key: "counselingCta2", label: "Secondary CTA Button" },
-  { key: "counselingImage", label: "Image URL", hint: "Path or absolute URL" },
+  { key: "counselingImage", label: "Counseling Image", hint: "Upload an image or paste a URL", image: true },
 ];
 
 const ASSISTANT_FIELDS: ContentField[] = [
@@ -3382,6 +3384,29 @@ function FieldCard({
   previewImage?: string;
   iconPrefix?: React.ComponentType<{ className?: string }>;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      onChange(data.url);
+      toast.success("Image uploaded — click Save to apply.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <Card
       className={`rounded-2xl border-border p-5 shadow-sm ${
@@ -3422,7 +3447,41 @@ function FieldCard({
         </div>
       )}
       {field.hint && <p className="mt-1 text-xs text-muted-foreground">{field.hint}</p>}
-      <div className="mt-3 flex justify-end">
+
+      {field.image && value && (
+        <div className="mt-3 overflow-hidden rounded-lg border border-border bg-secondary">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt="preview" className="h-32 w-full object-cover" />
+        </div>
+      )}
+
+      <div className="mt-3 flex items-center justify-between gap-2">
+        {field.image ? (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleUpload}
+            />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+            >
+              {uploading ? (
+                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+              ) : (
+                <UploadCloud className="mr-1.5 h-4 w-4" />
+              )}
+              {uploading ? "Uploading…" : "Upload image"}
+            </Button>
+          </>
+        ) : (
+          <span />
+        )}
         <Button
           size="sm"
           onClick={onSave}
