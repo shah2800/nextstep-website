@@ -37,6 +37,9 @@ export function CounselingCta({
               quality={80}
               loading="lazy"
               className="object-cover"
+              // CMS images on R2 are served straight from Cloudflare's CDN —
+              // skipping Vercel's optimizer avoids its free-plan quota (402s)
+              unoptimized={c.counselingImage.startsWith("http")}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/40 to-transparent lg:bg-gradient-to-r" />
           </motion.div>

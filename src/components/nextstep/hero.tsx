@@ -119,6 +119,9 @@ export function Hero({
               quality={70}
               placeholder="empty"
               className="h-[300px] w-full object-cover sm:h-[420px]"
+              // CMS images on R2 are served straight from Cloudflare's CDN —
+              // skipping Vercel's optimizer avoids its free-plan quota (402s)
+              unoptimized={content.heroImage.startsWith("http")}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/60 via-transparent to-transparent" />
           </div>
