@@ -15,30 +15,28 @@ import {
 } from "lucide-react";
 
 const popular = [
-  "United Kingdom",
-  "Australia",
-  "United States",
-  "Canada",
-  "Germany",
-  "Ireland",
+  { label: "Study in China", href: "/study-in/china" },
+  { label: "Study in Georgia", href: "/study-in/georgia" },
+  { label: "Study in United Kingdom", href: "/study-in/united-kingdom" },
+  { label: "Study in Australia", href: "/study-in/australia" },
+  { label: "Study in Canada", href: "/study-in/canada" },
+  { label: "Study in Germany", href: "/study-in/germany" },
 ];
 
 const explore = [
-  "About Us",
-  "Services",
-  "Study Destinations",
-  "Our Branches",
-  "Projects",
-  "NextStep Alumni",
+  { label: "Study Destinations", href: "/#destinations" },
+  { label: "China MBBS 2026", href: "/china-mbbs" },
+  { label: "Services", href: "/#services" },
+  { label: "Apply Online", href: "/?apply=true" },
+  { label: "Track Application", href: "/?track=true" },
 ];
 
 const resources = [
-  "Course Finder",
-  "AI Assistant",
-  "IELTS / PTE",
-  "Events",
-  "Blogs",
-  "Complaint / Feedback",
+  { label: "Blog & Guides", href: "/blog" },
+  { label: "Scholarships Guide", href: "/blog/scholarships-for-pakistani-students" },
+  { label: "Student Visa Guide", href: "/blog/student-visa-guide-for-pakistani-students" },
+  { label: "Study Without IELTS", href: "/blog/ielts-free-study-destinations" },
+  { label: "Cheapest MBBS Countries", href: "/blog/cheapest-countries-to-study-mbbs" },
 ];
 
 export function Footer({
@@ -205,7 +203,7 @@ export function Footer({
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: string[] }) {
+function FooterCol({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
     <div>
       <h4 className="text-sm font-bold uppercase tracking-wide text-white/90">
@@ -213,12 +211,12 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
       </h4>
       <ul className="mt-3 space-y-2">
         {links.map((l) => (
-          <li key={l}>
+          <li key={l.label}>
             <a
-              href="#"
+              href={l.href}
               className="text-sm text-white/75 transition hover:text-gold"
             >
-              {l}
+              {l.label}
             </a>
           </li>
         ))}
