@@ -13,6 +13,29 @@ import type { CountryData } from "@/lib/countries";
 
 type CountryRow = CountryData & { id: string };
 
+/** Card banner painted in each country's real flag colors (fallback: DB gradient). */
+const FLAG_BANNERS: Record<string, string> = {
+  china: "linear-gradient(135deg, #DE2910 0%, #B81D08 75%, #8f1503 100%)",
+  georgia: "linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 45%, #FF0000 130%)",
+  turkiye: "linear-gradient(135deg, #E30A17 0%, #C00812 70%, #96060e 100%)",
+  "united-kingdom": "linear-gradient(135deg, #012169 0%, #1a3a8f 55%, #C8102E 130%)",
+  "united-states": "linear-gradient(135deg, #3C3B6E 0%, #4a4987 50%, #B22234 130%)",
+  canada: "linear-gradient(90deg, #D80621 0%, #D80621 28%, #f2f2f2 50%, #D80621 72%, #D80621 100%)",
+  germany: "linear-gradient(180deg, #1a1a1a 0%, #1a1a1a 34%, #DD0000 34%, #DD0000 67%, #FFCE00 67%, #FFCE00 100%)",
+  australia: "linear-gradient(135deg, #00247D 0%, #012169 60%, #C8102E 140%)",
+  hungary: "linear-gradient(180deg, #CE2939 0%, #CE2939 34%, #f2f2f2 34%, #f2f2f2 67%, #477050 67%, #477050 100%)",
+  russia: "linear-gradient(180deg, #f2f2f2 0%, #f2f2f2 34%, #0039A6 34%, #0039A6 67%, #D52B1E 67%, #D52B1E 100%)",
+  azerbaijan: "linear-gradient(180deg, #00B5E2 0%, #00B5E2 34%, #EF3340 34%, #EF3340 67%, #509E2F 67%, #509E2F 100%)",
+  kazakhstan: "linear-gradient(135deg, #00AFCA 0%, #0097b0 70%, #FEC50C 140%)",
+  malaysia: "linear-gradient(135deg, #010066 0%, #1a1a8c 55%, #CC0001 130%)",
+  indonesia: "linear-gradient(180deg, #CE1126 0%, #CE1126 50%, #f2f2f2 50%, #f2f2f2 100%)",
+  ireland: "linear-gradient(90deg, #169B62 0%, #169B62 34%, #f2f2f2 50%, #FF883E 67%, #FF883E 100%)",
+  netherlands: "linear-gradient(180deg, #AE1C28 0%, #AE1C28 34%, #f2f2f2 34%, #f2f2f2 67%, #21468B 67%, #21468B 100%)",
+  singapore: "linear-gradient(180deg, #EF3340 0%, #EF3340 50%, #f2f2f2 50%, #f2f2f2 100%)",
+  uae: "linear-gradient(90deg, #FF0000 0%, #FF0000 25%, #00732F 25%, #00732F 50%, #f2f2f2 50%, #f2f2f2 75%, #1a1a1a 75%, #1a1a1a 100%)",
+  "new-zealand": "linear-gradient(135deg, #00247D 0%, #012169 60%, #C8102E 140%)",
+};
+
 export function Countries() {
   const morphSlug = useCountryParam();
   const [countries, setCountries] = useState<CountryRow[]>([]);
@@ -142,11 +165,14 @@ export function Countries() {
                       : "border-border"
                   }`}
                 >
-                  {/* Header banner */}
+                  {/* Header banner — painted in the country's flag colors */}
                   <div
-                    className={`relative h-32 bg-gradient-to-br ${c.gradient}`}
+                    className={`relative h-32 ${FLAG_BANNERS[c.slug] ? "" : `bg-gradient-to-br ${c.gradient}`}`}
+                    style={FLAG_BANNERS[c.slug] ? { background: FLAG_BANNERS[c.slug] } : undefined}
                   >
                     <div className="absolute inset-0 dot-grid opacity-25" />
+                    {/* dark fade so the name stays readable on light flag colors */}
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
                     <div className="absolute left-4 top-4 text-4xl drop-shadow-md">
                       {c.flagEmoji}
                     </div>
