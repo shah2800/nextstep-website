@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/agent/daily?key=nsi-agent-7k3m9p2qx-secret",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}

@@ -182,3 +182,24 @@ model ApplicationMilestone {
 
   @@index([applicationId])
 }
+
+// ---- SEO blog engine (posts written by admins or the daily AI agent) ----
+model BlogPost {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  excerpt         String   @default("")
+  content         String // markdown
+  category        String   @default("Guides")
+  tags            String   @default("") // comma-separated
+  metaTitle       String   @default("")
+  metaDescription String   @default("")
+  coverEmoji      String   @default("🎓")
+  source          String   @default("manual") // manual | agent
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([published, createdAt])
+  @@index([category])
+}
