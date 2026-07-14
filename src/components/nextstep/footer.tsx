@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSiteContent } from "./site-content-provider";
 import {
-  GraduationCap,
   Phone,
   Mail,
   MapPin,
@@ -57,9 +56,12 @@ export function Footer({
           {/* Brand */}
           <div className="lg:col-span-4">
             <Link href="#" className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
-                <GraduationCap className="h-5 w-5" />
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-white-tile.png"
+                alt="NextStep International logo"
+                className="h-10 w-10 rounded-xl object-contain"
+              />
               <span className="flex flex-col leading-none">
                 <span className="text-lg font-extrabold tracking-tight">
                   NextStep

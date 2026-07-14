@@ -40,9 +40,7 @@ export const metadata: Metadata = {
     "NextStep Pakistan",
   ],
   authors: [{ name: "NextStep International" }],
-  icons: {
-    icon: "/logo.svg",
-  },
+  // Favicon comes from src/app/icon.png + apple-icon.png (Next.js file convention)
   openGraph: {
     title: "NextStep International | Study Abroad",
     description:

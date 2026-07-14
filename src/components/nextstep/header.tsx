@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, GraduationCap, MessageCircle } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -36,9 +36,12 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="#" className="flex items-center gap-2.5 group">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white shadow-md transition-transform group-hover:scale-105">
-            <GraduationCap className="h-5 w-5" />
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-mark.png"
+            alt="NextStep International logo"
+            className="h-11 w-11 object-contain transition-transform group-hover:scale-105"
+          />
           <span className="flex flex-col leading-none">
             <span className="text-lg font-extrabold tracking-tight text-brand">
               NextStep
