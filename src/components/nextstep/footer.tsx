@@ -8,10 +8,18 @@ import {
   MapPin,
   Facebook,
   Instagram,
-  Linkedin,
   Youtube,
   Award,
 } from "lucide-react";
+
+/** Pinterest brand glyph (lucide dropped brand icons). */
+function PinterestIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C24.007 5.367 18.635.001 12.017.001z" />
+    </svg>
+  );
+}
 
 const popular = [
   { label: "Study in China", href: "/study-in/china" },
@@ -86,14 +94,16 @@ export function Footer({
             {/* Socials */}
             <div className="mt-5 flex items-center gap-2">
               {[
-                { icon: Facebook, label: "Facebook" },
-                { icon: Instagram, label: "Instagram" },
-                { icon: Linkedin, label: "LinkedIn" },
-                { icon: Youtube, label: "YouTube" },
+                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/profile.php?id=61589102386856" },
+                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/nextstepintl_official/" },
+                { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@nextstepintl_official" },
+                { icon: PinterestIcon, label: "Pinterest", href: "https://www.pinterest.com/nextstepintl_official/" },
               ].map((s) => (
                 <a
                   key={s.label}
-                  href="#"
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/80 transition hover:bg-gold hover:text-gold-foreground"
                 >
