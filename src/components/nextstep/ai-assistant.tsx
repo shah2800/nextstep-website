@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, Send, X, Sparkles, Loader2, RotateCcw } from "lucide-react";
+import { Send, X, Sparkles, Loader2, RotateCcw, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -30,6 +30,22 @@ function WhatsAppIcon({ className }: { className?: string }) {
 export function AiAssistant() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // Launcher: starts as a labeled pill ("Chat with us"), collapses to a circle
+  // whose icon slowly alternates chat-bubble ↔ WhatsApp so visitors know it's
+  // for contact (human) AND AI — not a robot-only button.
+  const [collapsed, setCollapsed] = useState(false);
+  const [iconTick, setIconTick] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setCollapsed(true), 6000);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!collapsed || open || menuOpen) return;
+    const i = setInterval(() => setIconTick((v) => v + 1), 3000);
+    return () => clearInterval(i);
+  }, [collapsed, open, menuOpen]);
   const [sessionId, setSessionId] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -168,12 +184,14 @@ export function AiAssistant() {
             setMenuOpen((v) => !v);
           }
         }}
-        className="fixed right-4 bottom-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-2xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        className={`fixed right-4 bottom-4 z-50 flex h-14 items-center justify-center rounded-full bg-brand text-white shadow-2xl transition-all hover:scale-105 sm:bottom-6 sm:right-6 ${
+          !collapsed && !open && !menuOpen ? "gap-2.5 px-5" : "w-14"
+        }`}
         style={{
           right: "max(1rem, env(safe-area-inset-right))",
           bottom: "max(1rem, env(safe-area-inset-bottom))",
         }}
-        aria-label="Open chat options"
+        aria-label="Chat with us — WhatsApp or AI assistant"
       >
         <AnimatePresence mode="wait">
           {open || menuOpen ? (
@@ -185,21 +203,47 @@ export function AiAssistant() {
             >
               <X className="h-6 w-6" />
             </motion.span>
+          ) : !collapsed ? (
+            <motion.span
+              key="pill"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2.5"
+            >
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-400" />
+              </span>
+              <MessageCircle className="h-5 w-5 shrink-0" />
+              <span className="whitespace-nowrap text-sm font-bold">Chat with us</span>
+            </motion.span>
+          ) : iconTick % 2 === 0 ? (
+            <motion.span
+              key="bubble"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.6 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MessageCircle className="h-6 w-6" />
+            </motion.span>
           ) : (
             <motion.span
-              key="bot"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
+              key="wa"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.6 }}
+              transition={{ duration: 0.3 }}
             >
-              <Bot className="h-6 w-6" />
+              <WhatsAppIcon className="h-6 w-6" />
             </motion.span>
           )}
         </AnimatePresence>
-        {!open && !menuOpen && (
+        {collapsed && !open && !menuOpen && (
           <span className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-75" />
-            <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-gold" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-green-400" />
           </span>
         )}
       </motion.button>
