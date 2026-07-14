@@ -24,6 +24,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.nextstepinternationals.com"),
   title: "NextStep International | Study Abroad for Pakistani Students",
   description:
     "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students. Get personalized guidance from NextStep counselors.",
@@ -47,12 +48,15 @@ export const metadata: Metadata = {
       "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students.",
     siteName: "NextStep International",
     type: "website",
+    url: "https://www.nextstepinternationals.com",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "NextStep International — Study Abroad for Pakistani Students" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "NextStep International | Study Abroad",
     description:
       "Compare study destinations, universities, admissions, costs, scholarships, and visa guidance for Pakistani students.",
+    images: ["/og-image.png"],
   },
   // Tell the browser to pre-resolve DNS for the WhatsApp/external domains
   // so links open with zero delay
@@ -78,6 +82,60 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Brand entity for Google: Organization (logo in search results) + WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "EducationalOrganization",
+                  "@id": "https://www.nextstepinternationals.com/#organization",
+                  name: "NextStep International",
+                  alternateName: "NextStep International Study Abroad Consultants",
+                  url: "https://www.nextstepinternationals.com",
+                  logo: {
+                    "@type": "ImageObject",
+                    url: "https://www.nextstepinternationals.com/logo-white-tile.png",
+                    width: 512,
+                    height: 512,
+                  },
+                  image: "https://www.nextstepinternationals.com/og-image.png",
+                  description:
+                    "NextStep International is a study-abroad consultancy in Lahore, Pakistan helping students with admissions, scholarships, and student visas for MBBS, business, IT and engineering programs worldwide.",
+                  slogan: "We turn aspirations into admissions.",
+                  areaServed: "PK",
+                  address: {
+                    "@type": "PostalAddress",
+                    addressLocality: "Lahore",
+                    addressCountry: "PK",
+                  },
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+92-314-2638901",
+                    contactType: "customer service",
+                    availableLanguage: ["en", "ur"],
+                  },
+                  sameAs: [
+                    "https://www.instagram.com/nextstepintl_official/",
+                    "https://www.facebook.com/profile.php?id=61589102386856",
+                    "https://www.youtube.com/@nextstepintl_official",
+                    "https://www.pinterest.com/nextstepintl_official/",
+                  ],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://www.nextstepinternationals.com/#website",
+                  url: "https://www.nextstepinternationals.com",
+                  name: "NextStep International",
+                  publisher: { "@id": "https://www.nextstepinternationals.com/#organization" },
+                  inLanguage: "en",
+                },
+              ],
+            }),
+          }}
+        />
         {/* Resource hints — tell browser to start fetching critical assets NOW */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://wa.me" />
