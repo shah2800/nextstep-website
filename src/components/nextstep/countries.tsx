@@ -27,6 +27,7 @@ const FLAG_BANNERS: Record<string, string> = {
   russia: "linear-gradient(180deg, #f2f2f2 0%, #f2f2f2 34%, #0039A6 34%, #0039A6 67%, #D52B1E 67%, #D52B1E 100%)",
   azerbaijan: "linear-gradient(180deg, #00B5E2 0%, #00B5E2 34%, #EF3340 34%, #EF3340 67%, #509E2F 67%, #509E2F 100%)",
   kazakhstan: "linear-gradient(135deg, #00AFCA 0%, #0097b0 70%, #FEC50C 140%)",
+  uzbekistan: "linear-gradient(180deg, #0099B5 0%, #0099B5 33%, #f2f2f2 33%, #f2f2f2 66%, #1EB53A 66%, #1EB53A 100%)",
   malaysia: "linear-gradient(135deg, #010066 0%, #1a1a8c 55%, #CC0001 130%)",
   indonesia: "linear-gradient(180deg, #CE1126 0%, #CE1126 50%, #f2f2f2 50%, #f2f2f2 100%)",
   ireland: "linear-gradient(90deg, #169B62 0%, #169B62 34%, #f2f2f2 50%, #FF883E 67%, #FF883E 100%)",

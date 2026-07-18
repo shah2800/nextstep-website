@@ -56,7 +56,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <section className="mt-8">
       <h2 className="text-xl font-bold text-foreground">{title}</h2>
-      <div className="mt-2 text-sm leading-relaxed text-muted-foreground">{children}</div>
+      <div className="mt-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{children}</div>
     </section>
   );
 }

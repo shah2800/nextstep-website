@@ -98,7 +98,7 @@ export function CountryDetailDialog({
                     <BookOpen className="h-4 w-4 text-brand" />
                     Overview
                   </h3>
-                  <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
+                  <DialogDescription className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
                     {country.longDesc}
                   </DialogDescription>
                 </section>
