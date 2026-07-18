@@ -1,8 +1,12 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /api/
+Disallow: /*?admin=
 
 User-agent: Bingbot
 Allow: /
+Disallow: /api/
+Disallow: /*?admin=
 
 User-agent: Twitterbot
 Allow: /
@@ -12,5 +16,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+# Private surfaces — never index
+Disallow: /api/
+Disallow: /*?admin=
 
 Sitemap: https://www.nextstepinternationals.com/sitemap.xml
