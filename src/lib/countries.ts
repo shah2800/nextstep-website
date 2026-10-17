@@ -490,6 +490,100 @@ export const countries: CountryData[] = [
     featured: false,
     order: 16,
   },
+  {
+    slug: "uzbekistan",
+    name: "Uzbekistan",
+    flagEmoji: "🇺🇿",
+    tagline: "Affordable English-medium degrees & MBBS pathway",
+    shortDesc:
+      "English-medium BS, MS, PhD and MD/MBBS programs at Bukhara State University and Bukhara State Medical Institute, with an all-inclusive $3,500 first-semester package.",
+    longDesc: `Uzbekistan has become one of the most affordable English-medium study destinations for Pakistani students, with admissions open for 2026 at Bukhara State University and Bukhara State Medical Institute (named after Ibn-e-Sina).
+
+PROGRAMS — BUKHARA STATE UNIVERSITY (English medium)
+• BS — 4 years — $3,000
+• MS — 2 years — $3,200
+• PhD — 3 to 5 years — $3,000–$4,000
+
+ELIGIBILITY
+• BS (BBA etc.): minimum 60% in FSc / A-Level / HSSC
+• MS (MBA / MS): minimum 60% in Bachelor's degree
+• PhD: 2 conferences and 2 published articles
+
+PROGRAM — BUKHARA STATE MEDICAL INSTITUTE (Ibn-e-Sina)
+• MD / MBBS — 5 + 1 years
+
+FIRST-SEMESTER PACKAGE — $3,500 USD
+Includes: first-semester tuition fee, first-semester hostel accommodation, visa assistance, medical checkup (first time only), insurance (first time only), complete admission support, administrative fee, Panafil / ID card, bank account setup and legal support. The medical institute package also covers the university development fund and airport-to-university transfer.
+
+FROM THE SECOND SEMESTER ONWARDS
+• Tuition fee: $600–$1,000 per semester (varies by course)
+• Administrative charges: $250
+• Hostel: $300–$500 per semester
+• Police registration: $140 (as per government policy)
+• Visa extension: $200
+
+All figures are in USD as quoted by our partner universities. Our counselor confirms the exact, current amounts and the PKR equivalent at today's rate before you apply.`,
+    capital: "Tashkent",
+    currency: "UZS (Uzbekistani Som)",
+    language: "Uzbek / Russian — programs taught in English",
+    tuitionRange: "$3,000 – $4,000 / year",
+    livingCost: "Hostel $300 – $500 / semester",
+    visaProcess:
+      "Visa assistance is included in the first-semester package. After arrival, police registration (approx. $140, per government policy) and annual visa extension (approx. $200) are required. Our team handles the paperwork end to end.",
+    topUniversities:
+      "Bukhara State University — BS (4 years) $3,000, MS (2 years) $3,200, PhD (3–5 years) $3,000–$4,000. Bukhara State Medical Institute, named after Ibn-e-Sina — MD/MBBS, 5 + 1 years.",
+    popularCourses: "MD / MBBS, BBA, MBA, MS, PhD — all English medium",
+    intakeMonths: "Admissions open for 2026",
+    scholarships:
+      "Scholarship availability varies by program and intake — speak to a NextStep counselor for the current options.",
+    workRights:
+      "Student work regulations vary — confirm the current rules with a NextStep counselor before making plans.",
+    gradient: "from-[#0099B5] via-[#ffffff] to-[#1EB53A]",
+    accentColor: "#0099B5",
+    featured: true,
+    order: 17,
+  },
+  {
+    slug: "armenia",
+    name: "Armenia",
+    flagEmoji: "🇦🇲",
+    tagline: "Affordable, globally recognized medical degrees in Europe",
+    shortDesc:
+      "Study MD, Dentistry, and Nursing in English at Yerevan's Eribuni Medical University — low tuition, safe cities, and a straightforward admission process for Pakistani students.",
+    longDesc: `Armenia is an increasingly popular destination for Pakistani students who want an affordable, English-medium medical education in a safe, welcoming country at the crossroads of Europe and Asia.
+
+ERIBUNI MEDICAL UNIVERSITY — YEREVAN
+- MD (Doctor of Medicine) — $4,600 per year
+- Dentistry — $4,000 per year
+- Nursing — $4,000 per year
+
+WHY ARMENIA
+- English-medium programs (IELTS often not required — confirmed per university)
+- Low tuition and affordable cost of living
+- Safe environment with a friendly, growing international student community
+- Straightforward, high-approval admission and visa process
+
+All figures are in USD as quoted by our partner university. Your NextStep counselor confirms the exact, current tuition, the PKR equivalent at today's rate, and the latest PMDC/NMC recognition status before you apply.`,
+    capital: "Yerevan",
+    currency: "AMD (Armenian Dram)",
+    language: "Armenian — medical programs taught in English",
+    tuitionRange: "$4,000 – $4,600 / year",
+    livingCost: "$250 – $450 / month (approx.)",
+    visaProcess:
+      "After admission, a student visa / residence permit is arranged using the university's invitation letter, passport, and proof of funds. Our team handles the paperwork end to end; exact timelines and requirements are confirmed by your counselor.",
+    topUniversities:
+      "Eribuni Medical University, Yerevan — MD $4,600/year, Dentistry $4,000/year, Nursing $4,000/year.",
+    popularCourses: "MD / Medicine, Dentistry, Nursing — all English medium",
+    intakeMonths: "September (main); February intake at select universities",
+    scholarships:
+      "Scholarship and fee-concession options vary by program and intake — speak to a NextStep counselor for the current options.",
+    workRights:
+      "Student work rules vary — confirm the current regulations with a NextStep counselor before making plans.",
+    gradient: "from-[#D90012] via-[#0033A0] to-[#F2A800]",
+    accentColor: "#D90012",
+    featured: true,
+    order: 18,
+  },
 ];
 
 export const services = [
