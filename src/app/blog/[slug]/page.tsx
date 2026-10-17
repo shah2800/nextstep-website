@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
           <div className="flex gap-2">
             <Link href="/?apply=true" className="rounded-lg bg-gold px-5 py-2.5 text-sm font-bold text-gold-foreground">Apply Now</Link>
-            <a href="https://wa.me/923142638901" className="rounded-lg border border-white/40 px-5 py-2.5 text-sm font-bold">WhatsApp</a>
+            <a href="https://wa.me/995511113670" className="rounded-lg border border-white/40 px-5 py-2.5 text-sm font-bold">WhatsApp</a>
           </div>
         </div>
       </article>

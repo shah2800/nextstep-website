@@ -183,7 +183,7 @@ export function TrackPage({ onClose }: { onClose: () => void }) {
               double-check your Register ID or contact us on WhatsApp.
             </p>
             <a
-              href="https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20need%20help%20finding%20my%20application"
+              href="https://wa.me/995511113670?text=Assalam%20o%20Alaikum%2C%20I%20need%20help%20finding%20my%20application"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -292,7 +292,7 @@ export function TrackPage({ onClose }: { onClose: () => void }) {
                 )}
               </div>
               <a
-                href={`https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20have%20a%20question%20about%20my%20application%20${result.registrationId}`}
+                href={`https://wa.me/995511113670?text=Assalam%20o%20Alaikum%2C%20I%20have%20a%20question%20about%20my%20application%20${result.registrationId}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

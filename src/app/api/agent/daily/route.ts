@@ -63,7 +63,7 @@ async function pickTopic(): Promise<{ slug: string; title: string; category: str
 }
 
 async function generateArticle(topic: { slug: string; title: string; category: string }) {
-  const prompt = `Write an SEO blog article for NextStep International, a study-abroad consultancy in Lahore, Pakistan (website: nextstepinternationals.com, WhatsApp +92 314 2638901).
+  const prompt = `Write an SEO blog article for NextStep International, a study-abroad consultancy in Lahore, Pakistan (website: nextstepinternationals.com, WhatsApp +995 511 11 36 70).
 
 TITLE: ${topic.title}
 

@@ -38,9 +38,9 @@ export const defaultContent = {
   // Footer / contact info
   footerAddress:
     "Office #31/2, Upper Ground, Mall of Lahore, 172 Tufail Road, Cantt Lahore",
-  footerPhone: "+92 314 2638901",
+  footerPhone: "+995 511 11 36 70",
   footerEmail: "info@nextstepinternationals.com",
-  footerWhatsapp: "923142638901",
+  footerWhatsapp: "995511113670",
   footerBrand: "NextStep International",
 
   // Stats

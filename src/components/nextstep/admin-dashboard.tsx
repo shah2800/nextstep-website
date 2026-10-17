@@ -3084,7 +3084,7 @@ const FOOTER_FIELDS: ContentField[] = [
   { key: "footerAddress", label: "Address", multiline: true },
   { key: "footerPhone", label: "Phone" },
   { key: "footerEmail", label: "Email" },
-  { key: "footerWhatsapp", label: "WhatsApp", hint: "Digits only, e.g. 923142638901" },
+  { key: "footerWhatsapp", label: "WhatsApp", hint: "Digits only, e.g. 995511113670" },
 ];
 
 const FIELD_LABELS: Record<string, string> = [

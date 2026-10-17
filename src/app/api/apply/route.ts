@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "Could not submit right now. Please try again in a moment, or WhatsApp +92 314 2638901.",
+          "Could not submit right now. Please try again in a moment, or WhatsApp +995 511 11 36 70.",
       },
       { status: 502 }
     );

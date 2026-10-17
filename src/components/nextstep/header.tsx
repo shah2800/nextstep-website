@@ -68,13 +68,13 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
         {/* Right actions */}
         <div className="hidden items-center gap-2 md:flex">
           <a
-            href="https://wa.me/923142638901?text=Hello%20NextStep!%20I%20have%20a%20question%20about%20studying%20abroad."
+            href="https://wa.me/995511113670?text=Hello%20NextStep!%20I%20have%20a%20question%20about%20studying%20abroad."
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-green-600"
           >
             <MessageCircle className="h-4 w-4" />
-            +92 314 2638901
+            +995 511 11 36 70
           </a>
           <a href="/?apply=true">
             <Button
@@ -110,12 +110,12 @@ export function Header({ onBookSession }: { onBookSession: () => void }) {
               </a>
             ))}
             <a
-              href="https://wa.me/923142638901?text=Hello%20NextStep!%20I%20have%20a%20question%20about%20studying%20abroad."
+              href="https://wa.me/995511113670?text=Hello%20NextStep!%20I%20have%20a%20question%20about%20studying%20abroad."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 rounded-md px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-secondary hover:text-green-600"
             >
-              <MessageCircle className="h-4 w-4" /> +92 314 2638901
+              <MessageCircle className="h-4 w-4" /> +995 511 11 36 70
             </a>
             <a href="/?apply=true" className="mt-2 block">
               <Button

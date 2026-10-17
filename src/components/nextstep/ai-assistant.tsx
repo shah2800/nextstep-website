@@ -17,7 +17,7 @@ const SUGGESTIONS = [
 ];
 
 const WHATSAPP_URL =
-  "https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20know%20about%20study%20abroad%20programs";
+  "https://wa.me/995511113670?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20know%20about%20study%20abroad%20programs";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (

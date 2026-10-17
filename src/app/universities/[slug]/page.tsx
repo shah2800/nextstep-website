@@ -56,7 +56,7 @@ export default async function UniversityPage({ params }: Props) {
     })),
   };
 
-  const wa = `https://wa.me/923142638901?text=${encodeURIComponent(`Assalam o Alaikum, I want details about MBBS admission at ${u.name} (China 2026 intake).`)}`;
+  const wa = `https://wa.me/995511113670?text=${encodeURIComponent(`Assalam o Alaikum, I want details about MBBS admission at ${u.name} (China 2026 intake).`)}`;
 
   return (
     <main className="min-h-screen bg-background">

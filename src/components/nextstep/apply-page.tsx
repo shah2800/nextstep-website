@@ -355,7 +355,7 @@ export function ApplyPage({ onClose }: { onClose: () => void }) {
                   Track Application
                 </Button>
                 <a
-                  href={`https://wa.me/923142638901?text=Assalam%20o%20Alaikum%2C%20I%20just%20submitted%20my%20application.%20My%20Registration%20ID%20is%20${done}`}
+                  href={`https://wa.me/995511113670?text=Assalam%20o%20Alaikum%2C%20I%20just%20submitted%20my%20application.%20My%20Registration%20ID%20is%20${done}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

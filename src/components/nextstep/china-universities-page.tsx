@@ -38,7 +38,7 @@ function initials(name: string): string {
 }
 
 function waLink(uni: string): string {
-  return `https://wa.me/923142638901?text=${encodeURIComponent(
+  return `https://wa.me/995511113670?text=${encodeURIComponent(
     `Assalam o Alaikum, I want details about MBBS admission at ${uni} (China 2026 intake).`
   )}`;
 }
